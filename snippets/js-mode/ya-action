@@ -1,0 +1,11 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: Flux action
+# key: ya-action
+# binding: direct-keybinding
+# --
+"use strict";
+
+module.exports = function(context, payload, done) {
+  $0
+  done();
+};

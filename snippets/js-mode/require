@@ -1,0 +1,5 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: require
+# key: require
+# --
+var ${1:thing} = require("${1:$(downcase (replace-regexp-in-string "\\([A-Z]\\)" "-\\1" yas-text))}");

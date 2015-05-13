@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: React component reference
+# key: r-req
+# binding: direct-keybinding
+# --
+
+var ${1:component} = require("./$1");

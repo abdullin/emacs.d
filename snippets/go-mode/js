@@ -1,0 +1,5 @@
+# -*- coding: utf-8; mode: snippet -*-
+# name: js
+# contributor: David Miller <david@deadpansincerity.com>
+# --
+\`json:"$0"\`

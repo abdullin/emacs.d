@@ -1,0 +1,46 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: react
+# key: react
+# --
+/** @jsx React.DOM */
+
+var React = require("react");
+var StoreMixin = require('fluxible-app').StoreMixin;
+
+
+var ${1:thing} = React.createClass({
+
+    mixins: [StoreMixin],
+    propTypes: {
+    },
+
+    statics: {
+        storeListeners: {
+            _onChange: [
+            ]
+        }
+    },
+    getInitialState: function getInitialState() {
+        return this.getStateFromStores();
+    },
+
+    getStateFromStores: function getStateFromStores() {
+        return {
+            //items: this.getStore(ItemStore).getItems()
+        };
+    },
+
+    _onChange: function() {
+        this.setState(this.getStateFromStores());
+    },
+
+    render: function render() {
+
+        return (
+        <p>$0</p>
+        );
+    }
+});
+
+
+module.exports = $1;

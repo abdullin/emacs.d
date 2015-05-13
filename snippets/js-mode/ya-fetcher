@@ -1,0 +1,16 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: Flux fetcher
+# key: ya-fetcher
+# binding: direct-keybinding
+# --
+"use strict";
+
+module.exports = {
+  name: "$0",
+  read: function(req, resource, params, config, callback) {
+
+  },
+  //create: function(req, resource, params, body, config, callback) {},
+  //update: function(req, resource, params, body, config, callback) {},
+  //delete: function(req, resource, params, config, callback) {}
+};

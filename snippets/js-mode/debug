@@ -1,0 +1,5 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: debug
+# key: debug
+# --
+var debug = require("debug")("$0");

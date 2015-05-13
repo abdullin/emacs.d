@@ -1,0 +1,4 @@
+# -*- coding: utf-8; mode: snippet -*-
+# name: eid
+# --
+EventId Id \`json:"eventId"\`$0

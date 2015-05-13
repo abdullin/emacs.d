@@ -1,0 +1,6 @@
+# -*- coding: utf-8; mode: snippet -*-
+# name: ctr
+# --
+func New$1($0) *${1:thing} {
+     return &$1{}
+}

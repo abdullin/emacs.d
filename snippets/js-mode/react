@@ -1,0 +1,21 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: react
+# key: react
+# --
+/** @jsx React.DOM */
+
+var React = require("react");
+
+var ${1:thing} = React.createClass({
+  propTypes: {
+  },
+
+  render: function render() {
+    return (
+      <p>$0</p>
+    );
+  }
+});
+
+
+module.exports = $1;

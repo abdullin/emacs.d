@@ -1,0 +1,38 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: Flux store
+# key: ya-store
+# binding: direct-keybinding
+# --
+"use strict";
+
+var createStore = require("fluxible/utils/createStore");
+
+var ${1:thing} = createStore({
+    storeName: "$1",
+
+    handlers: {
+        // $0"inventory__added": "inventoryAdded"
+    },
+    //inventoryAdded: function(payload) {
+    //	this.items.push(payload);
+    //	this.emitChange();
+    //},
+
+    initialize: function() {
+    //	this.items = [];
+    },
+
+    //getItems: function() {
+    //	return this.items;
+    //},
+    dehydrate: function() {
+        return {
+    //		items: this.items
+        };
+    },
+    rehydrate: function(state) {
+    //	this.items = state.items;
+    }
+});
+
+module.exports = $1;
