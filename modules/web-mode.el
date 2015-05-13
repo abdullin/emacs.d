@@ -1,0 +1,6 @@
+(add-to-list `el-get-sources
+             `(:name web-mode
+       :description "emacs major mode for editing PHP/JSP/ASP HTML templates (with embedded CSS and JS blocks)"
+       :type github
+       :pkgname "fxbois/web-mode"
+    ))
