@@ -28,6 +28,6 @@
 (load "my-web-mode")
 (load "my-doc-mode")
 (load "my-go-mode")
-(load "my-csharp-mode")
+;; (load "my-csharp-mode")
 
 (server-start)

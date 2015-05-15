@@ -22,7 +22,8 @@
 (setq make-backup-files nil)
 (setq auto-save-default nil)
 
-
+;; set environment coding system
+(set-language-environment "UTF-8")
 ;; Auto-load changes from file
 (global-auto-revert-mode t)
 
@@ -37,9 +38,9 @@
 
 
 ;; Disable auto-complete almost everywhere (for now)
-(require 'auto-complete)
-(setq ac-modes '(sql-mode c++-mode))
+;; (require 'auto-complete)
+;;:: (setq ac-modes '(sql-mode c++-mode))
 
 (require 'yasnippet)
 (setq yas-snippet-dirs (expand-file-name "snippets" emacs-root-dir))
-(yas-reload-all)
+(yas-global-mode)

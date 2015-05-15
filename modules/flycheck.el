@@ -9,7 +9,7 @@
                      :description "On-the-fly syntax checking extension"
                      :build '(("makeinfo" "-o" "doc/flycheck.info" "doc/flycheck.texi"))
                      :info "./doc"
-                     :depends (s dash cl-lib f pkg-info)
+                     :depends (dash pkg-info let-alist cl-lib)
                      )             
              )
 
