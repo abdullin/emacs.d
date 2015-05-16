@@ -20,9 +20,12 @@
                               (setq company-idle-delay nil)
                               ;; removes annoying blinking
                               (setq company-echo-delay 0)
+                              ;; don't replace case
+                              ;; https://github.com/company-mode/company-mode/commit/902176176cd4b88a5f00a1b452e237acea64aa78
+                              (setq company-dabbrev-downcase nil)
                               ;; start autocompletion only after typing
                                         ;(setq company-begin-commands '(self-insert-command))
-                              
+
                               (setq
                                ;; make sure evil uses the right completion functions
                                evil-complete-next-func 'my/company-complete-lambda
@@ -33,10 +36,8 @@
 
                               (global-set-key (kbd "C-\\") 'company-complete)
 
-                              
-                              (key-chord-define-global ";m" 'company-complete)
+
                               )))
 
 ;(add-hook-list 'after-init-hook 'global-company-mode)
 ; load company for everybody
-

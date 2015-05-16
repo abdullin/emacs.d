@@ -15,7 +15,6 @@
   ; YAS has to be loaded before company
   (yas-minor-mode 1)
   (setq indent-tabs-mode t)
-
   (company-mode)
 
 
