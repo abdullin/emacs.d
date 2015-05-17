@@ -8,26 +8,21 @@
         (convert-standard-filename "lisp/")))
 
 
-(load "core/functions")
-(load "core/env")
+(load "functions")
+(load "env")
 ;; loads all components
-(load "core/load-packages")
+(load "load-packages")
 
 
-(load "core/ui")
+(load "ui")
 
 ;; various key bindings
-(load "core/my-chords")
-(load "core/window")
-(load "core/my-evil")
-(load "core/editor")
+(load "my-chords")
+(load "window")
+(load "my-evil")
+(load "editor")
 
-;; modes
-(load "modes/my-org-mode")
-(load "modes/my-js-mode")
-(load "modes/my-web-mode")
-(load "modes/my-doc-mode")
-(load "modes/my-go-mode")
-;; (load "my-csharp-mode")
+;; load all modes
+(load "load-modes")
 
 (server-start)
