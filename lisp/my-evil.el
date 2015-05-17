@@ -2,7 +2,6 @@
 
 
 
-(message "starting evil")
 ;;(key-chord-define evil-insert-state-map "jk" 'evil-normal-state)
 
 (evil-mode 1)
