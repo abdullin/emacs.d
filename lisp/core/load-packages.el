@@ -11,7 +11,7 @@
 
 
 ;; load all .el files inside `modules-dir`
-(setq modules-dir (expand-file-name "modules" emacs-root-dir))
+(setq modules-dir (expand-file-name "lisp/packages" emacs-root-dir))
 (mapc 'load (directory-files modules-dir 't "^[^#].*el$"))
 
 ;; install all missing packages via el-get

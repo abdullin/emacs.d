@@ -11,7 +11,7 @@
 (load "core/functions")
 (load "core/env")
 ;; loads all components
-(load "core/packages")
+(load "core/load-packages")
 
 
 (load "core/ui")
