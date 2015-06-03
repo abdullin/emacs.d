@@ -17,7 +17,13 @@
       (define-key input-decode-map "\e[1;2A" [S-up]))
 
 (defadvice terminal-init-xterm (after select-shift-up activate)
-    (define-key input-decode-map "\e[1;2A" [S-up]))
+  (define-key input-decode-map "\e[1;2A" [S-up]))
+
+;; This won't affect the size of the emacs window, but the term process will always think the window is 80 columns wide
+(defun term-window-width () 80)
+;;  turn on line truncation
+(add-hook 'term-mode-hook
+      (lambda () (setq truncate-lines t)))
 
 ;; enlarge and shrink windows
 (global-set-key (kbd "C-c <up>")    'shrink-window)
