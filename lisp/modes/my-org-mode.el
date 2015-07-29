@@ -53,7 +53,7 @@
 ;;; Setup capture mode
 ;;;
 (setq org-directory "~/org")
-(setq org-default-notes-file "~/org/refile.org")
+(setq org-default-notes-file "~/org/inbox.org")
 
 ;; I use C-c c to start capture mode
 (global-set-key (kbd "C-c c") 'org-capture)
@@ -61,21 +61,21 @@
 
 ;; Capture templates for: TODO tasks, Notes, appointments, phone calls, meetings, and org-protocol
 (setq org-capture-templates
-      (quote (("t" "todo" entry (file "~/org/refile.org")
+      (quote (("t" "todo" entry (file "~/org/inbox.org")
                "* TODO %?\n%U\n%a\n" :clock-in t :clock-resume t)
-              ("r" "respond" entry (file "~/org/refile.org")
+              ("r" "respond" entry (file "~/org/inbox.org")
                "* NEXT Respond to %:from on %:subject\nSCHEDULED: %t\n%U\n%a\n" :clock-in t :clock-resume t :immediate-finish t)
-              ("n" "note" entry (file "~/org/refile.org")
+              ("n" "note" entry (file "~/org/inbox.org")
                "* %? :NOTE:\n%U\n%a\n" :clock-in t :clock-resume t)
               ("j" "Journal" entry (file+datetree "~/org/diary.org")
                "* %?\n%U\n" :clock-in t :clock-resume t)
-              ("w" "org-protocol" entry (file "~/org/refile.org")
+              ("w" "org-protocol" entry (file "~/org/inbox.org")
                "* TODO Review %c\n%U\n" :immediate-finish t)
-              ("m" "Meeting" entry (file "~/org/refile.org")
+              ("m" "Meeting" entry (file "~/org/inbox.org")
                "* MEETING with %? :MEETING:\n%U" :clock-in t :clock-resume t)
-              ("p" "Phone call" entry (file "~/org/refile.org")
+              ("p" "Phone call" entry (file "~/org/inbox.org")
                "* PHONE %? :PHONE:\n%U" :clock-in t :clock-resume t)
-              ("h" "Habit" entry (file "~/org/refile.org")
+              ("h" "Habit" entry (file "~/org/inbox.org")
                "* NEXT %?\n%U\n%a\nSCHEDULED: %(format-time-string \"<%Y-%m-%d %a .+1d/3d>\")\n:PROPERTIES:\n:STYLE: habit\n:REPEAT_TO_STATE: NEXT\n:END:\n"))))
 
 ;;;
@@ -85,8 +85,7 @@
 ;;; Load agenda files from
 (setq org-agenda-files (quote (
                                "~/org"
-                               "~/dev/btw"
-                               "~/dev/go/src/github.com/happypancake/hpc"
+                               ;; "~/dev/go/src/github.com/happypancake/hpc"
                                )))
 ;; imported from http://doc.norang.ca/org-mode.html
 (global-set-key (kbd "<f12>") 'org-agenda)
@@ -122,9 +121,3 @@
 
 (setq org-refile-target-verify-function 'bh/verify-refile-target)
 
-
-
-;;; MOBILE
-
-
-(setq org-mobile-directory "~/Dropbox/Apps/MobileOrg")
