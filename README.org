@@ -1,0 +1,6 @@
+
+* OSX
+
+There is a very good guide on setting up Emacs
+
+http://emacsformacosx.com/tips
