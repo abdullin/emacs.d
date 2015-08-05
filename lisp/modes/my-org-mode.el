@@ -1,8 +1,10 @@
 ;;; we need org mode
 
 (require 'org)
-
-
+(setq org-startup-indented t)
+(setq org-hide-leading-stars t)
+(setq org-odd-level-only t)
+(setq org-indent-mode t)
 ;; Default for org, txt and org_archive files
 (add-to-list 'auto-mode-alist '("\\.\\(org\\|org_archive\\|txt\\)$" . org-mode))
 

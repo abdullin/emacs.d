@@ -22,8 +22,8 @@
 
 ;; use Monaco font in Mac OS X
 (when (eq system-type 'darwin)
-  (set-default-font "Monaco-16")
-(set-fontset-font t 'cyrillic "Droid Sans Mono") 
+  (set-default-font "MonacoB-16")
+(set-fontset-font t 'cyrillic "Droid Sans Mono")
   )
 
 ;; my custom theme of choice
@@ -50,7 +50,7 @@
 (global-linum-mode 1)
 
 (defconst linum-mode-excludes '(
-                                doc-view-mode 
+                                doc-view-mode
                                 compilation-mode
                                 term-mode
                                 dired-mode
