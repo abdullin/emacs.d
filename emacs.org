@@ -132,9 +132,6 @@ I don't think, I use these any longer:
 
 
 #+BEGIN_SRC elisp
-;; various key bindings
-(load "window")
-
 ;; load all modes
 (load "load-modes")
 #+END_SRC

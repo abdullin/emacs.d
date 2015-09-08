@@ -9,8 +9,8 @@
 (defun add-hook-list (callback hooks)
   "Adds callback to each one of the hooks."
   (mapc (lambda (hook)
-      (add-hook hook callback))
-    hooks))
+          (add-hook hook callback))
+        hooks))
 
 ;; load el-get
 (add-to-list 'load-path (expand-file-name "el-get/el-get" emacs-root-dir))
@@ -40,12 +40,19 @@
 ;; disable alarm bell beep
 (setq visible-bell t)
 
-;; various key bindings
-(load "my-chords")
-(load "window")
+;; move to a neighbor window using SHIFT-<arrow-key>
+(windmove-default-keybindings)
+
+;; don't conflict with orgmode
+(add-hook 'org-shiftup-final-hook 'windmove-up)
+(add-hook 'org-shiftleft-final-hook 'windmove-left)
+(add-hook 'org-shiftdown-final-hook 'windmove-down)
+(add-hook 'org-shiftright-final-hook 'windmove-right)
 
 ;; load all modes
 (load "load-modes")
+
+(setq dired-dwim-target t)
 
 (require `evil)
 ;;(key-chord-define evil-insert-state-map "jk" 'evil-normal-state)
@@ -67,7 +74,54 @@
 
 (setq yas-snippet-dirs (ra/emacs-subdirectory "snippets"))
 
-(setq dired-dwim-target t)
+(require `key-chord)
+(key-chord-mode 1)
+
+(key-chord-define-global ";b" 'ibuffer)
+
+
+(defun find-tag-no-prompt ()
+  "Jump to the tag at point without prompting"
+  (interactive)
+  (find-tag (find-tag-default)))
+
+(defun view-tag-other-window (tagname &optional next-p regexp-p)
+  "Same as `find-tag-other-window' but doesn't move the point"
+  (interactive (find-tag-interactive "View tag other window: "))
+  (let ((window (get-buffer-window)))
+    (find-tag-other-window tagname next-p regexp-p)
+    (recenter 0)
+    (select-window window)))
+
+(key-chord-define-global "5t" 'find-tag-default)
+
+(key-chord-define-global "4t" 'view-tag-other-window)
+
+(key-chord-define-global ";d" 'dired-jump)
+
+(key-chord-define-global ";'" 'execute-extended-command) ;; Meta-X
+
+(key-chord-define-global ";l" 'ido-switch-buffer)
+(key-chord-define-global ";." 'ido-find-file) ;; jump to file
+
+(defun kill-this-buffer-if-not-modified ()
+  (interactive)
+  (if (menu-bar-non-minibuffer-window-p)
+      (kill-buffer-if-not-modified (current-buffer))
+    (abort-recursive-edit)))
+(key-chord-define-global ";k"     'kill-this-buffer-if-not-modified)
+
+
+;; SAVE
+(defun save-and-recompile()
+  (interactive)
+  (save-buffer)
+  (recompile)
+  )
+
+(global-set-key (kbd "<f2>") `save-and-recompile)
+(global-set-key (kbd "<f8>") `recompile)
+(global-set-key (kbd "<f9>") `next-error)
 
 ;; mode line settings
 (column-number-mode t)
