@@ -1,0 +1,183 @@
+#+PROPERTY:    tangle ~/.emacs.d/build/init-main.el
+#+PROPERTY:    eval no-export
+#+PROPERTY:    results silent
+#+PROPERTY:    header-args:sh  :tangle no
+
+* Rinat's Emacs Config
+
+This is a literate version of my base emacs config. You can generate
+emacs init script out of it by running =org-babel-tangle=. Note, that
+it has to built along with =emacs-client.org=.
+
+In order to load the file, put into your =~/.emacs= or
+=~/.emacs.d/init.el=:
+
+#+BEGIN_SRC elisp :tangle no
+(load-file "~/.emacs.d/build/init-main.el")
+(server-start)
+#+END_SRC
+
+* General settings
+
+** Home directory
+
+
+Let's define our own constant for the emacs directory and a function
+to get subdir:
+
+#+BEGIN_SRC elisp
+  (defconst ra/emacs-directory (concat (getenv "HOME") "/.emacs.d/"))
+  (defun ra/emacs-subdirectory (d) (expand-file-name d ra/emacs-directory))
+#+END_SRC
+
+
+I don't recall why I still have this setting, but let it be:
+
+#+BEGIN_SRC elisp
+(setq emacs-root-dir user-emacs-directory)
+#+END_SRC
+
+** Setup load paths
+
+I  have two  load  paths, =lisp=  for  v1 logic  and  =build= for  the
+literate version (or v2):
+
+#+BEGIN_SRC elisp
+(add-to-list 'load-path (ra/emacs-subdirectory "lisp"))
+(add-to-list 'load-path (ra/emacs-subdirectory "build"))
+#+END_SRC
+
+
+* Helper functions
+
+Just a few helper functions to lighten up the day
+#+BEGIN_SRC elisp
+
+(defun add-hook-list (callback hooks)
+  "Adds callback to each one of the hooks."
+  (mapc (lambda (hook)
+	  (add-hook hook callback))
+	hooks))
+
+
+#+END_SRC
+* Load Packages
+Load el-get and let it load all packages in a folder
+
+
+#+BEGIN_SRC elisp
+
+;; load el-get
+(add-to-list 'load-path (expand-file-name "el-get/el-get" emacs-root-dir))
+
+(unless (require 'el-get nil 'noerror)
+  (with-current-buffer
+      (url-retrieve-synchronously
+       "https://raw.github.com/dimitri/el-get/master/el-get-install.el")
+    (let (el-get-master-branch)
+      (goto-char (point-max))
+      (eval-print-last-sexp))))
+
+
+;; load all .el files inside `modules-dir`
+(setq modules-dir (expand-file-name "lisp/packages" emacs-root-dir))
+(mapc 'load (directory-files modules-dir 't "^[^#].*el$"))
+
+;; install all missing packages via el-get
+(el-get 'sync (mapcar 'el-get-source-name el-get-sources))
+
+#+END_SRC
+
+* Display settings
+
+
+
+#+BEGIN_SRC elisp
+;; I know what the scratch is for
+(setq initial-scratch-message "")
+
+;; don't show the startup help screen
+(setq inhibit-startup-screen t)
+
+;; disable alarm bell beep
+(setq visible-bell t)
+#+END_SRC
+
+
+* Load the other modules
+
+
+#+BEGIN_SRC elisp
+;; various key bindings
+(load "my-chords")
+(load "window")
+(load "my-evil")
+(load "editor")
+
+;; load all modes
+(load "load-modes")
+
+(server-start)
+#+END_SRC
+* Miscellaneous
+
+** Unknown origins
+
+This was copied from somewhere, not sure if I still need these:
+
+#+BEGIN_SRC elisp
+;; mode line settings
+(column-number-mode t)
+(line-number-mode t)
+(size-indication-mode t)
+
+;; blinking cursor
+(blink-cursor-mode t)
+
+#+END_SRC
+
+** Configure the Graphical Settings
+
+   If we are running in a windowed environment where we can set up
+   fonts and whatnot, call the 'mac' stuff... which will still work
+   for Linux too.
+
+   #+BEGIN_SRC elisp
+     (if (window-system)
+         (require 'init-client)
+       (require 'init-server))
+   #+END_SRC
+** Line numbers 
+
+#+BEGIN_SRC elisp
+
+(global-linum-mode 1)
+
+(defconst linum-mode-excludes '(
+                                doc-view-mode
+                                compilation-mode
+                                term-mode
+                                dired-mode
+                                ibuffer-mode
+                                eshell-mode
+                                )
+  "List of major modes preventing linum to be enabled in the buffer.")
+
+(defadvice linum-mode (around linum-mode-selective activate)
+  "Avoids enabling of linum-mode in the buffer having major mode set to one
+of listed in `linum-mode-excludes'."
+  (unless (member major-mode linum-mode-excludes)
+    ad-do-it))
+
+#+END_SRC
+
+** Loading the configuration
+
+To reload with a require:
+
+
+#+BEGIN_SRC elisp
+(provide 'init-main)
+
+#+END_SRC
+
