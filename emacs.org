@@ -103,17 +103,51 @@ Load el-get and let it load all packages in a folder
 (setq visible-bell t)
 #+END_SRC
 
+** Windows
+
+#+BEGIN_SRC elisp
+  ;; move to a neighbor window using SHIFT-<arrow-key>
+  (windmove-default-keybindings)
+
+  ;; don't conflict with orgmode
+  (add-hook 'org-shiftup-final-hook 'windmove-up)
+  (add-hook 'org-shiftleft-final-hook 'windmove-left)
+  (add-hook 'org-shiftdown-final-hook 'windmove-down)
+  (add-hook 'org-shiftright-final-hook 'windmove-right)
+
+#+END_SRC
+
+
+I don't think, I use these any longer:
+
+#+BEGIN_SRC elisp :tangle no
+  ;; enlarge and shrink windows
+  (global-set-key (kbd "C-c <up>")    'shrink-window)
+  (global-set-key (kbd "C-c <right>") 'enlarge-window-horizontally)
+  (global-set-key (kbd "C-c <down>")  'enlarge-window)
+  (global-set-key (kbd "C-c <left>")  'shrink-window-horizontally)
+#+END_SRC
 
 * Load the other modules
 
 
 #+BEGIN_SRC elisp
 ;; various key bindings
-(load "my-chords")
 (load "window")
 
 ;; load all modes
 (load "load-modes")
+#+END_SRC
+
+
+* Navigation
+
+** Dired
+
+Dired can work like a total commander and guess targets when two
+windows are open:
+#+BEGIN_SRC elisp
+(setq dired-dwim-target t)
 #+END_SRC
 
 * Editing experience
@@ -206,18 +240,65 @@ snippets.
 (setq yas-snippet-dirs (ra/emacs-subdirectory "snippets"))
 #+END_SRC
 
+** Key chords
 
-* Navigation
+Let's enable key-chord:
 
-** Dired
-
-
-Dired can work like a total commander and guess targets when two
-windows are open:
 #+BEGIN_SRC elisp
-(setq dired-dwim-target t)
+(require `key-chord)
+(key-chord-mode 1)
 #+END_SRC
 
+My current key bindings
+
+#+BEGIN_SRC elisp
+  (key-chord-define-global ";b" 'ibuffer)
+
+
+  (defun find-tag-no-prompt ()
+    "Jump to the tag at point without prompting"
+    (interactive)
+    (find-tag (find-tag-default)))
+
+  (defun view-tag-other-window (tagname &optional next-p regexp-p)
+    "Same as `find-tag-other-window' but doesn't move the point"
+    (interactive (find-tag-interactive "View tag other window: "))
+    (let ((window (get-buffer-window)))
+      (find-tag-other-window tagname next-p regexp-p)
+      (recenter 0)
+      (select-window window)))
+
+  (key-chord-define-global "5t" 'find-tag-default)
+
+  (key-chord-define-global "4t" 'view-tag-other-window)
+
+  (key-chord-define-global ";d" 'dired-jump)
+
+  (key-chord-define-global ";'" 'execute-extended-command) ;; Meta-X
+
+  (key-chord-define-global ";l" 'ido-switch-buffer)
+  (key-chord-define-global ";." 'ido-find-file) ;; jump to file
+
+  (defun kill-this-buffer-if-not-modified ()
+    (interactive)
+    (if (menu-bar-non-minibuffer-window-p)
+        (kill-buffer-if-not-modified (current-buffer))
+      (abort-recursive-edit)))
+  (key-chord-define-global ";k"     'kill-this-buffer-if-not-modified)
+
+
+  ;; SAVE
+  (defun save-and-recompile()
+    (interactive)
+    (save-buffer)
+    (recompile)
+    )
+
+  (global-set-key (kbd "<f2>") `save-and-recompile)
+  (global-set-key (kbd "<f8>") `recompile)
+  (global-set-key (kbd "<f9>") `next-error)
+
+#+END_SRC
 
 * Miscellaneous
 
@@ -233,6 +314,31 @@ This was copied from somewhere, not sure if I still need these:
 
 ;; set your desired tab width
 (setq-default indicate-empty-lines t)
+#+END_SRC
+
+Another unknown bit:
+
+#+BEGIN_SRC elisp :tangle no
+
+;; S-up does not work properly in terminals
+;; http://lists.gnu.org/archive/html/help-gnu-emacs/2011-05/msg00211.html
+ (if (equal "xterm" (tty-type))
+      (define-key input-decode-map "\e[1;2A" [S-up]))
+
+(defadvice terminal-init-xterm (after select-shift-up activate)
+  (define-key input-decode-map "\e[1;2A" [S-up]))
+
+#+END_SRC
+
+and one more:
+
+#+BEGIN_SRC elisp :tangle no
+
+  ;; This won't affect the size of the emacs window, but the term process will always think the window is 80 columns wide
+  (defun term-window-width () 80)
+  ;;  turn on line truncation
+  (add-hook 'term-mode-hook
+        (lambda () (setq truncate-lines t)))
 #+END_SRC
 
 ** Tabs vs Spaces
