@@ -112,13 +112,85 @@ Load el-get and let it load all packages in a folder
 (load "my-chords")
 (load "window")
 (load "my-evil")
-(load "editor")
 
 ;; load all modes
 (load "load-modes")
-
-(server-start)
 #+END_SRC
+
+* Editing experience
+
+** Parentheses
+
+Highlight matching parens:
+#+BEGIN_SRC elisp
+(show-paren-mode t)
+#+END_SRC
+
+** Cursor
+
+
+Make the cursor blink:
+
+#+BEGIN_SRC elisp
+;; blinking cursor
+(blink-cursor-mode t)
+#+END_SRC
+
+** IDO (Interactively DO stuff)
+
+
+I love IDO:
+#+BEGIN_SRC elisp
+(ido-mode t)
+#+END_SRC
+
+** Auto-load changes
+
+When file wasn't modified, reload changes automatically:
+
+#+BEGIN_SRC elisp
+(global-auto-revert-mode t)
+#+END_SRC
+
+** UTF8 Encoding
+
+C'mon, it is 21st century already. Set environment coding system to UTF8:
+
+#+BEGIN_SRC elisp
+(set-language-environment "UTF-8")
+#+END_SRC
+
+** Yasnippet
+
+Yasnipped lets you define snippets of code for different languages:
+
+#+BEGIN_SRC elisp
+(require 'yasnippet)
+(yas-global-mode)
+#+END_SRC
+
+
+Inside the snippets directory should be directories for each mode,
+e.g. clojure-mode and org-mode. This connects the mode with the
+snippets.
+
+#+BEGIN_SRC elisp
+(setq yas-snippet-dirs (ra/emacs-subdirectory "snippets"))
+#+END_SRC
+
+
+* Navigation
+
+** Dired
+
+
+Dired can work like a total commander and guess targets when two
+windows are open:
+#+BEGIN_SRC elisp
+(setq dired-dwim-target t)
+#+END_SRC
+
+
 * Miscellaneous
 
 ** Unknown origins
@@ -131,8 +203,36 @@ This was copied from somewhere, not sure if I still need these:
 (line-number-mode t)
 (size-indication-mode t)
 
-;; blinking cursor
-(blink-cursor-mode t)
+;; set your desired tab width
+(setq-default indicate-empty-lines t)
+#+END_SRC
+
+** Tabs vs Spaces
+
+Let's stick with tabs for now:
+
+
+#+BEGIN_SRC elisp
+
+;; display tab chars as 4
+(setq-default tab-width 4)
+(setq-default indent-tabs-mode nil)
+
+#+END_SRC
+
+** Enable Y/N answers
+
+=y= is shorter than =yes=:
+#+BEGIN_SRC elisp
+(fset 'yes-or-no-p 'y-or-n-p)
+#+END_SRC
+
+** Disable auto-save
+
+Auto-save never really worked for me:
+#+BEGIN_SRC elisp
+(setq make-backup-files nil)
+(setq auto-save-default nil)
 
 #+END_SRC
 
@@ -168,6 +268,14 @@ This was copied from somewhere, not sure if I still need these:
 of listed in `linum-mode-excludes'."
   (unless (member major-mode linum-mode-excludes)
     ad-do-it))
+
+#+END_SRC
+
+And highlight current line:
+#+BEGIN_SRC elisp
+
+;; highlight current line
+(add-hook 'after-change-major-mode-hook 'hl-line-mode)
 
 #+END_SRC
 
