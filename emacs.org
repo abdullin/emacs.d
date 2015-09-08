@@ -111,13 +111,41 @@ Load el-get and let it load all packages in a folder
 ;; various key bindings
 (load "my-chords")
 (load "window")
-(load "my-evil")
 
 ;; load all modes
 (load "load-modes")
 #+END_SRC
 
 * Editing experience
+
+** VIM emulation
+
+Evil emulates vim inside emacs. It works pretty well out of the box:
+
+#+BEGIN_SRC elisp
+(require `evil)
+;;(key-chord-define evil-insert-state-map "jk" 'evil-normal-state)
+(evil-mode 1)
+
+#+END_SRC
+
+Something that I can't get used to is to disable cursor keys:
+
+#+BEGIN_SRC elisp :tangle no
+
+;;Motion state map disables the cursor keys in normal, operator, visual
+;; as well as the special motion states.
+(define-key evil-insert-state-map [left] 'undefined)
+(define-key evil-insert-state-map [right] 'undefined)
+(define-key evil-insert-state-map [up] 'undefined)
+(define-key evil-insert-state-map [down] 'undefined)
+
+(define-key evil-motion-state-map [left] 'undefined)
+(define-key evil-motion-state-map [right] 'undefined)
+(define-key evil-motion-state-map [up] 'undefined)
+(define-key evil-motion-state-map [down] 'undefined)
+
+#+END_SRC
 
 ** Parentheses
 

@@ -9,8 +9,8 @@
 (defun add-hook-list (callback hooks)
   "Adds callback to each one of the hooks."
   (mapc (lambda (hook)
-          (add-hook hook callback))
-        hooks))
+      (add-hook hook callback))
+    hooks))
 
 ;; load el-get
 (add-to-list 'load-path (expand-file-name "el-get/el-get" emacs-root-dir))
@@ -43,10 +43,13 @@
 ;; various key bindings
 (load "my-chords")
 (load "window")
-(load "my-evil")
 
 ;; load all modes
 (load "load-modes")
+
+(require `evil)
+;;(key-chord-define evil-insert-state-map "jk" 'evil-normal-state)
+(evil-mode 1)
 
 (show-paren-mode t)
 
