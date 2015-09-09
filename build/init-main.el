@@ -180,6 +180,12 @@ of listed in `linum-mode-excludes'."
 
 (require 'init-js)
 
+(setq lisp-mode-hooks '(emacs-lisp-mode-hook
+            lisp-mode-hook
+            lisp-interaction-mode-hook
+            scheme-mode-hook
+            clojure-mode-hook))
+
 (require 'init-web)
 
 (require 'init-org)

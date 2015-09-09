@@ -621,6 +621,28 @@ And load from the main file:
 (require 'init-go)
 #+END_SRC
 
+** Lisp
+
+Grab the packages and wire them into lisp mode:
+
+#+BEGIN_SRC elisp :tangle build/install-packages.el
+  (el-get-bundle paredit
+    (add-hook-list 'paredit-mode lisp-mode-hooks)
+    )
+  (el-get-bundle rainbow-delimeters
+    (add-hook-list 'rainbow-delimiters-mode lisp-mode-hooks)
+    )
+#+END_SRC
+
+
+#+BEGIN_SRC elisp
+  (setq lisp-mode-hooks '(emacs-lisp-mode-hook
+              lisp-mode-hook
+              lisp-interaction-mode-hook
+              scheme-mode-hook
+              clojure-mode-hook))
+#+END_SRC
+
 
 ** Web editing
 
