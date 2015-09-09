@@ -74,8 +74,6 @@ Just a few helper functions to lighten up the day
 	  (add-hook hook callback))
 	hooks))
 
-
-
 (defun ra/kill-this-buffer-if-not-modified ()
   (interactive)
   (if (menu-bar-non-minibuffer-window-p)
@@ -164,18 +162,6 @@ Now we can init packages in the main file:
 (setq visible-bell t)
 #+END_SRC
 
-** Load GUI settings
-
-   If we are running in a windowed environment where we can set up
-   fonts and whatnot, init mac stuff... which will still work for
-   Linux too. Script is located in a seprate [[file:emacs-client.org][initialization file]].
-
-   #+BEGIN_SRC elisp
-     (when (window-system)
-       (require 'init-client)
-       )
-   #+END_SRC
-
 ** Windows
 
 #+BEGIN_SRC elisp
@@ -208,6 +194,65 @@ And options to move buffers around:
   (global-set-key (kbd "<C-S-left>")   'buf-move-left)
   (global-set-key (kbd "<C-S-right>")  'buf-move-right)
 
+#+END_SRC
+
+* GUI Client
+
+Emacs can have a nice GUI window that lets you have fine-grained
+control over fonts and sizes. Let's put that stuff into a separate
+config file and load when we have us a window system.
+
+   #+BEGIN_SRC elisp
+     (when (window-system)
+       (require 'init-client)
+       )
+   #+END_SRC
+
+Header for the client-specific file would say:
+
+#+BEGIN_SRC elisp :tangle build/init-client.el
+(provide 'init-client)
+#+END_SRC
+
+** Fonts
+
+
+I like Monaco on OSX:
+
+#+BEGIN_SRC elisp :tangle build/init-client.el
+  (when (eq system-type 'darwin)
+    (set-default-font "MonacoB-16")
+    (set-fontset-font t 'cyrillic "Droid Sans Mono")
+    )
+#+END_SRC
+
+** Color theme
+
+Let's load the package:
+
+#+BEGIN_SRC elisp :tangle build/init-packages.el
+(el-get-bundle solarized-theme)
+
+#+END_SRC
+
+Once we have the package, loading theme is as easy as:
+
+#+BEGIN_SRC elisp :tangle build/init-client.el
+(load-theme 'solarized-light t)
+;; (load-theme 'solarized-dark t)
+#+END_SRC
+
+** Remove clutter
+
+
+Some things just waste space, let's kill them:
+
+#+BEGIN_SRC elisp :tangle build/init-client.el
+(tool-bar-mode -1)
+(tooltip-mode -1)
+(scroll-bar-mode -1)
+(set-fringe-style -1)
+(menu-bar-mode -1)
 #+END_SRC
 
 * Navigation
@@ -506,6 +551,23 @@ And highlight current line:
 
 #+END_SRC
 
+** Inherit shell environment
+
+Process environment of emacs might benefit from inheriting shell
+environment variables (e.g. for running external tools):
+
+#+BEGIN_SRC elisp
+(defun ra/load-unix-shell-env ()
+  "Adds the shell environment variables to Emacs' process environment."
+  (interactive)
+  (let* ((env (shell-command-to-string "$SHELL -i -c 'printenv'"))
+	 (entries (split-string env "\n" t)))
+    (mapc (lambda (entry)
+	    (add-to-list 'process-environment entry))
+	  entries)))
+
+(ra/load-unix-shell-env)
+#+END_SRC
 * Languages
 ** Erlang
 
@@ -654,7 +716,7 @@ And load from the main file:
 
 Grab the packages and wire them into lisp mode:
 
-#+BEGIN_SRC elisp :tangle build/install-packages.el
+#+BEGIN_SRC elisp :tangle build/init-packages.el
   (el-get-bundle paredit
     (add-hook-list 'paredit-mode lisp-mode-hooks)
     )

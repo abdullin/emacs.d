@@ -35,8 +35,17 @@
 
 (el-get-bundle web-mode)
 
+(el-get-bundle solarized-theme)
+
 (el-get-bundle markdown-mode)
 
 (el-get-bundle linum-relative
   (setq linum-relative-current-symbol "")
+  )
+
+(el-get-bundle paredit
+  (add-hook-list 'paredit-mode lisp-mode-hooks)
+  )
+(el-get-bundle rainbow-delimeters
+  (add-hook-list 'rainbow-delimiters-mode lisp-mode-hooks)
   )

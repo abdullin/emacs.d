@@ -20,8 +20,6 @@
       (add-hook hook callback))
     hooks))
 
-
-
 (defun ra/kill-this-buffer-if-not-modified ()
   (interactive)
   (if (menu-bar-non-minibuffer-window-p)
@@ -46,10 +44,6 @@
 ;; disable alarm bell beep
 (setq visible-bell t)
 
-(when (window-system)
-  (require 'init-client)
-  )
-
 ;; move to a neighbor window using SHIFT-<arrow-key>
 (windmove-default-keybindings)
 
@@ -63,6 +57,10 @@
 (global-set-key (kbd "<C-S-down>")   'buf-move-down)
 (global-set-key (kbd "<C-S-left>")   'buf-move-left)
 (global-set-key (kbd "<C-S-right>")  'buf-move-right)
+
+(when (window-system)
+  (require 'init-client)
+  )
 
 (setq dired-dwim-target t)
 
@@ -183,6 +181,17 @@ of listed in `linum-mode-excludes'."
 
 ;; highlight current line
 (add-hook 'after-change-major-mode-hook 'hl-line-mode)
+
+(defun ra/load-unix-shell-env ()
+  "Adds the shell environment variables to Emacs' process environment."
+  (interactive)
+  (let* ((env (shell-command-to-string "$SHELL -i -c 'printenv'"))
+     (entries (split-string env "\n" t)))
+    (mapc (lambda (entry)
+        (add-to-list 'process-environment entry))
+      entries)))
+
+(ra/load-unix-shell-env)
 
 (require 'init-erlang)
 
