@@ -23,6 +23,8 @@
 (el-get-bundle flycheck)
 (el-get-bundle yasnippet)
 (el-get-bundle org)
+(el-get-bundle key-chord)
+(el-get-bundle undo-tree)
 
 (el-get-bundle markdown-mode)
 

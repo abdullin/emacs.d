@@ -75,6 +75,18 @@ Just a few helper functions to lighten up the day
 	hooks))
 
 
+
+(defun ra/kill-this-buffer-if-not-modified ()
+  (interactive)
+  (if (menu-bar-non-minibuffer-window-p)
+      (kill-buffer-if-not-modified (current-buffer))
+    (abort-recursive-edit)))
+
+(defun ra/save-and-recompile()
+  (interactive)
+  (save-buffer)
+  (recompile)
+  )
 #+END_SRC
 
 * Packages
@@ -118,6 +130,8 @@ We can describe our common dependencies like this:
 (el-get-bundle flycheck)
 (el-get-bundle yasnippet)
 (el-get-bundle org)
+(el-get-bundle key-chord)
+(el-get-bundle undo-tree)
 #+END_SRC
 ** Init packages
 Now we can init packages in the main file:
@@ -187,7 +201,6 @@ windows are open:
 #+END_SRC
 
 * Editing experience
-
 ** Markdown
 Load the package with el-get:
 
@@ -201,7 +214,6 @@ And bind it do the files:
                '("\\.\\(md\\|mdown\\|markdown\\)\\'" . markdown-mode)
                )
 #+END_SRC
-
 
 ** VIM emulation
 
@@ -310,7 +322,7 @@ snippets.
 Let's enable key-chord:
 
 #+BEGIN_SRC elisp
-(require `key-chord)
+(require 'key-chord)
 (key-chord-mode 1)
 #+END_SRC
 
@@ -318,7 +330,6 @@ My current key bindings
 
 #+BEGIN_SRC elisp
   (key-chord-define-global ";b" 'ibuffer)
-
 
   (defun find-tag-no-prompt ()
     "Jump to the tag at point without prompting"
@@ -344,22 +355,14 @@ My current key bindings
   (key-chord-define-global ";l" 'ido-switch-buffer)
   (key-chord-define-global ";." 'ido-find-file) ;; jump to file
 
-  (defun kill-this-buffer-if-not-modified ()
-    (interactive)
-    (if (menu-bar-non-minibuffer-window-p)
-        (kill-buffer-if-not-modified (current-buffer))
-      (abort-recursive-edit)))
-  (key-chord-define-global ";k"     'kill-this-buffer-if-not-modified)
+  (key-chord-define-global "zz" 'undo-tree-visualize) ;; open undo-tree
+
+  (key-chord-define-global ";k"     'ra/kill-this-buffer-if-not-modified)
 
 
   ;; SAVE
-  (defun save-and-recompile()
-    (interactive)
-    (save-buffer)
-    (recompile)
-    )
 
-  (global-set-key (kbd "<f2>") `save-and-recompile)
+  (global-set-key (kbd "<f2>") `ra/save-and-recompile)
   (global-set-key (kbd "<f8>") `recompile)
   (global-set-key (kbd "<f9>") `next-error)
 

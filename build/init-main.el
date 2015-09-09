@@ -20,6 +20,20 @@
       (add-hook hook callback))
     hooks))
 
+
+
+(defun ra/kill-this-buffer-if-not-modified ()
+  (interactive)
+  (if (menu-bar-non-minibuffer-window-p)
+      (kill-buffer-if-not-modified (current-buffer))
+    (abort-recursive-edit)))
+
+(defun ra/save-and-recompile()
+  (interactive)
+  (save-buffer)
+  (recompile)
+  )
+
 (require 'init-packages)
 (ra/install-missing-packages)
 
@@ -84,11 +98,10 @@
 
 (setq yas-snippet-dirs (ra/emacs-subdirectory "snippets"))
 
-(require `key-chord)
+(require 'key-chord)
 (key-chord-mode 1)
 
 (key-chord-define-global ";b" 'ibuffer)
-
 
 (defun find-tag-no-prompt ()
   "Jump to the tag at point without prompting"
@@ -114,22 +127,14 @@
 (key-chord-define-global ";l" 'ido-switch-buffer)
 (key-chord-define-global ";." 'ido-find-file) ;; jump to file
 
-(defun kill-this-buffer-if-not-modified ()
-  (interactive)
-  (if (menu-bar-non-minibuffer-window-p)
-      (kill-buffer-if-not-modified (current-buffer))
-    (abort-recursive-edit)))
-(key-chord-define-global ";k"     'kill-this-buffer-if-not-modified)
+(key-chord-define-global "zz" 'undo-tree-visualize) ;; open undo-tree
+
+(key-chord-define-global ";k"     'ra/kill-this-buffer-if-not-modified)
 
 
 ;; SAVE
-(defun save-and-recompile()
-  (interactive)
-  (save-buffer)
-  (recompile)
-  )
 
-(global-set-key (kbd "<f2>") `save-and-recompile)
+(global-set-key (kbd "<f2>") `ra/save-and-recompile)
 (global-set-key (kbd "<f8>") `recompile)
 (global-set-key (kbd "<f9>") `next-error)
 
