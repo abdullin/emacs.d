@@ -20,32 +20,8 @@
       (add-hook hook callback))
     hooks))
 
-(add-to-list 'load-path (expand-file-name "el-get/el-get" emacs-root-dir))
-
-(unless (require 'el-get nil 'noerror)
-  (with-current-buffer
-      (url-retrieve-synchronously
-       "https://raw.github.com/dimitri/el-get/master/el-get-install.el")
-    (let (el-get-master-branch)
-      (goto-char (point-max))
-      (eval-print-last-sexp))))
-
-(defun ra/require-el-get (package)
-  "Add a package to el-get-sources"
-  (add-to-list 'el-get-sources package))
-
-(ra/require-el-get 'evil)
-(ra/require-el-get 'dired-plus)
-
-(setq linum-relative-current-symbol "")
-(ra/require-el-get 'linum-relative)
-
-;; load all .el files inside `modules-dir`
-(setq modules-dir (expand-file-name "packages" emacs-root-dir))
-(mapc 'load (directory-files modules-dir 't "^[^#].*el$"))
-
-;; install all missing packages via el-get
-(el-get 'sync (mapcar 'el-get-source-name el-get-sources))
+(require 'init-packages)
+(ra/install-missing-packages)
 
 ;; I know what the scratch is for
 (setq initial-scratch-message "")
@@ -70,6 +46,10 @@
 (add-hook 'org-shiftright-final-hook 'windmove-right)
 
 (setq dired-dwim-target t)
+
+(add-to-list 'auto-mode-alist
+             '("\\.\\(md\\|mdown\\|markdown\\)\\'" . markdown-mode)
+             )
 
 (require `evil)
 ;;(key-chord-define evil-insert-state-map "jk" 'evil-normal-state)

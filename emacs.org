@@ -80,60 +80,53 @@ Just a few helper functions to lighten up the day
 #+END_SRC
 
 * Packages
+** Install Package manager
 
-** Install el-get
 Let's install el-get, if it isn't installed:
 
-#+BEGIN_SRC elisp
-(add-to-list 'load-path (expand-file-name "el-get/el-get" emacs-root-dir))
+#+BEGIN_SRC elisp :tangle build/init-packages.el
+  (provide 'init-packages)
 
-(unless (require 'el-get nil 'noerror)
-  (with-current-buffer
-      (url-retrieve-synchronously
-       "https://raw.github.com/dimitri/el-get/master/el-get-install.el")
-    (let (el-get-master-branch)
-      (goto-char (point-max))
-      (eval-print-last-sexp))))
+  (add-to-list 'load-path (expand-file-name "el-get/el-get" emacs-root-dir))
+
+  (unless (require 'el-get nil 'noerror)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.github.com/dimitri/el-get/master/el-get-install.el")
+      (let (el-get-master-branch)
+        (goto-char (point-max))
+        (eval-print-last-sexp))))
+
+  (defun ra/install-missing-packages()
+    (el-get 'sync (mapcar 'el-get-source-name el-get-sources))
+  )
 #+END_SRC
+** Load recipes from small files
 
-Now, a small helper to record a package:
+We can also have dependencies spread across tiny files (legacy stuff)
+and load them like this:
 
-#+BEGIN_SRC elisp
-(defun ra/require-el-get (package)
-  "Add a package to el-get-sources"
-  (add-to-list 'el-get-sources package))
-
-#+END_SRC
-
- 
-Now, let's load some stuff:
-
-#+BEGIN_SRC elisp
-(ra/require-el-get 'evil)
-(ra/require-el-get 'dired-plus)
-#+END_SRC
-
-** Linum
-
-#+BEGIN_SRC elisp
-  (setq linum-relative-current-symbol "")
-  (ra/require-el-get 'linum-relative)
-#+END_SRC
-
-** Load file modules
-
-
-Then we can install modules:
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :tangle build/init-packages.el
 ;; load all .el files inside `modules-dir`
 (setq modules-dir (expand-file-name "packages" emacs-root-dir))
 (mapc 'load (directory-files modules-dir 't "^[^#].*el$"))
-
-;; install all missing packages via el-get
-(el-get 'sync (mapcar 'el-get-source-name el-get-sources))
-
 #+END_SRC
+** Describe dependencies explicitly
+We can describe our common dependencies like this:
 
+#+BEGIN_SRC elisp :tangle build/init-packages.el
+(el-get-bundle evil)
+(el-get-bundle dired-plus)
+(el-get-bundle flycheck)
+(el-get-bundle yasnippet)
+#+END_SRC
+** Init packages
+Now we can init packages in the main file:
+
+#+BEGIN_SRC elisp
+(require 'init-packages)
+(ra/install-missing-packages)
+#+END_SRC
 
 
 * Display settings
@@ -197,6 +190,21 @@ windows are open:
 #+END_SRC
 
 * Editing experience
+
+** Markdown
+Load the package with el-get:
+
+#+BEGIN_SRC elisp :tangle build/init-packages.el
+(el-get-bundle markdown-mode)
+#+END_SRC
+
+And bind it do the files:
+#+BEGIN_SRC elisp
+  (add-to-list 'auto-mode-alist
+               '("\\.\\(md\\|mdown\\|markdown\\)\\'" . markdown-mode)
+               )
+#+END_SRC
+
 
 ** VIM emulation
 
@@ -430,6 +438,14 @@ Auto-save never really worked for me:
 #+END_SRC
 
 ** Line numbers 
+
+This is a very nice way to highlight jumps for vim.
+
+#+BEGIN_SRC elisp :tangle build/init-packages.el
+  (el-get-bundle linum-relative
+    (setq linum-relative-current-symbol "")
+    )
+#+END_SRC
 
 #+BEGIN_SRC elisp
 
