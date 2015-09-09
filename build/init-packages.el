@@ -18,13 +18,22 @@
 (setq modules-dir (expand-file-name "packages" emacs-root-dir))
 (mapc 'load (directory-files modules-dir 't "^[^#].*el$"))
 
+;; VIM emulation
 (el-get-bundle evil)
 (el-get-bundle dired-plus)
 (el-get-bundle flycheck)
 (el-get-bundle yasnippet)
+;; latest version of org-mode
 (el-get-bundle org)
 (el-get-bundle key-chord)
-(el-get-bundle undo-tree)
+;; undo tree git-style
+(el-get-bundle undo-tree) 
+;; Swap buffers without typing C-x b on each window
+(el-get-bundle buffer-move)  
+;; smart region expansion
+(el-get-bundle expand-region)
+
+(el-get-bundle web-mode)
 
 (el-get-bundle markdown-mode)
 

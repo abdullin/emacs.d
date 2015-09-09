@@ -59,6 +59,11 @@
 (add-hook 'org-shiftdown-final-hook 'windmove-down)
 (add-hook 'org-shiftright-final-hook 'windmove-right)
 
+(global-set-key (kbd "<C-S-up>")     'buf-move-up)
+(global-set-key (kbd "<C-S-down>")   'buf-move-down)
+(global-set-key (kbd "<C-S-left>")   'buf-move-left)
+(global-set-key (kbd "<C-S-right>")  'buf-move-right)
+
 (setq dired-dwim-target t)
 
 (add-to-list 'auto-mode-alist
@@ -137,6 +142,9 @@
 (global-set-key (kbd "<f2>") `ra/save-and-recompile)
 (global-set-key (kbd "<f8>") `recompile)
 (global-set-key (kbd "<f9>") `next-error)
+
+;(key-chord-define-global "e2" 'er/contract-region)
+(key-chord-define-global "4r" 'er/expand-region)
 
 ;; mode line settings
 (column-number-mode t)

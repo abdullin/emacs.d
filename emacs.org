@@ -125,13 +125,23 @@ and load them like this:
 We can describe our common dependencies like this:
 
 #+BEGIN_SRC elisp :tangle build/init-packages.el
+;; VIM emulation
 (el-get-bundle evil)
 (el-get-bundle dired-plus)
 (el-get-bundle flycheck)
 (el-get-bundle yasnippet)
+;; latest version of org-mode
 (el-get-bundle org)
 (el-get-bundle key-chord)
-(el-get-bundle undo-tree)
+;; undo tree git-style
+(el-get-bundle undo-tree) 
+;; Swap buffers without typing C-x b on each window
+(el-get-bundle buffer-move)  
+;; smart region expansion
+(el-get-bundle expand-region)
+
+(el-get-bundle web-mode)
+
 #+END_SRC
 ** Init packages
 Now we can init packages in the main file:
@@ -188,6 +198,16 @@ I don't think, I use these any longer:
   (global-set-key (kbd "C-c <right>") 'enlarge-window-horizontally)
   (global-set-key (kbd "C-c <down>")  'enlarge-window)
   (global-set-key (kbd "C-c <left>")  'shrink-window-horizontally)
+#+END_SRC
+
+And options to move buffers around:
+
+#+BEGIN_SRC elisp
+  (global-set-key (kbd "<C-S-up>")     'buf-move-up)
+  (global-set-key (kbd "<C-S-down>")   'buf-move-down)
+  (global-set-key (kbd "<C-S-left>")   'buf-move-left)
+  (global-set-key (kbd "<C-S-right>")  'buf-move-right)
+
 #+END_SRC
 
 * Navigation
@@ -366,6 +386,15 @@ My current key bindings
   (global-set-key (kbd "<f8>") `recompile)
   (global-set-key (kbd "<f9>") `next-error)
 
+#+END_SRC
+
+
+
+
+#+BEGIN_SRC elisp
+
+;(key-chord-define-global "e2" 'er/contract-region)
+(key-chord-define-global "4r" 'er/expand-region)
 #+END_SRC
 
 * Miscellaneous
