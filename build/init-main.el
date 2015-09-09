@@ -3,14 +3,22 @@
 
 (setq emacs-root-dir user-emacs-directory)
 
+(setq ra/emacs-machine-init
+      (expand-file-name (concat system-name ".el") ra/emacs-directory)
+      )
+
+;; (setq custom-file (expand-file-name "init-local.el" ra/emacs-directory))
+(when (file-exists-p ra/emacs-machine-init)
+  (load ra/emacs-machine-init))
+
 (add-to-list 'load-path (ra/emacs-subdirectory "lisp"))
 (add-to-list 'load-path (ra/emacs-subdirectory "build"))
 
 (defun add-hook-list (callback hooks)
   "Adds callback to each one of the hooks."
   (mapc (lambda (hook)
-          (add-hook hook callback))
-        hooks))
+      (add-hook hook callback))
+    hooks))
 
 ;; load el-get
 (add-to-list 'load-path (expand-file-name "el-get/el-get" emacs-root-dir))
@@ -164,5 +172,7 @@ of listed in `linum-mode-excludes'."
 
 ;; highlight current line
 (add-hook 'after-change-major-mode-hook 'hl-line-mode)
+
+(require 'init-erlang)
 
 (provide 'init-main)

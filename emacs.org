@@ -1,13 +1,12 @@
-#+PROPERTY:    tangle ~/.emacs.d/build/init-main.el
+#+PROPERTY:    tangle build/init-main.el
 #+PROPERTY:    eval no-export
 #+PROPERTY:    results silent
 #+PROPERTY:    header-args:sh  :tangle no
 
-* Rinat's Emacs Config
+* Introduction
 
 This is a literate version of my base emacs config. You can generate
-emacs init script out of it by running =org-babel-tangle=. Note, that
-it has to built along with =emacs-client.org=.
+emacs init script out of it by running =org-babel-tangle=.
 
 In order to load the file, put into your =~/.emacs= or
 =~/.emacs.d/init.el=:
@@ -20,7 +19,6 @@ In order to load the file, put into your =~/.emacs= or
 * General settings
 
 ** Home directory
-
 
 Let's define our own constant for the emacs directory and a function
 to get subdir:
@@ -37,6 +35,21 @@ I don't recall why I still have this setting, but let it be:
 (setq emacs-root-dir user-emacs-directory)
 #+END_SRC
 
+** Load system-specific overrides
+
+We might have some local custom stuff around (e.g. brew location of
+erlang), so let's look up that in machine-specific file:
+
+#+BEGIN_SRC elisp
+  (setq ra/emacs-machine-init
+        (expand-file-name (concat system-name ".el") ra/emacs-directory)
+        )
+
+  ;; (setq custom-file (expand-file-name "init-local.el" ra/emacs-directory))
+  (when (file-exists-p ra/emacs-machine-init)
+    (load ra/emacs-machine-init))
+#+END_SRC
+
 ** Setup load paths
 
 I  have two  load  paths, =lisp=  for  v1 logic  and  =build= for  the
@@ -46,7 +59,6 @@ literate version (or v2):
 (add-to-list 'load-path (ra/emacs-subdirectory "lisp"))
 (add-to-list 'load-path (ra/emacs-subdirectory "build"))
 #+END_SRC
-
 
 * Helper functions
 
@@ -90,8 +102,6 @@ Load el-get and let it load all packages in a folder
 
 * Display settings
 
-
-
 #+BEGIN_SRC elisp
 ;; I know what the scratch is for
 (setq initial-scratch-message "")
@@ -117,7 +127,6 @@ Load el-get and let it load all packages in a folder
 
 #+END_SRC
 
-
 I don't think, I use these any longer:
 
 #+BEGIN_SRC elisp :tangle no
@@ -135,6 +144,7 @@ I don't think, I use these any longer:
 ;; load all modes
 (load "load-modes")
 #+END_SRC
+
 
 
 * Navigation
@@ -410,6 +420,54 @@ And highlight current line:
 
 #+END_SRC
 
+* Languages
+
+
+#+BEGIN_SRC elisp
+
+(require 'init-erlang)
+
+#+END_SRC
+
+** Erlang
+
+Default erlang distribution has great setup for emacs. We just need to
+wire it together, provided there was an erlang installation.
+
+
+
+On OSX you could install erlang via:
+
+#+BEGIN_SRC sh :tangle no
+brew install erlang
+#+END_SRC
+
+And then define in machine-local file something like:
+
+#+BEGIN_SRC elisp :tangle no
+(setq ra/erlang-path "/usr/local/Cellar/erlang/17.5/")
+#+END_SRC
+
+Erlang-specific config is:
+
+#+BEGIN_SRC elisp :tangle build/init-erlang.el
+  (when
+      (boundp 'ra/erlang-path)
+  
+    (setq erlang-root-dir (concat ra/erlang-path "/lib/erlang/lib"))
+    (setq erlang-emacs-path (concat ra/erlang-path "/lib/erlang/lib/tools-2.7.2/emacs"))
+    (setq erlang-bin-path (concat ra/erlang-path "/lib/erlang/bin"))
+    (setq load-path (cons erlang-emacs-path load-path))
+    (setq exec-path (cons erlang-bin-path exec-path))
+    (require 'erlang-start)
+   
+    )
+
+  (provide 'init-erlang)
+
+#+END_SRC
+* Footnotes
+
 ** Loading the configuration
 
 To reload with a require:
@@ -419,4 +477,3 @@ To reload with a require:
 (provide 'init-main)
 
 #+END_SRC
-

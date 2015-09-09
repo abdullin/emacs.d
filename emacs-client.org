@@ -3,11 +3,7 @@
 #+PROPERTY:    results silent
 #+PROPERTY:    header-args:sh  :tangle no
 
-
 This file is loaded only with a graphical front-end.
-
-
-
 
 * Inherit shell environment
 
