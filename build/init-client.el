@@ -5,8 +5,10 @@
   (set-fontset-font t 'cyrillic "Droid Sans Mono")
   )
 
-(load-theme 'solarized-light t)
-;; (load-theme 'solarized-dark t)
+(el-get-bundle solarized-theme
+  )
+
+  (load-theme 'solarized-light t)
 
 (tool-bar-mode -1)
 (tooltip-mode -1)

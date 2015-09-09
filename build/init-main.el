@@ -32,8 +32,37 @@
   (recompile)
   )
 
-(require 'init-packages)
-(ra/install-missing-packages)
+(add-to-list 'load-path (expand-file-name "el-get/el-get" emacs-root-dir))
+
+(unless (require 'el-get nil 'noerror)
+  (with-current-buffer
+      (url-retrieve-synchronously
+       "https://raw.github.com/dimitri/el-get/master/el-get-install.el")
+    (let (el-get-master-branch)
+      (goto-char (point-max))
+      (eval-print-last-sexp))))
+
+;; load all .el files inside `modules-dir`
+(setq modules-dir (expand-file-name "packages" emacs-root-dir))
+(mapc 'load (directory-files modules-dir 't "^[^#].*el$"))
+
+;; VIM emulation
+(el-get-bundle evil)
+(el-get-bundle dired-plus)
+(el-get-bundle flycheck)
+(el-get-bundle yasnippet)
+(el-get-bundle company)
+;; latest version of org-mode
+(el-get-bundle org)
+(el-get-bundle key-chord)
+;; undo tree git-style
+(el-get-bundle undo-tree) 
+;; Swap buffers without typing C-x b on each window
+(el-get-bundle buffer-move)  
+;; smart region expansion
+(el-get-bundle expand-region)
+
+(el-get-bundle web-mode)
 
 ;; I know what the scratch is for
 (setq initial-scratch-message "")
@@ -63,6 +92,8 @@
   )
 
 (setq dired-dwim-target t)
+
+(el-get-bundle markdown-mode)
 
 (add-to-list 'auto-mode-alist
              '("\\.\\(md\\|mdown\\|markdown\\)\\'" . markdown-mode)
@@ -161,6 +192,10 @@
 (setq make-backup-files nil)
 (setq auto-save-default nil)
 
+(el-get-bundle linum-relative
+  (setq linum-relative-current-symbol "")
+  )
+
 (global-linum-mode 1)
 
 (defconst linum-mode-excludes '(
@@ -202,6 +237,13 @@ of listed in `linum-mode-excludes'."
             lisp-interaction-mode-hook
             scheme-mode-hook
             clojure-mode-hook))
+
+(el-get-bundle paredit
+  (add-hook-list 'paredit-mode lisp-mode-hooks)
+  )
+(el-get-bundle rainbow-delimiters
+  (add-hook-list 'rainbow-delimiters-mode lisp-mode-hooks)
+  )
 
 (require 'init-web)
 

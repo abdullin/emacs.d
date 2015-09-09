@@ -92,9 +92,7 @@ Just a few helper functions to lighten up the day
 
 Let's install el-get, if it isn't installed:
 
-#+BEGIN_SRC elisp :tangle build/init-packages.el
-  (provide 'init-packages)
-
+#+BEGIN_SRC elisp 
   (add-to-list 'load-path (expand-file-name "el-get/el-get" emacs-root-dir))
 
   (unless (require 'el-get nil 'noerror)
@@ -105,16 +103,13 @@ Let's install el-get, if it isn't installed:
         (goto-char (point-max))
         (eval-print-last-sexp))))
 
-  (defun ra/install-missing-packages()
-    (el-get 'sync (mapcar 'el-get-source-name el-get-sources))
-  )
 #+END_SRC
 ** Load recipes from small files
 
 We can also have dependencies spread across tiny files (legacy stuff)
 and load them like this:
 
-#+BEGIN_SRC elisp :tangle build/init-packages.el
+#+BEGIN_SRC elisp
 ;; load all .el files inside `modules-dir`
 (setq modules-dir (expand-file-name "packages" emacs-root-dir))
 (mapc 'load (directory-files modules-dir 't "^[^#].*el$"))
@@ -122,12 +117,13 @@ and load them like this:
 ** Describe dependencies explicitly
 We can describe our common dependencies like this:
 
-#+BEGIN_SRC elisp :tangle build/init-packages.el
+#+BEGIN_SRC elisp 
 ;; VIM emulation
 (el-get-bundle evil)
 (el-get-bundle dired-plus)
 (el-get-bundle flycheck)
 (el-get-bundle yasnippet)
+(el-get-bundle company)
 ;; latest version of org-mode
 (el-get-bundle org)
 (el-get-bundle key-chord)
@@ -140,13 +136,6 @@ We can describe our common dependencies like this:
 
 (el-get-bundle web-mode)
 
-#+END_SRC
-** Init packages
-Now we can init packages in the main file:
-
-#+BEGIN_SRC elisp
-(require 'init-packages)
-(ra/install-missing-packages)
 #+END_SRC
 
 * Display settings
@@ -216,7 +205,6 @@ Header for the client-specific file would say:
 
 ** Fonts
 
-
 I like Monaco on OSX:
 
 #+BEGIN_SRC elisp :tangle build/init-client.el
@@ -230,17 +218,14 @@ I like Monaco on OSX:
 
 Let's load the package:
 
-#+BEGIN_SRC elisp :tangle build/init-packages.el
-(el-get-bundle solarized-theme)
-
-#+END_SRC
-
-Once we have the package, loading theme is as easy as:
-
 #+BEGIN_SRC elisp :tangle build/init-client.el
-(load-theme 'solarized-light t)
-;; (load-theme 'solarized-dark t)
+  (el-get-bundle solarized-theme
+    )
+
+    (load-theme 'solarized-light t)
+
 #+END_SRC
+
 
 ** Remove clutter
 
@@ -269,7 +254,7 @@ windows are open:
 ** Markdown
 Load the package with el-get:
 
-#+BEGIN_SRC elisp :tangle build/init-packages.el
+#+BEGIN_SRC elisp 
 (el-get-bundle markdown-mode)
 #+END_SRC
 
@@ -515,7 +500,7 @@ Auto-save never really worked for me:
 
 This is a very nice way to highlight jumps for vim.
 
-#+BEGIN_SRC elisp :tangle build/init-packages.el
+#+BEGIN_SRC elisp 
   (el-get-bundle linum-relative
     (setq linum-relative-current-symbol "")
     )
@@ -716,22 +701,20 @@ And load from the main file:
 
 Grab the packages and wire them into lisp mode:
 
-#+BEGIN_SRC elisp :tangle build/init-packages.el
-  (el-get-bundle paredit
-    (add-hook-list 'paredit-mode lisp-mode-hooks)
-    )
-  (el-get-bundle rainbow-delimeters
-    (add-hook-list 'rainbow-delimiters-mode lisp-mode-hooks)
-    )
-#+END_SRC
-
-
 #+BEGIN_SRC elisp
+
   (setq lisp-mode-hooks '(emacs-lisp-mode-hook
               lisp-mode-hook
               lisp-interaction-mode-hook
               scheme-mode-hook
               clojure-mode-hook))
+
+  (el-get-bundle paredit
+    (add-hook-list 'paredit-mode lisp-mode-hooks)
+    )
+  (el-get-bundle rainbow-delimiters
+    (add-hook-list 'rainbow-delimiters-mode lisp-mode-hooks)
+    )
 #+END_SRC
 
 
