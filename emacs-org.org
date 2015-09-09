@@ -1,0 +1,214 @@
+#+PROPERTY:    tangle build/init-org.el
+#+PROPERTY:    eval no-export
+#+PROPERTY:    results silent
+#+PROPERTY:    header-args:sh  :tangle no
+
+
+
+* Overview
+
+This is my emacs setup for the mighty org-mode!
+
+#+BEGIN_SRC elisp
+(require 'org)
+#+END_SRC
+
+* Settings
+
+
+** View preferences
+
+Make org-mode look pretty
+#+BEGIN_SRC elisp
+(setq org-startup-indented t)
+(setq org-hide-leading-stars t)
+(setq org-odd-level-only t)
+(setq org-indent-mode t)
+#+END_SRC
+
+** File aliases
+
+Default for org, txt and archive files
+#+BEGIN_SRC elisp
+  (add-to-list 'auto-mode-alist '("\\.\\(org\\|org_archive\\|txt\\)$" . org-mode))
+#+END_SRC
+
+** Locations
+
+#+BEGIN_SRC elisp
+  (setq org-directory "~/org")
+
+#+END_SRC
+
+** Use IDO
+
+Use IDO for both buffer and file completion and ido-everywhere to t
+#+BEGIN_SRC elisp
+(setq org-completion-use-ido t)
+#+END_SRC
+
+** Navigation
+
+Switch between org buffers:
+
+#+BEGIN_SRC elisp
+(global-set-key "\C-cb" 'org-iswitchb)
+#+END_SRC
+
+* GTD Workflow
+
+** Keywords and states
+
+A list of keywords and their colors, initially taken from [[http://doc.norang.ca/org-mode.html][Bernt Hansen]]:
+
+#+BEGIN_SRC elisp
+  (setq org-todo-keywords
+        (quote ((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
+                (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)" "PHONE" "MEETING"))))
+
+  ;;; color keywords
+  (setq org-todo-keyword-faces
+        (quote (("TODO" :foreground "red" :weight bold)
+                ("NEXT" :foreground "blue" :weight bold)
+                ("DONE" :foreground "forest green" :weight bold)
+                ("WAITING" :foreground "orange" :weight bold)
+                ("HOLD" :foreground "magenta" :weight bold)
+                ("CANCELLED" :foreground "forest green" :weight bold)
+                ("MEETING" :foreground "forest green" :weight bold)
+                ("PHONE" :foreground "forest green" :weight bold))))
+
+#+END_SRC
+
+
+** State Transitions
+
+
+There are two ways to change task state:
+#+BEGIN_SRC elisp
+  ;; Changing a task state is done with =C-C C-t KEY=:
+  (setq org-use-fast-todo-selection t)
+  ;; changing states with S + arrow does not trigger full change
+  (setq org-treat-S-cursor-todo-selection-as-state-change nil)
+#+END_SRC
+
+Triggered state changes
+
+
+#+BEGIN_SRC elisp
+  (setq org-todo-state-tags-triggers
+        (quote (("CANCELLED" ("CANCELLED" . t))
+                ("WAITING" ("WAITING" . t))
+                ("HOLD" ("WAITING") ("HOLD" . t))
+                (done ("WAITING") ("HOLD"))
+                ("TODO" ("WAITING") ("CANCELLED") ("HOLD"))
+                ("NEXT" ("WAITING") ("CANCELLED") ("HOLD"))
+                ("DONE" ("WAITING") ("CANCELLED") ("HOLD")))))
+
+#+END_SRC
+
+
+** Capture mode
+
+Let's use C-c c to start capture mode:
+
+#+BEGIN_SRC elisp
+
+(setq org-default-notes-file "~/org/inbox.org")
+(global-set-key (kbd "C-c c") 'org-capture)
+
+#+END_SRC
+
+And define some capture templates:
+
+#+BEGIN_SRC elisp
+  (setq org-capture-templates
+        (quote (("t" "todo" entry (file "~/org/inbox.org")
+                 "* TODO %?\n%U\n%a\n" :clock-in t :clock-resume t)
+                ("r" "respond" entry (file "~/org/inbox.org")
+                 "* NEXT Respond to %:from on %:subject\nSCHEDULED: %t\n%U\n%a\n" :clock-in t :clock-resume t :immediate-finish t)
+                ("n" "note" entry (file "~/org/inbox.org")
+                 "* %? :NOTE:\n%U\n%a\n" :clock-in t :clock-resume t)
+                ("j" "Journal" entry (file+datetree "~/org/diary.org")
+                 "* %?\n%U\n" :clock-in t :clock-resume t)
+                ("w" "org-protocol" entry (file "~/org/inbox.org")
+                 "* TODO Review %c\n%U\n" :immediate-finish t)
+                ("m" "Meeting" entry (file "~/org/inbox.org")
+                 "* MEETING with %? :MEETING:\n%U" :clock-in t :clock-resume t)
+                ("p" "Phone call" entry (file "~/org/inbox.org")
+                 "* PHONE %? :PHONE:\n%U" :clock-in t :clock-resume t)
+                ("h" "Habit" entry (file "~/org/inbox.org")
+                 "* NEXT %?\n%U\n%a\nSCHEDULED: %(format-time-string \"<%Y-%m-%d %a .+1d/3d>\")\n:PROPERTIES:\n:STYLE: habit\n:REPEAT_TO_STATE: NEXT\n:END:\n"))))
+#+END_SRC
+
+** Agenda
+
+#+BEGIN_SRC elisp
+
+  ;; load agenda from
+  (setq org-agenda-files (quote (
+                                 "~/org"
+                                 ;; "~/dev/go/src/github.com/happypancake/hpc"
+                                 )
+                                ))
+
+
+  (global-set-key (kbd "<f12>") 'org-agenda)
+#+END_SRC
+
+** Refile
+
+Refile allows us to move org entries between org files. Disabled for
+now.
+
+#+BEGIN_SRC elisp :tangle no
+
+; Targets include this file and any file contributing to the agenda - up to 9 levels deep
+(setq org-refile-targets (quote ((nil :maxlevel . 9)
+                                 (org-agenda-files :maxlevel . 9))))
+
+; Use full outline paths for refile targets - we file directly with IDO
+(setq org-refile-use-outline-path t)
+
+; Targets complete directly with IDO
+(setq org-outline-path-complete-in-steps nil)
+
+; Allow refile to create parent tasks with confirmation
+(setq org-refile-allow-creating-parent-nodes (quote confirm))
+; Use the current window for indirect buffer display
+(setq org-indirect-buffer-display 'current-window)
+
+;;;; Refile settings
+; Exclude DONE state tasks from refile targets
+(defun bh/verify-refile-target ()
+  "Exclude todo keywords with a done state from refile targets"
+  (not (member (nth 2 (org-heading-components)) org-done-keywords)))
+
+(setq org-refile-target-verify-function 'bh/verify-refile-target)
+#+END_SRC
+* Literate Programming
+
+** Babel
+Some initial languages that we want babel to support:
+
+
+#+BEGIN_SRC elisp
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '(
+     (sh . t)
+     (python . t)
+     (R . t)
+     (ruby . t)
+     (ditaa . t)
+     (dot . t)
+     (octave . t)
+     (sqlite . t)
+     (perl . t)
+     ))
+#+END_SRC
+
+* Cleanup
+
+#+BEGIN_SRC elisp
+(provide 'init-org)
+#+END_SRC

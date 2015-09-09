@@ -17,7 +17,6 @@ In order to load the file, put into your =~/.emacs= or
 #+END_SRC
 
 * General settings
-
 ** Home directory
 
 Let's define our own constant for the emacs directory and a function
@@ -102,6 +101,7 @@ Load el-get and let it load all packages in a folder
 
 * Display settings
 
+** Hide some things
 #+BEGIN_SRC elisp
 ;; I know what the scratch is for
 (setq initial-scratch-message "")
@@ -112,6 +112,18 @@ Load el-get and let it load all packages in a folder
 ;; disable alarm bell beep
 (setq visible-bell t)
 #+END_SRC
+
+** Load GUI settings
+
+   If we are running in a windowed environment where we can set up
+   fonts and whatnot, init mac stuff... which will still work for
+   Linux too. Script is located in a seprate [[file:emacs-client.org][initialization file]].
+
+   #+BEGIN_SRC elisp
+     (when (window-system)
+       (require 'init-client)
+       )
+   #+END_SRC
 
 ** Windows
 
@@ -136,8 +148,6 @@ I don't think, I use these any longer:
   (global-set-key (kbd "C-c <down>")  'enlarge-window)
   (global-set-key (kbd "C-c <left>")  'shrink-window-horizontally)
 #+END_SRC
-
-
 
 * Navigation
 
@@ -300,7 +310,6 @@ My current key bindings
 #+END_SRC
 
 * Miscellaneous
-
 ** Unknown origins
 
 This was copied from somewhere, not sure if I still need these:
@@ -369,17 +378,6 @@ Auto-save never really worked for me:
 
 #+END_SRC
 
-** Configure the Graphical Settings
-
-   If we are running in a windowed environment where we can set up
-   fonts and whatnot, call the 'mac' stuff... which will still work
-   for Linux too.
-
-   #+BEGIN_SRC elisp
-     (if (window-system)
-         (require 'init-client)
-       (require 'init-server))
-   #+END_SRC
 ** Line numbers 
 
 #+BEGIN_SRC elisp
@@ -651,12 +649,12 @@ and we can load it from the main file:
 (require 'init-web)
 #+END_SRC
 
-
-** Legacy modes
+** Org-mode
+Org-mode setup is located in a separate [[file:emacs-org.org][init file]], we just load it
+here:
 
 #+BEGIN_SRC elisp
-;; load all modes
-(load "load-modes")
+(require 'init-org)
 #+END_SRC
 
 * Footnotes

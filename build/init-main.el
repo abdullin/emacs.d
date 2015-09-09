@@ -48,6 +48,10 @@
 ;; disable alarm bell beep
 (setq visible-bell t)
 
+(when (window-system)
+  (require 'init-client)
+  )
+
 ;; move to a neighbor window using SHIFT-<arrow-key>
 (windmove-default-keybindings)
 
@@ -145,10 +149,6 @@
 (setq make-backup-files nil)
 (setq auto-save-default nil)
 
-(if (window-system)
-    (require 'init-client)
-  (require 'init-server))
-
 (global-linum-mode 1)
 
 (defconst linum-mode-excludes '(
@@ -213,7 +213,6 @@ of listed in `linum-mode-excludes'."
 
 (require 'init-web)
 
-;; load all modes
-(load "load-modes")
+(require 'init-org)
 
 (provide 'init-main)
