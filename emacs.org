@@ -137,14 +137,6 @@ I don't think, I use these any longer:
   (global-set-key (kbd "C-c <left>")  'shrink-window-horizontally)
 #+END_SRC
 
-* Load the other modules
-
-
-#+BEGIN_SRC elisp
-;; load all modes
-(load "load-modes")
-#+END_SRC
-
 
 
 * Navigation
@@ -422,19 +414,10 @@ And highlight current line:
 
 * Languages
 
-
-#+BEGIN_SRC elisp
-
-(require 'init-erlang)
-
-#+END_SRC
-
 ** Erlang
 
 Default erlang distribution has great setup for emacs. We just need to
 wire it together, provided there was an erlang installation.
-
-
 
 On OSX you could install erlang via:
 
@@ -466,6 +449,63 @@ Erlang-specific config is:
   (provide 'init-erlang)
 
 #+END_SRC
+
+We can load it from the main file:
+
+#+BEGIN_SRC elisp
+(require 'init-erlang)
+#+END_SRC
+
+** Pure Javascript
+
+#+BEGIN_SRC elisp :tangle build/init-js.el
+  (require `company)
+  (require `flycheck)
+  (require `yasnippet)
+  (require `jsfmt)
+  ;;(add-hook `js-mode-hook `flycheck-mode)
+  ;;(add-hook `js-mode-hook `company-mode)
+
+  (add-hook 'before-save-hook 'jsfmt-before-save)
+  (add-hook 'js-mode-hook
+            (lambda ()
+              ;; activate on-the-fly-check (will use installed linter)
+  ;;            (flycheck-mode)
+              ;; auto-completion
+              (company-mode)
+              ;; Activate the folding mode
+  ;;            (hs-minor-mode t)
+              ;; snippets
+              (yas-minor-mode)
+
+          
+              ;; perform flycheck on save
+              (setq flycheck-check-syntax-automatically '(save))
+              ;; run flycheck here
+              (flycheck-mode)
+
+              )
+            )
+
+
+  (setq js-indent-level 4)
+
+  (provide 'init-js)
+#+END_SRC
+
+And load this config via:
+
+#+BEGIN_SRC elisp
+(require 'init-js)
+#+END_SRC
+
+** Legacy modes
+
+#+BEGIN_SRC elisp
+;; load all modes
+(load "load-modes")
+#+END_SRC
+
 * Footnotes
 
 ** Loading the configuration

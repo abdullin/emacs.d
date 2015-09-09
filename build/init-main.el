@@ -57,9 +57,6 @@
 (add-hook 'org-shiftdown-final-hook 'windmove-down)
 (add-hook 'org-shiftright-final-hook 'windmove-right)
 
-;; load all modes
-(load "load-modes")
-
 (setq dired-dwim-target t)
 
 (require `evil)
@@ -174,5 +171,10 @@ of listed in `linum-mode-excludes'."
 (add-hook 'after-change-major-mode-hook 'hl-line-mode)
 
 (require 'init-erlang)
+
+(require 'init-js)
+
+;; load all modes
+(load "load-modes")
 
 (provide 'init-main)

@@ -17,17 +17,16 @@
             ;; snippets
             (yas-minor-mode)
 
-            
+        
             ;; perform flycheck on save
             (setq flycheck-check-syntax-automatically '(save))
             ;; run flycheck here
             (flycheck-mode)
 
             )
-)
+          )
 
 
 (setq js-indent-level 4)
 
-
-
+(provide 'init-js)
