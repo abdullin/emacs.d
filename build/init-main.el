@@ -20,7 +20,6 @@
       (add-hook hook callback))
     hooks))
 
-;; load el-get
 (add-to-list 'load-path (expand-file-name "el-get/el-get" emacs-root-dir))
 
 (unless (require 'el-get nil 'noerror)
@@ -31,6 +30,15 @@
       (goto-char (point-max))
       (eval-print-last-sexp))))
 
+(defun ra/require-el-get (package)
+  "Add a package to el-get-sources"
+  (add-to-list 'el-get-sources package))
+
+(ra/require-el-get 'evil)
+(ra/require-el-get 'dired-plus)
+
+(setq linum-relative-current-symbol "")
+(ra/require-el-get 'linum-relative)
 
 ;; load all .el files inside `modules-dir`
 (setq modules-dir (expand-file-name "packages" emacs-root-dir))
@@ -71,6 +79,19 @@
 
 ;; blinking cursor
 (blink-cursor-mode t)
+
+(add-hook 'ido-setup-hook (lambda ()
+                (setq ido-enable-flex-matching t)))
+
+
+; Use IDO for both buffer and file completion and ido-everywhere to t
+(setq ido-everywhere t)
+(setq ido-max-directory-size 100000)
+(ido-mode (quote both))
+; Use the current window when visiting files and buffers with ido
+(setq ido-default-file-method 'selected-window)
+(setq ido-default-buffer-method 'selected-window)
+
 
 (ido-mode t)
 

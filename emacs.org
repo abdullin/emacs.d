@@ -5,6 +5,7 @@
 
 * Introduction
 
+
 This is a literate version of my base emacs config. You can generate
 emacs init script out of it by running =org-babel-tangle=.
 
@@ -15,6 +16,11 @@ In order to load the file, put into your =~/.emacs= or
 (load-file "~/.emacs.d/build/init-main.el")
 (server-start)
 #+END_SRC
+
+** References
+
+This config is stiched together from a variety of sources and mostly
+inspired by [[https://github.com/howardabrams/dot-files][Howard Abrams]].
 
 * General settings
 ** Home directory
@@ -72,13 +78,13 @@ Just a few helper functions to lighten up the day
 
 
 #+END_SRC
-* Load Packages
-Load el-get and let it load all packages in a folder
 
+* Packages
+
+** Install el-get
+Let's install el-get, if it isn't installed:
 
 #+BEGIN_SRC elisp
-
-;; load el-get
 (add-to-list 'load-path (expand-file-name "el-get/el-get" emacs-root-dir))
 
 (unless (require 'el-get nil 'noerror)
@@ -88,8 +94,37 @@ Load el-get and let it load all packages in a folder
     (let (el-get-master-branch)
       (goto-char (point-max))
       (eval-print-last-sexp))))
+#+END_SRC
+
+Now, a small helper to record a package:
+
+#+BEGIN_SRC elisp
+(defun ra/require-el-get (package)
+  "Add a package to el-get-sources"
+  (add-to-list 'el-get-sources package))
+
+#+END_SRC
+
+ 
+Now, let's load some stuff:
+
+#+BEGIN_SRC elisp
+(ra/require-el-get 'evil)
+(ra/require-el-get 'dired-plus)
+#+END_SRC
+
+** Linum
+
+#+BEGIN_SRC elisp
+  (setq linum-relative-current-symbol "")
+  (ra/require-el-get 'linum-relative)
+#+END_SRC
+
+** Load file modules
 
 
+Then we can install modules:
+#+BEGIN_SRC elisp
 ;; load all .el files inside `modules-dir`
 (setq modules-dir (expand-file-name "packages" emacs-root-dir))
 (mapc 'load (directory-files modules-dir 't "^[^#].*el$"))
@@ -98,6 +133,8 @@ Load el-get and let it load all packages in a folder
 (el-get 'sync (mapcar 'el-get-source-name el-get-sources))
 
 #+END_SRC
+
+
 
 * Display settings
 
@@ -212,7 +249,21 @@ Make the cursor blink:
 
 I love IDO:
 #+BEGIN_SRC elisp
-(ido-mode t)
+
+  (add-hook 'ido-setup-hook (lambda ()
+                  (setq ido-enable-flex-matching t)))
+
+
+  ; Use IDO for both buffer and file completion and ido-everywhere to t
+  (setq ido-everywhere t)
+  (setq ido-max-directory-size 100000)
+  (ido-mode (quote both))
+  ; Use the current window when visiting files and buffers with ido
+  (setq ido-default-file-method 'selected-window)
+  (setq ido-default-buffer-method 'selected-window)
+
+
+  (ido-mode t)
 #+END_SRC
 
 ** Auto-load changes
