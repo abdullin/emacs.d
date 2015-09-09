@@ -207,6 +207,20 @@ Some initial languages that we want babel to support:
      ))
 #+END_SRC
 
+** Org publishing
+
+#+BEGIN_SRC elisp
+  (setq org-export-backends (quote (
+         ascii
+         ;;beamer
+         html
+         ;;latex
+         md
+         ;;odt
+         ;;s5
+         ;;taskjuggler
+  )))
+#+END_SRC
 * Cleanup
 
 #+BEGIN_SRC elisp

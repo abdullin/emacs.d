@@ -22,6 +22,7 @@
 (el-get-bundle dired-plus)
 (el-get-bundle flycheck)
 (el-get-bundle yasnippet)
+(el-get-bundle org)
 
 (el-get-bundle markdown-mode)
 

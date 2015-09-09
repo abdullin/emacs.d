@@ -5,7 +5,6 @@
 
 * Introduction
 
-
 This is a literate version of my base emacs config. You can generate
 emacs init script out of it by running =org-babel-tangle=.
 
@@ -66,7 +65,6 @@ literate version (or v2):
 #+END_SRC
 
 * Helper functions
-
 Just a few helper functions to lighten up the day
 #+BEGIN_SRC elisp
 
@@ -119,6 +117,7 @@ We can describe our common dependencies like this:
 (el-get-bundle dired-plus)
 (el-get-bundle flycheck)
 (el-get-bundle yasnippet)
+(el-get-bundle org)
 #+END_SRC
 ** Init packages
 Now we can init packages in the main file:
@@ -128,9 +127,7 @@ Now we can init packages in the main file:
 (ra/install-missing-packages)
 #+END_SRC
 
-
 * Display settings
-
 ** Hide some things
 #+BEGIN_SRC elisp
 ;; I know what the scratch is for
@@ -478,7 +475,6 @@ And highlight current line:
 #+END_SRC
 
 * Languages
-
 ** Erlang
 
 Default erlang distribution has great setup for emacs. We just need to
@@ -564,11 +560,19 @@ And load this config via:
 (require 'init-js)
 #+END_SRC
 
-** Golang mode
+** COMMENT Golang mode
+
+Grab golang packages:
+
+#+BEGIN_SRC elisp :tangle build/init-packages.el
+(el-get-bundle go-mode)
+(el-get-bundle gocode)
+(el-get-bundle go-eldoc)
+#+END_SRC
 
 As it was imported from my previous config:
 
-#+BEGIN_SRC elisp build/init-go.el
+#+BEGIN_SRC elisp :tangle build/init-go.el
   (require 'go-mode)
   (require 'key-chord)
   (require 'company-go)
@@ -607,6 +611,13 @@ As it was imported from my previous config:
   (provide 'init-go)
 
 #+END_SRC
+
+And load from the main file:
+
+#+BEGIN_SRC elisp
+(require 'init-go)
+#+END_SRC
+
 
 ** Web editing
 

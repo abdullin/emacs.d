@@ -87,4 +87,15 @@
    (perl . t)
    ))
 
+(setq org-export-backends (quote (
+       ascii
+       ;;beamer
+       html
+       ;;latex
+       md
+       ;;odt
+       ;;s5
+       ;;taskjuggler
+)))
+
 (provide 'init-org)
