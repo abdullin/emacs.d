@@ -87,6 +87,11 @@
 (global-set-key (kbd "<C-S-left>")   'buf-move-left)
 (global-set-key (kbd "<C-S-right>")  'buf-move-right)
 
+(el-get-bundle smart-mode-line)
+(setq sml/theme 'respectful)
+(setq sml/no-confirm-load-theme t)
+(sml/setup)
+
 (when (window-system)
   (require 'init-client)
   )

@@ -185,6 +185,25 @@ And options to move buffers around:
 
 #+END_SRC
 
+** Mode line
+
+[[https://github.com/Malabarba/smart-mode-line][Smart mode line]] improves a lot normal emacs mode line by adding:
+
+- colors;
+- directory prefixing (e.g. convert =~/.emacs.d/= to =:ED:=;
+- smart truncation to work well on small displays.
+
+#+BEGIN_SRC elisp
+(el-get-bundle smart-mode-line)
+(setq sml/theme 'respectful)
+(setq sml/no-confirm-load-theme t)
+(sml/setup)
+#+END_SRC
+
+
+If I ever needed to hide some minor modes, this could be done via
+[[https://github.com/Malabarba/rich-minority][rich-minority]] package.
+
 * GUI Client
 
 Emacs can have a nice GUI window that lets you have fine-grained
