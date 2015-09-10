@@ -283,6 +283,26 @@ And bind it do the files:
                '("\\.\\(md\\|mdown\\|markdown\\)\\'" . markdown-mode)
                )
 #+END_SRC
+** Unfill paragraph
+
+Unfilling a paragraph joins all the lines in a paragraph into a single
+line. It is the contrary of FillParagraph.
+
+#+BEGIN_SRC elisp
+  ;;; Stefan Monnier <foo at acm.org>. It is the opposite of fill-paragraph    
+  (defun ra/unfill-paragraph (&optional region)
+    "Takes a multi-line paragraph and makes it into a single line of text."
+    (interactive (progn (barf-if-buffer-read-only) '(t)))
+    (let ((fill-column (point-max)))
+      (fill-paragraph nil region)))
+#+END_SRC
+
+And let's bind it to a keystroke:
+
+#+BEGIN_SRC elisp
+  (define-key global-map "\M-Q" 'unfill-paragraph)
+#+END_SRC
+
 
 ** VIM emulation
 
