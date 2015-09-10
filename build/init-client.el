@@ -1,7 +1,9 @@
 (provide 'init-client)
 
 (when (eq system-type 'darwin)
-  (set-default-font "MonacoB-16")
+
+  ;; set default font for the frames as well (daemon + ec)
+  (setq default-frame-alist '((font . "MonacoB-16")))
   (set-fontset-font t 'cyrillic "Droid Sans Mono")
   )
 
@@ -30,9 +32,3 @@
   ("+" text-scale-increase "in")
   ("=" text-scale-increase "in")
   ("-" text-scale-decrease "out"))
-
-(tool-bar-mode -1)
-(tooltip-mode -1)
-(scroll-bar-mode -1)
-(set-fringe-style -1)
-(menu-bar-mode -1)

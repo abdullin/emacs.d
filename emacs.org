@@ -150,7 +150,6 @@ We can describe our common dependencies like this:
 #+END_SRC
 
 ** Windows
-
 *** Wind move
 
 [[http://emacswiki.org/emacs/WindMove][WindMove]] (in GnuEmacs v21+) lets you move point from window to window
@@ -236,7 +235,6 @@ Ok, let's define a hydra head for moving windows around on =F9=:
     )
 #+END_SRC
 
-
 ** Mode line
 
 [[https://github.com/Malabarba/smart-mode-line][Smart mode line]] improves a lot normal emacs mode line by adding:
@@ -251,7 +249,6 @@ Ok, let's define a hydra head for moving windows around on =F9=:
   (setq sml/no-confirm-load-theme t)
   (sml/setup)
 #+END_SRC
-
 
 If I ever needed to hide some minor modes, this could be done via
 [[https://github.com/Malabarba/rich-minority][rich-minority]] package.
@@ -269,9 +266,7 @@ control over fonts and sizes. Let's put that stuff into a separate
 config file and load when we have us a window system.
 
    #+BEGIN_SRC elisp
-     (when (window-system)
-       (require 'init-client)
-       )
+     (require 'init-client)
    #+END_SRC
 
 Header for the client-specific file would say:
@@ -286,7 +281,9 @@ I like Monaco on OSX:
 
 #+BEGIN_SRC elisp :tangle build/init-client.el
   (when (eq system-type 'darwin)
-    (set-default-font "MonacoB-16")
+
+    ;; set default font for the frames as well (daemon + ec)
+    (setq default-frame-alist '((font . "MonacoB-16")))
     (set-fontset-font t 'cyrillic "Droid Sans Mono")
     )
 #+END_SRC
@@ -338,15 +335,15 @@ With this simple code, hit =F9= to enter zooming mode:
 
 ** Remove clutter
 
+Some things just waste space, let's kill them once and for all frames
+(this works even for emacs in daemon mode and emacsclient).
 
-Some things just waste space, let's kill them:
-
-#+BEGIN_SRC elisp :tangle build/init-client.el
-(tool-bar-mode -1)
-(tooltip-mode -1)
-(scroll-bar-mode -1)
-(set-fringe-style -1)
-(menu-bar-mode -1)
+#+BEGIN_SRC elisp
+  (add-to-list 'default-frame-alist '(vertical-scroll-bars . nil))
+  (add-to-list 'default-frame-alist '(left-fringe . 0))
+  (add-to-list 'default-frame-alist '(right-fringe . 0))
+  (add-to-list 'default-frame-alist '(menu-bar-lines . 0))
+  (add-to-list 'default-frame-alist '(tool-bar-lines . 0))
 #+END_SRC
 
 * Navigation
@@ -858,7 +855,6 @@ Grab the packages and wire them into lisp mode:
     )
 #+END_SRC
 
-
 ** Web editing
 
 Web mode that is also used to edit mixed files like JSX
@@ -976,7 +972,6 @@ here:
 #+END_SRC
 
 * Footnotes
-
 ** Loading the configuration
 
 To reload with a require:

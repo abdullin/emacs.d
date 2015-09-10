@@ -138,9 +138,13 @@
 
 (display-battery-mode)
 
-(when (window-system)
-  (require 'init-client)
-  )
+(require 'init-client)
+
+(add-to-list 'default-frame-alist '(vertical-scroll-bars . nil))
+(add-to-list 'default-frame-alist '(left-fringe . 0))
+(add-to-list 'default-frame-alist '(right-fringe . 0))
+(add-to-list 'default-frame-alist '(menu-bar-lines . 0))
+(add-to-list 'default-frame-alist '(tool-bar-lines . 0))
 
 (setq dired-dwim-target t)
 
