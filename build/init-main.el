@@ -72,23 +72,71 @@
 (setq visible-bell t)
 
 ;; move to a neighbor window using SHIFT-<arrow-key>
+(require 'windmove)
 (windmove-default-keybindings)
 
-;; don't conflict with orgmode
-(add-hook 'org-shiftup-final-hook 'windmove-up)
-(add-hook 'org-shiftleft-final-hook 'windmove-left)
-(add-hook 'org-shiftdown-final-hook 'windmove-down)
-(add-hook 'org-shiftright-final-hook 'windmove-right)
+(winner-mode 1)
 
-(global-set-key (kbd "<C-S-up>")     'buf-move-up)
-(global-set-key (kbd "<C-S-down>")   'buf-move-down)
-(global-set-key (kbd "<C-S-left>")   'buf-move-left)
-(global-set-key (kbd "<C-S-right>")  'buf-move-right)
+(defun hydra-move-splitter-left (arg)
+  "Move window splitter left."
+  (interactive "p")
+  (if (let ((windmove-wrap-around))
+        (windmove-find-other-window 'right))
+      (shrink-window-horizontally arg)
+    (enlarge-window-horizontally arg)))
+
+(defun hydra-move-splitter-right (arg)
+  "Move window splitter right."
+  (interactive "p")
+  (if (let ((windmove-wrap-around))
+        (windmove-find-other-window 'right))
+      (enlarge-window-horizontally arg)
+    (shrink-window-horizontally arg)))
+
+(defun hydra-move-splitter-up (arg)
+  "Move window splitter up."
+  (interactive "p")
+  (if (let ((windmove-wrap-around))
+        (windmove-find-other-window 'up))
+      (enlarge-window arg)
+    (shrink-window arg)))
+
+(defun hydra-move-splitter-down (arg)
+  "Move window splitter down."
+  (interactive "p")
+  (if (let ((windmove-wrap-around))
+        (windmove-find-other-window 'up))
+      (shrink-window arg)
+    (enlarge-window arg)))
+
+(defhydra hydra-splitter (global-map "<f9>")
+  "winops"
+  ("SPC" nil)
+  ("H" hydra-move-splitter-left)
+  ("J" hydra-move-splitter-down)
+  ("K" hydra-move-splitter-up)
+  ("L" hydra-move-splitter-right)
+  ("h" buf-move-left)
+  ("j" buf-move-down)
+  ("k" buf-move-up)
+  ("l" buf-move-right)
+  ("x" delete-window)
+  ("X" delete-other-windows)
+  ("z" (progn
+        (winner-undo)
+        (setq this-command 'winner-undo))
+   )
+  ("Z" winner-redo)
+  ("r" split-window-right)
+  ("b" split-window-below)
+  )
 
 (el-get-bundle smart-mode-line)
 (setq sml/theme 'respectful)
 (setq sml/no-confirm-load-theme t)
 (sml/setup)
+
+(display-battery-mode)
 
 (when (window-system)
   (require 'init-client)

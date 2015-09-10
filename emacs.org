@@ -151,37 +151,91 @@ We can describe our common dependencies like this:
 
 ** Windows
 
+*** Wind move
+
+[[http://emacswiki.org/emacs/WindMove][WindMove]] (in GnuEmacs v21+) lets you move point from window to window
+using Shift and the arrow keys. Let's wire default keys:
+
 #+BEGIN_SRC elisp
   ;; move to a neighbor window using SHIFT-<arrow-key>
+  (require 'windmove)
   (windmove-default-keybindings)
-
-  ;; don't conflict with orgmode
-  (add-hook 'org-shiftup-final-hook 'windmove-up)
-  (add-hook 'org-shiftleft-final-hook 'windmove-left)
-  (add-hook 'org-shiftdown-final-hook 'windmove-down)
-  (add-hook 'org-shiftright-final-hook 'windmove-right)
-
 #+END_SRC
 
-I don't think, I use these any longer:
+*** Winner mode
 
-#+BEGIN_SRC elisp :tangle no
-  ;; enlarge and shrink windows
-  (global-set-key (kbd "C-c <up>")    'shrink-window)
-  (global-set-key (kbd "C-c <right>") 'enlarge-window-horizontally)
-  (global-set-key (kbd "C-c <down>")  'enlarge-window)
-  (global-set-key (kbd "C-c <left>")  'shrink-window-horizontally)
-#+END_SRC
-
-And options to move buffers around:
+[[http://emacswiki.org/emacs/WinnerMode][Winner mode]] allows you to “undo” (and “redo”) changes in the window
+configuration with =C-c left= and =C-c right=.
 
 #+BEGIN_SRC elisp
-  (global-set-key (kbd "<C-S-up>")     'buf-move-up)
-  (global-set-key (kbd "<C-S-down>")   'buf-move-down)
-  (global-set-key (kbd "<C-S-left>")   'buf-move-left)
-  (global-set-key (kbd "<C-S-right>")  'buf-move-right)
-
+  (winner-mode 1)
 #+END_SRC
+
+*** Hydra
+
+Hydra-based way of manipulating windows. Let's define a few helpers
+(taken from hydra samples):
+
+#+BEGIN_SRC elisp
+  (defun hydra-move-splitter-left (arg)
+    "Move window splitter left."
+    (interactive "p")
+    (if (let ((windmove-wrap-around))
+          (windmove-find-other-window 'right))
+        (shrink-window-horizontally arg)
+      (enlarge-window-horizontally arg)))
+
+  (defun hydra-move-splitter-right (arg)
+    "Move window splitter right."
+    (interactive "p")
+    (if (let ((windmove-wrap-around))
+          (windmove-find-other-window 'right))
+        (enlarge-window-horizontally arg)
+      (shrink-window-horizontally arg)))
+
+  (defun hydra-move-splitter-up (arg)
+    "Move window splitter up."
+    (interactive "p")
+    (if (let ((windmove-wrap-around))
+          (windmove-find-other-window 'up))
+        (enlarge-window arg)
+      (shrink-window arg)))
+
+  (defun hydra-move-splitter-down (arg)
+    "Move window splitter down."
+    (interactive "p")
+    (if (let ((windmove-wrap-around))
+          (windmove-find-other-window 'up))
+        (shrink-window arg)
+      (enlarge-window arg)))
+#+END_SRC
+
+Ok, let's define a hydra head for moving windows around on =F9=:
+
+#+BEGIN_SRC elisp
+  (defhydra hydra-splitter (global-map "<f9>")
+    "winops"
+    ("SPC" nil)
+    ("H" hydra-move-splitter-left)
+    ("J" hydra-move-splitter-down)
+    ("K" hydra-move-splitter-up)
+    ("L" hydra-move-splitter-right)
+    ("h" buf-move-left)
+    ("j" buf-move-down)
+    ("k" buf-move-up)
+    ("l" buf-move-right)
+    ("x" delete-window)
+    ("X" delete-other-windows)
+    ("z" (progn
+          (winner-undo)
+          (setq this-command 'winner-undo))
+     )
+    ("Z" winner-redo)
+    ("r" split-window-right)
+    ("b" split-window-below)
+    )
+#+END_SRC
+
 
 ** Mode line
 
@@ -192,15 +246,21 @@ And options to move buffers around:
 - smart truncation to work well on small displays.
 
 #+BEGIN_SRC elisp
-(el-get-bundle smart-mode-line)
-(setq sml/theme 'respectful)
-(setq sml/no-confirm-load-theme t)
-(sml/setup)
+  (el-get-bundle smart-mode-line)
+  (setq sml/theme 'respectful)
+  (setq sml/no-confirm-load-theme t)
+  (sml/setup)
 #+END_SRC
 
 
 If I ever needed to hide some minor modes, this could be done via
 [[https://github.com/Malabarba/rich-minority][rich-minority]] package.
+
+Oh, while we are at it, let's display battery percentage:
+
+#+BEGIN_SRC elisp
+  (display-battery-mode)
+#+END_SRC
 
 * GUI Client
 
@@ -309,7 +369,7 @@ line. It is the contrary of FillParagraph.
 And let's bind it to a keystroke:
 
 #+BEGIN_SRC elisp
-  (define-key global-map "\M-Q" 'unfill-paragraph)
+  (define-key global-map "\M-Q" 'ra/unfill-paragraph)
 #+END_SRC
 
 ** Expand Region 

@@ -55,6 +55,18 @@ Switch between org buffers:
 (global-set-key "\C-cb" 'org-iswitchb)
 #+END_SRC
 
+** Windmove conflicts
+
+Org-mode overrides =S-<arrow>= which are used by /windmove/. So let's
+pass keystrokes to windmove, if they are meaningless in org-mode.
+
+#+BEGIN_SRC elisp
+  (add-hook 'org-shiftup-final-hook 'windmove-up)
+  (add-hook 'org-shiftleft-final-hook 'windmove-left)
+  (add-hook 'org-shiftdown-final-hook 'windmove-down)
+  (add-hook 'org-shiftright-final-hook 'windmove-right)
+#+END_SRC
+
 * GTD Workflow
 
 ** Keywords and states
