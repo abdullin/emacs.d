@@ -59,8 +59,6 @@
 (el-get-bundle undo-tree) 
 ;; Swap buffers without typing C-x b on each window
 (el-get-bundle buffer-move)  
-;; smart region expansion
-(el-get-bundle expand-region)
 
 (el-get-bundle web-mode)
 
@@ -112,6 +110,10 @@
     (fill-paragraph nil region)))
 
 (define-key global-map "\M-Q" 'unfill-paragraph)
+
+;; smart region expansion
+(el-get-bundle expand-region)
+(global-set-key (kbd "C-=") 'er/expand-region)
 
 (require `evil)
 ;;(key-chord-define evil-insert-state-map "jk" 'evil-normal-state)
@@ -187,7 +189,6 @@
 (global-set-key (kbd "<f9>") `next-error)
 
 ;(key-chord-define-global "e2" 'er/contract-region)
-(key-chord-define-global "4r" 'er/expand-region)
 
 ;; mode line settings
 (column-number-mode t)
