@@ -216,14 +216,14 @@ Ok, let's define a hydra head for moving windows around on =F9=:
   (defhydra hydra-splitter (global-map "<f9>")
     "winops"
     ("SPC" nil)
-    ("H" hydra-move-splitter-left)
-    ("J" hydra-move-splitter-down)
-    ("K" hydra-move-splitter-up)
-    ("L" hydra-move-splitter-right)
-    ("h" buf-move-left)
-    ("j" buf-move-down)
-    ("k" buf-move-up)
-    ("l" buf-move-right)
+    ("<left>" hydra-move-splitter-left)
+    ("<down>" hydra-move-splitter-down)
+    ("<up>" hydra-move-splitter-up)
+    ("<right>" hydra-move-splitter-right)
+    ("S-<left>" buf-move-left)
+    ("S-<down>" buf-move-down)
+    ("S-<up>" buf-move-up)
+    ("S-<right>" buf-move-right)
     ("x" delete-window)
     ("X" delete-other-windows)
     ("z" (progn
@@ -293,21 +293,42 @@ I like Monaco on OSX:
 
 ** Color theme
 
-Let's load the package:
+I like to use solarized theme by default:
 
 #+BEGIN_SRC elisp :tangle build/init-client.el
-  (el-get-bundle solarized-theme
-    )
-
-    (load-theme 'solarized-light t)
-
+  (el-get-bundle solarized-theme)
+  (load-theme 'solarized-light t)
 #+END_SRC
+
+It would be nice to switch to solarized dark, if needed. Let's add
+hydra for that:
+
+#+BEGIN_SRC elisp :tangle build/init-client.el
+  (defhydra hydra-themes (global-map "<f9>")
+    "themes"
+    ("SPC" nil)
+    ("q"
+     (lambda ()
+       (interactive)
+       (load-theme 'solarized-light t)
+       )
+     )
+    ("w"
+     (lambda ()
+       (interactive)
+       (load-theme 'solarized-dark t)
+       )
+     )
+    )
+#+END_SRC
+
+
 
 ** Zooming with Hydra 
 
 With this simple code, hit =F9= to enter zooming mode:
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :tangle build/init-client.el
   (defhydra hydra-zoom (global-map "<f9>")
     "zoom"
     ("+" text-scale-increase "in")
@@ -532,8 +553,8 @@ My current key bindings
   ;; SAVE
 
   (global-set-key (kbd "<f2>") `ra/save-and-recompile)
-  (global-set-key (kbd "<f8>") `recompile)
-  (global-set-key (kbd "<f9>") `next-error)
+  ;;(global-set-key (kbd "<f8>") `recompile)
+  ;;(global-set-key (kbd "<f9>") `next-error)
 
 #+END_SRC
 
@@ -671,6 +692,7 @@ environment variables (e.g. for running external tools):
 
 (ra/load-unix-shell-env)
 #+END_SRC
+
 * Languages
 ** Erlang
 

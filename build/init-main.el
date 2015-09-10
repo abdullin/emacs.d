@@ -142,12 +142,6 @@
   (require 'init-client)
   )
 
-(defhydra hydra-zoom (global-map "<f9>")
-  "zoom"
-  ("+" text-scale-increase "in")
-  ("=" text-scale-increase "in")
-  ("-" text-scale-decrease "out"))
-
 (setq dired-dwim-target t)
 
 (el-get-bundle markdown-mode)
@@ -163,7 +157,7 @@
   (let ((fill-column (point-max)))
     (fill-paragraph nil region)))
 
-(define-key global-map "\M-Q" 'unfill-paragraph)
+(define-key global-map "\M-Q" 'ra/unfill-paragraph)
 
 ;; smart region expansion
 (el-get-bundle expand-region)
@@ -239,8 +233,8 @@
 ;; SAVE
 
 (global-set-key (kbd "<f2>") `ra/save-and-recompile)
-(global-set-key (kbd "<f8>") `recompile)
-(global-set-key (kbd "<f9>") `next-error)
+;;(global-set-key (kbd "<f8>") `recompile)
+;;(global-set-key (kbd "<f9>") `next-error)
 
 ;(key-chord-define-global "e2" 'er/contract-region)
 

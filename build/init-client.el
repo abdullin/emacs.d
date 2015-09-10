@@ -5,10 +5,31 @@
   (set-fontset-font t 'cyrillic "Droid Sans Mono")
   )
 
-(el-get-bundle solarized-theme
+(el-get-bundle solarized-theme)
+(load-theme 'solarized-light t)
+
+(defhydra hydra-themes (global-map "<f9>")
+  "themes"
+  ("SPC" nil)
+  ("q"
+   (lambda ()
+     (interactive)
+     (load-theme 'solarized-light t)
+     )
+   )
+  ("w"
+   (lambda ()
+     (interactive)
+     (load-theme 'solarized-dark t)
+     )
+   )
   )
 
-  (load-theme 'solarized-light t)
+(defhydra hydra-zoom (global-map "<f9>")
+  "zoom"
+  ("+" text-scale-increase "in")
+  ("=" text-scale-increase "in")
+  ("-" text-scale-decrease "out"))
 
 (tool-bar-mode -1)
 (tooltip-mode -1)
