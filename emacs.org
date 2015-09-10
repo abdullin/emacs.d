@@ -131,7 +131,7 @@ We can describe our common dependencies like this:
 (el-get-bundle undo-tree) 
 ;; Swap buffers without typing C-x b on each window
 (el-get-bundle buffer-move)  
-
+(el-get-bundle hydra)
 (el-get-bundle web-mode)
 
 #+END_SRC
@@ -243,6 +243,17 @@ Let's load the package:
 
 #+END_SRC
 
+** Zooming with Hydra 
+
+With this simple code, hit =F9= to enter zooming mode:
+
+#+BEGIN_SRC elisp
+  (defhydra hydra-zoom (global-map "<f9>")
+    "zoom"
+    ("+" text-scale-increase "in")
+    ("=" text-scale-increase "in")
+    ("-" text-scale-decrease "out"))
+#+END_SRC
 
 ** Remove clutter
 

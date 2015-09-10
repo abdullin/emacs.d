@@ -59,7 +59,7 @@
 (el-get-bundle undo-tree) 
 ;; Swap buffers without typing C-x b on each window
 (el-get-bundle buffer-move)  
-
+(el-get-bundle hydra)
 (el-get-bundle web-mode)
 
 ;; I know what the scratch is for
@@ -93,6 +93,12 @@
 (when (window-system)
   (require 'init-client)
   )
+
+(defhydra hydra-zoom (global-map "<f9>")
+  "zoom"
+  ("+" text-scale-increase "in")
+  ("=" text-scale-increase "in")
+  ("-" text-scale-decrease "out"))
 
 (setq dired-dwim-target t)
 
