@@ -3,6 +3,8 @@ This is my configuration for Emacs described in =org-mode=.
 I went through a bunch of IDEs and editors in my life, Emacs was the
 first one that deserved setting up such a configuration project :)
 
+If you are interested in configs, go directly to [[file:emacs.org][emacs.org]].
+
 * References
 
 These configs are stiched together from a bunch of sources and smart
@@ -22,7 +24,6 @@ Install cask, if needed:
 #+END_SRC
 
 Install dependencies:
-
 
 #+BEGIN_SRC sh
   brew cask install xquartz
