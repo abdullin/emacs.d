@@ -3,8 +3,6 @@
 #+PROPERTY:    results silent
 #+PROPERTY:    header-args:sh  :tangle no
 
-
-
 * Overview
 
 This is my emacs setup for the mighty org-mode!
@@ -14,8 +12,6 @@ This is my emacs setup for the mighty org-mode!
 #+END_SRC
 
 * Settings
-
-
 ** View preferences
 
 Make org-mode look pretty
@@ -68,7 +64,6 @@ pass keystrokes to windmove, if they are meaningless in org-mode.
 #+END_SRC
 
 * GTD Workflow
-
 ** Keywords and states
 
 A list of keywords and their colors, initially taken from [[http://doc.norang.ca/org-mode.html][Bernt Hansen]]:
@@ -90,7 +85,6 @@ A list of keywords and their colors, initially taken from [[http://doc.norang.ca
                 ("PHONE" :foreground "forest green" :weight bold))))
 
 #+END_SRC
-
 
 ** State Transitions
 
@@ -117,7 +111,6 @@ Triggered state changes
                 ("DONE" ("WAITING") ("CANCELLED") ("HOLD")))))
 
 #+END_SRC
-
 
 ** Capture mode
 
@@ -198,7 +191,6 @@ now.
 (setq org-refile-target-verify-function 'bh/verify-refile-target)
 #+END_SRC
 * Literate Programming
-
 ** Babel
 Some initial languages that we want babel to support:
 
@@ -234,7 +226,6 @@ Some initial languages that we want babel to support:
   )))
 #+END_SRC
 * Cleanup
-
 #+BEGIN_SRC elisp
 (provide 'init-org)
 #+END_SRC
