@@ -1,6 +1,60 @@
+This is my configuration for Emacs described in =org-mode=.
 
-* OSX
+I went through a bunch of IDEs and editors in my life, Emacs was the
+first one that deserved setting up such a configuration project :)
 
-There is a very good guide on setting up Emacs
+* References
 
-http://emacsformacosx.com/tips
+These configs are stiched together from a bunch of sources and smart
+people:
+
++ dotfiles by [[https://github.com/howardabrams/dot-files][Howard Abrams]];
++ Emacs wiki;
++ Good guide on setting up Emacs [[http://emacsformacosx.com/tips][in OSX]].
+
+* Setting up Emacs
+
+Install cask, if needed:
+
+#+BEGIN_SRC sh
+  brew tap caskroom/cask
+  brew install brew-cask
+#+END_SRC
+
+Install dependencies:
+
+
+#+BEGIN_SRC sh
+  brew cask install xquartz
+#+END_SRC
+
+Install Emacs (latest dev version):
+
+#+BEGIN_SRC sh
+  # install emacs by compiling
+  brew install emacs --HEAD --use-git-head --with-cocoa \\
+              --with-gnutls --srgb --with-librsvg --with-ns
+  # Link emacs to the apps
+  brew linkapps emacs
+#+END_SRC
+
+Setup Emacs to work as a server:
+
+#+BEGIN_SRC sh
+  # setup emacs to launch as a daemon on startup
+  ln -sfv /usr/local/opt/emacs/*.plist ~/Library/LaunchAgents
+  # launch emacs server right away
+  launchctl load ~/Library/LaunchAgents/homebrew.mxcl.emacs.plist
+#+END_SRC
+
+Now we can launch emacs window very fast:
+
+#+BEGIN_SRC sh
+  emacsclient -c
+#+END_SRC
+
+or, you could setup an alias in =.zshrc=:
+
+#+BEGIN_SRC 
+alias ec='emacsclient -c'
+#+END_SRC

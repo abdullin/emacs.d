@@ -16,11 +16,6 @@ In order to load the file, put into your =~/.emacs= or
 (server-start)
 #+END_SRC
 
-** References
-
-This config is stiched together from a variety of sources and mostly
-inspired by [[https://github.com/howardabrams/dot-files][Howard Abrams]].
-
 * General settings
 ** Home directory
 
