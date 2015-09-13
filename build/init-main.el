@@ -227,6 +227,8 @@
 (setq make-backup-files nil)
 (setq auto-save-default nil)
 
+(global-set-key (kbd "<escape>")      'nil)
+
 (el-get-bundle linum-relative
   (setq linum-relative-current-symbol "")
   )

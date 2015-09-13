@@ -128,7 +128,6 @@ Let's enable key-chord:
   (key-chord-mode 1)
 #+END_SRC
 
-
 * Display settings
 ** Hide some things
 #+BEGIN_SRC elisp
@@ -527,7 +526,6 @@ We will call this helper via a key-chord:
 #+END_SRC
 ** Key chords
 
-
 * Miscellaneous
 ** Unknown origins
 
@@ -597,6 +595,13 @@ Auto-save never really worked for me:
 
 #+END_SRC
 
+** Disable escape
+
+Escape key hurts my pinky :)
+
+#+BEGIN_SRC elisp
+  (global-set-key (kbd "<escape>")      'nil)
+#+END_SRC
 ** Line numbers 
 
 This is a very nice way to highlight jumps for vim.
