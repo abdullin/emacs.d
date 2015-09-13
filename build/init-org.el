@@ -1,3 +1,14 @@
+(setq org-disputed-keys '(([(shift up)] . [(meta p)])
+                          ([(shift down)] . [(meta n)])
+                          ([(shift left)] . [(meta -)])
+                          ([(shift right)] . [(meta +)])
+                          ([(meta return)] . [(control meta return)])
+                          ([(control shift right)] . [(meta shift +)])
+                          ([(control shift left)] . [(meta shift -)])))
+(setq org-replace-disputed-keys t)
+
+;; latest version of org-mode
+(el-get-bundle org)
 (require 'org)
 
 (setq org-startup-indented t)
@@ -12,11 +23,6 @@
 (setq org-completion-use-ido t)
 
 (global-set-key "\C-cb" 'org-iswitchb)
-
-(add-hook 'org-shiftup-final-hook 'windmove-up)
-(add-hook 'org-shiftleft-final-hook 'windmove-left)
-(add-hook 'org-shiftdown-final-hook 'windmove-down)
-(add-hook 'org-shiftright-final-hook 'windmove-right)
 
 (setq org-todo-keywords
       (quote ((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")

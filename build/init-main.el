@@ -52,8 +52,6 @@
 (el-get-bundle flycheck)
 (el-get-bundle yasnippet)
 (el-get-bundle company)
-;; latest version of org-mode
-(el-get-bundle org)
 (el-get-bundle key-chord)
 ;; undo tree git-style
 (el-get-bundle undo-tree) 
