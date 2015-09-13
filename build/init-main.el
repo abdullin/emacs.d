@@ -20,13 +20,6 @@
       (add-hook hook callback))
     hooks))
 
-
-(defun ra/save-and-recompile()
-  (interactive)
-  (save-buffer)
-  (recompile)
-  )
-
 (add-to-list 'load-path (expand-file-name "el-get/el-get" emacs-root-dir))
 
 (unless (require 'el-get nil 'noerror)
@@ -41,8 +34,6 @@
 (setq modules-dir (expand-file-name "packages" emacs-root-dir))
 (mapc 'load (directory-files modules-dir 't "^[^#].*el$"))
 
-;; VIM emulation
-(el-get-bundle evil)
 (el-get-bundle dired-plus)
 (el-get-bundle flycheck)
 (el-get-bundle yasnippet)
@@ -53,6 +44,10 @@
 (el-get-bundle web-mode)
 ;; undo tree git-style
 (el-get-bundle undo-tree)
+
+(el-get-bundle key-chord)
+(require 'key-chord)
+(key-chord-mode 1)
 
 ;; I know what the scratch is for
 (setq initial-scratch-message "")
@@ -130,6 +125,9 @@
 
 (display-battery-mode)
 
+;; blinking cursor
+(blink-cursor-mode t)
+
 (require 'init-client)
 
 (add-to-list 'default-frame-alist '(vertical-scroll-bars . nil))
@@ -159,14 +157,15 @@
 (el-get-bundle expand-region)
 (global-set-key (kbd "C-=") 'er/expand-region)
 
-(require `evil)
-;;(key-chord-define evil-insert-state-map "jk" 'evil-normal-state)
+;; VIM emulation
+(el-get-bundle evil)
+(require 'evil)
 (evil-mode 1)
 
-(show-paren-mode t)
+(key-chord-define evil-insert-state-map "jk" 'evil-normal-state)
+(key-chord-define evil-visual-state-map "jk" 'evil-normal-state)
 
-;; blinking cursor
-(blink-cursor-mode t)
+(show-paren-mode t)
 
 (add-hook 'ido-setup-hook (lambda ()
                 (setq ido-enable-flex-matching t)))
@@ -208,10 +207,6 @@
   (";" execute-extended-command "meta-x")
   ("w" ra/hydra-windows/body "win")
   )
-
-(el-get-bundle key-chord)
-(require 'key-chord)
-(key-chord-mode 1)
 
 (key-chord-define-global ";'" 'hydra-jump/body)
 

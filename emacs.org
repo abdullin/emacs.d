@@ -68,13 +68,6 @@ Just a few helper functions to lighten up the day
   (mapc (lambda (hook)
 	  (add-hook hook callback))
 	hooks))
-
-
-(defun ra/save-and-recompile()
-  (interactive)
-  (save-buffer)
-  (recompile)
-  )
 #+END_SRC
 
 * Packages
@@ -108,8 +101,6 @@ and load them like this:
 We can describe our common dependencies like this:
 
 #+BEGIN_SRC elisp 
-  ;; VIM emulation
-  (el-get-bundle evil)
   (el-get-bundle dired-plus)
   (el-get-bundle flycheck)
   (el-get-bundle yasnippet)
@@ -122,6 +113,20 @@ We can describe our common dependencies like this:
   (el-get-bundle undo-tree) 
 #+END_SRC
 
+** Key-chords 
+
+Key-chord lets you define keystrokes (e.g. =zz=) which, if pressed in
+rapid sequence, will trigger some effect. It has a side-effect: if a
+key is present in a key-chord, it will work slower. So we'll try to
+keep these to a bare minimum.
+
+Let's enable key-chord:
+
+#+BEGIN_SRC elisp
+  (el-get-bundle key-chord)
+  (require 'key-chord)
+  (key-chord-mode 1)
+#+END_SRC
 
 
 * Display settings
@@ -247,6 +252,14 @@ Oh, while we are at it, let's display battery percentage:
   (display-battery-mode)
 #+END_SRC
 
+** Cursor
+
+Make the cursor blink:
+
+#+BEGIN_SRC elisp
+;; blinking cursor
+(blink-cursor-mode t)
+#+END_SRC
 * GUI Client
 
 Emacs can have a nice GUI window that lets you have fine-grained
@@ -308,7 +321,6 @@ hydra for that:
 #+END_SRC
 
 
-
 ** Zooming with Hydra 
 
 With this simple code, hit =F9= to enter zooming mode:
@@ -334,8 +346,7 @@ Some things just waste space, let's kill them once and for all frames
   (add-to-list 'default-frame-alist '(tool-bar-lines . 0))
 #+END_SRC
 
-* Navigation
-
+* Editing experience
 ** Dired
 
 Dired can work like a total commander and guess targets when two
@@ -343,8 +354,6 @@ windows are open:
 #+BEGIN_SRC elisp
 (setq dired-dwim-target t)
 #+END_SRC
-
-* Editing experience
 ** Markdown
 Load the package with el-get:
 
@@ -389,16 +398,24 @@ keep pressing the key until it selects what you want.
   (global-set-key (kbd "C-=") 'er/expand-region)
 #+END_SRC
 
-
 ** VIM emulation
 
 Evil emulates vim inside emacs. It works pretty well out of the box:
 
 #+BEGIN_SRC elisp
-(require `evil)
-;;(key-chord-define evil-insert-state-map "jk" 'evil-normal-state)
+
+;; VIM emulation
+(el-get-bundle evil)
+(require 'evil)
 (evil-mode 1)
 
+#+END_SRC
+
+Escape is too far, but we can use =jk= to enter the normal mode:
+
+#+BEGIN_SRC elisp
+  (key-chord-define evil-insert-state-map "jk" 'evil-normal-state)
+  (key-chord-define evil-visual-state-map "jk" 'evil-normal-state)
 #+END_SRC
 
 Something that I can't get used to is to disable cursor keys:
@@ -424,16 +441,6 @@ Something that I can't get used to is to disable cursor keys:
 Highlight matching parens:
 #+BEGIN_SRC elisp
 (show-paren-mode t)
-#+END_SRC
-
-** Cursor
-
-
-Make the cursor blink:
-
-#+BEGIN_SRC elisp
-;; blinking cursor
-(blink-cursor-mode t)
 #+END_SRC
 
 ** IDO (Interactively DO stuff)
@@ -512,26 +519,13 @@ snippets.
     ("w" ra/hydra-windows/body "win")
     )
 #+END_SRC
+
+We will call this helper via a key-chord:
+
+#+BEGIN_SRC elisp
+  (key-chord-define-global ";'" 'hydra-jump/body)
+#+END_SRC
 ** Key chords
-
-Key-chord lets you define keystrokes (e.g. =zz=) which, if pressed in
-rapid sequence, will trigger some effect. It has a side-effect: if a
-key is present in a key-chord, it will work slower.
-
-Let's enable key-chord:
-
-#+BEGIN_SRC elisp
-  (el-get-bundle key-chord)
-  (require 'key-chord)
-  (key-chord-mode 1)
-#+END_SRC
-
-
-Then we will define only one chord:
-
-#+BEGIN_SRC elisp
-    (key-chord-define-global ";'" 'hydra-jump/body)
-#+END_SRC
 
 
 * Miscellaneous
