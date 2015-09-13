@@ -69,11 +69,6 @@ Just a few helper functions to lighten up the day
 	  (add-hook hook callback))
 	hooks))
 
-(defun ra/kill-this-buffer-if-not-modified ()
-  (interactive)
-  (if (menu-bar-non-minibuffer-window-p)
-      (kill-buffer-if-not-modified (current-buffer))
-    (abort-recursive-edit)))
 
 (defun ra/save-and-recompile()
   (interactive)
@@ -113,21 +108,21 @@ and load them like this:
 We can describe our common dependencies like this:
 
 #+BEGIN_SRC elisp 
-;; VIM emulation
-(el-get-bundle evil)
-(el-get-bundle dired-plus)
-(el-get-bundle flycheck)
-(el-get-bundle yasnippet)
-(el-get-bundle company)
-(el-get-bundle key-chord)
-;; undo tree git-style
-(el-get-bundle undo-tree) 
-;; Swap buffers without typing C-x b on each window
-(el-get-bundle buffer-move)  
-(el-get-bundle hydra)
-(el-get-bundle web-mode)
-
+  ;; VIM emulation
+  (el-get-bundle evil)
+  (el-get-bundle dired-plus)
+  (el-get-bundle flycheck)
+  (el-get-bundle yasnippet)
+  (el-get-bundle company)
+  ;; Swap buffers without typing C-x b on each window
+  (el-get-bundle buffer-move)  
+  (el-get-bundle hydra)
+  (el-get-bundle web-mode)
+  ;; undo tree git-style
+  (el-get-bundle undo-tree) 
 #+END_SRC
+
+
 
 * Display settings
 ** Hide some things
@@ -205,7 +200,7 @@ Hydra-based way of manipulating windows. Let's define a few helpers
 Ok, let's define a hydra head for moving windows around on =F9=:
 
 #+BEGIN_SRC elisp
-  (defhydra hydra-splitter (global-map "<f9>")
+  (defhydra ra/hydra-windows (global-map "<f9>")
     "winops"
     ("SPC" nil)
     ("<left>" hydra-move-splitter-left)
@@ -497,64 +492,47 @@ snippets.
 (setq yas-snippet-dirs (ra/emacs-subdirectory "snippets"))
 #+END_SRC
 
+** Jump Hydra
+
+#+BEGIN_SRC elisp
+  (defun ra/kill-this-buffer-if-not-modified ()
+    (interactive)
+    (if (menu-bar-non-minibuffer-window-p)
+        (kill-buffer-if-not-modified (current-buffer))
+      (abort-recursive-edit)))
+
+  (defhydra hydra-jump (:color blue)
+    "jumps"
+    ("d" dired-jump "dired")
+    ("." ido-find-file "file")
+    ("l" ido-switch-buffer "buffer")
+    ("k" ra/kill-this-buffer-if-not-modified "kill")
+    ("z" undo-tree-visualize "undo")
+    (";" execute-extended-command "meta-x")
+    ("w" ra/hydra-windows/body "win")
+    )
+#+END_SRC
 ** Key chords
+
+Key-chord lets you define keystrokes (e.g. =zz=) which, if pressed in
+rapid sequence, will trigger some effect. It has a side-effect: if a
+key is present in a key-chord, it will work slower.
 
 Let's enable key-chord:
 
 #+BEGIN_SRC elisp
-(require 'key-chord)
-(key-chord-mode 1)
+  (el-get-bundle key-chord)
+  (require 'key-chord)
+  (key-chord-mode 1)
 #+END_SRC
 
-My current key bindings
+
+Then we will define only one chord:
 
 #+BEGIN_SRC elisp
-  (key-chord-define-global ";b" 'ibuffer)
-
-  (defun find-tag-no-prompt ()
-    "Jump to the tag at point without prompting"
-    (interactive)
-    (find-tag (find-tag-default)))
-
-  (defun view-tag-other-window (tagname &optional next-p regexp-p)
-    "Same as `find-tag-other-window' but doesn't move the point"
-    (interactive (find-tag-interactive "View tag other window: "))
-    (let ((window (get-buffer-window)))
-      (find-tag-other-window tagname next-p regexp-p)
-      (recenter 0)
-      (select-window window)))
-
-  (key-chord-define-global "5t" 'find-tag-default)
-
-  (key-chord-define-global "4t" 'view-tag-other-window)
-
-  (key-chord-define-global ";d" 'dired-jump)
-
-  (key-chord-define-global ";'" 'execute-extended-command) ;; Meta-X
-
-  (key-chord-define-global ";l" 'ido-switch-buffer)
-  (key-chord-define-global ";." 'ido-find-file) ;; jump to file
-
-  (key-chord-define-global "zz" 'undo-tree-visualize) ;; open undo-tree
-
-  (key-chord-define-global ";k"     'ra/kill-this-buffer-if-not-modified)
-
-
-  ;; SAVE
-
-  (global-set-key (kbd "<f2>") `ra/save-and-recompile)
-  ;;(global-set-key (kbd "<f8>") `recompile)
-  ;;(global-set-key (kbd "<f9>") `next-error)
-
+    (key-chord-define-global ";'" 'hydra-jump/body)
 #+END_SRC
 
-
-
-
-#+BEGIN_SRC elisp
-
-;(key-chord-define-global "e2" 'er/contract-region)
-#+END_SRC
 
 * Miscellaneous
 ** Unknown origins

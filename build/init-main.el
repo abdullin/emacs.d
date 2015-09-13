@@ -20,11 +20,6 @@
       (add-hook hook callback))
     hooks))
 
-(defun ra/kill-this-buffer-if-not-modified ()
-  (interactive)
-  (if (menu-bar-non-minibuffer-window-p)
-      (kill-buffer-if-not-modified (current-buffer))
-    (abort-recursive-edit)))
 
 (defun ra/save-and-recompile()
   (interactive)
@@ -52,13 +47,12 @@
 (el-get-bundle flycheck)
 (el-get-bundle yasnippet)
 (el-get-bundle company)
-(el-get-bundle key-chord)
-;; undo tree git-style
-(el-get-bundle undo-tree) 
 ;; Swap buffers without typing C-x b on each window
 (el-get-bundle buffer-move)  
 (el-get-bundle hydra)
 (el-get-bundle web-mode)
+;; undo tree git-style
+(el-get-bundle undo-tree)
 
 ;; I know what the scratch is for
 (setq initial-scratch-message "")
@@ -107,7 +101,7 @@
       (shrink-window arg)
     (enlarge-window arg)))
 
-(defhydra hydra-splitter (global-map "<f9>")
+(defhydra ra/hydra-windows (global-map "<f9>")
   "winops"
   ("SPC" nil)
   ("<left>" hydra-move-splitter-left)
@@ -198,47 +192,28 @@
 
 (setq yas-snippet-dirs (ra/emacs-subdirectory "snippets"))
 
+(defun ra/kill-this-buffer-if-not-modified ()
+  (interactive)
+  (if (menu-bar-non-minibuffer-window-p)
+      (kill-buffer-if-not-modified (current-buffer))
+    (abort-recursive-edit)))
+
+(defhydra hydra-jump (:color blue)
+  "jumps"
+  ("d" dired-jump "dired")
+  ("." ido-find-file "file")
+  ("l" ido-switch-buffer "buffer")
+  ("k" ra/kill-this-buffer-if-not-modified "kill")
+  ("z" undo-tree-visualize "undo")
+  (";" execute-extended-command "meta-x")
+  ("w" ra/hydra-windows/body "win")
+  )
+
+(el-get-bundle key-chord)
 (require 'key-chord)
 (key-chord-mode 1)
 
-(key-chord-define-global ";b" 'ibuffer)
-
-(defun find-tag-no-prompt ()
-  "Jump to the tag at point without prompting"
-  (interactive)
-  (find-tag (find-tag-default)))
-
-(defun view-tag-other-window (tagname &optional next-p regexp-p)
-  "Same as `find-tag-other-window' but doesn't move the point"
-  (interactive (find-tag-interactive "View tag other window: "))
-  (let ((window (get-buffer-window)))
-    (find-tag-other-window tagname next-p regexp-p)
-    (recenter 0)
-    (select-window window)))
-
-(key-chord-define-global "5t" 'find-tag-default)
-
-(key-chord-define-global "4t" 'view-tag-other-window)
-
-(key-chord-define-global ";d" 'dired-jump)
-
-(key-chord-define-global ";'" 'execute-extended-command) ;; Meta-X
-
-(key-chord-define-global ";l" 'ido-switch-buffer)
-(key-chord-define-global ";." 'ido-find-file) ;; jump to file
-
-(key-chord-define-global "zz" 'undo-tree-visualize) ;; open undo-tree
-
-(key-chord-define-global ";k"     'ra/kill-this-buffer-if-not-modified)
-
-
-;; SAVE
-
-(global-set-key (kbd "<f2>") `ra/save-and-recompile)
-;;(global-set-key (kbd "<f8>") `recompile)
-;;(global-set-key (kbd "<f9>") `next-error)
-
-;(key-chord-define-global "e2" 'er/contract-region)
+(key-chord-define-global ";'" 'hydra-jump/body)
 
 ;; mode line settings
 (column-number-mode t)
