@@ -73,8 +73,30 @@ Switch between org buffers:
 (global-set-key "\C-cb" 'org-iswitchb)
 #+END_SRC
 
+** Clocking shortcuts
 
 
+#+BEGIN_SRC elisp
+  (defhydra hydra-org-clock (:color blue :hint nil)
+    "
+  Clock   In/out^     ^Edit^   ^Summary     (_?_)
+  -----------------------------------------
+          _i_n         _e_dit   _g_oto entry
+          _c_ontinue   _q_uit   _d_isplay
+          _o_ut        ^ ^      _r_eport
+        "
+    ("i" org-clock-in)
+    ("o" org-clock-out)
+    ("c" org-clock-in-last)
+    ("e" org-clock-modify-effort-estimate)
+    ("q" org-clock-cancel)
+    ("g" org-clock-goto)
+    ("d" org-clock-display)
+    ("r" org-clock-report)
+    ("?" (org-info "Clocking commands")))
+
+  (define-key org-mode-map  (kbd "C-c w") 'hydra-org-clock/body)
+#+END_SRC
 * GTD Workflow
 ** Keywords and states
 
