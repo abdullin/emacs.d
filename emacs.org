@@ -415,6 +415,7 @@ Escape is too far, but we can use =jk= to enter the normal mode:
 #+BEGIN_SRC elisp
   (key-chord-define evil-insert-state-map "jj" 'evil-normal-state)
   (key-chord-define evil-visual-state-map "jj" 'evil-normal-state)
+  (key-chord-define evil-normal-state-map "jj" 'evil-normal-state)
 #+END_SRC
 
 Something that I can't get used to is to disable cursor keys:
