@@ -413,8 +413,8 @@ Evil emulates vim inside emacs. It works pretty well out of the box:
 Escape is too far, but we can use =jk= to enter the normal mode:
 
 #+BEGIN_SRC elisp
-  (key-chord-define evil-insert-state-map "jk" 'evil-normal-state)
-  (key-chord-define evil-visual-state-map "jk" 'evil-normal-state)
+  (key-chord-define evil-insert-state-map "jj" 'evil-normal-state)
+  (key-chord-define evil-visual-state-map "jj" 'evil-normal-state)
 #+END_SRC
 
 Something that I can't get used to is to disable cursor keys:

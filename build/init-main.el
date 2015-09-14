@@ -162,8 +162,8 @@
 (require 'evil)
 (evil-mode 1)
 
-(key-chord-define evil-insert-state-map "jk" 'evil-normal-state)
-(key-chord-define evil-visual-state-map "jk" 'evil-normal-state)
+(key-chord-define evil-insert-state-map "jj" 'evil-normal-state)
+(key-chord-define evil-visual-state-map "jj" 'evil-normal-state)
 
 (show-paren-mode t)
 
