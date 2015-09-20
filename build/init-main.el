@@ -60,7 +60,8 @@
 
 ;; move to a neighbor window using SHIFT-<arrow-key>
 (require 'windmove)
-(windmove-default-keybindings)
+
+;;(windmove-default-keybindings)
 
 (winner-mode 1)
 
@@ -96,26 +97,30 @@
       (shrink-window arg)
     (enlarge-window arg)))
 
-(defhydra ra/hydra-windows (global-map "<f9>")
+(defhydra ra/hydra-windows (global-map "<f2>")
   "winops"
   ("SPC" nil)
-  ("<left>" hydra-move-splitter-left)
-  ("<down>" hydra-move-splitter-down)
-  ("<up>" hydra-move-splitter-up)
-  ("<right>" hydra-move-splitter-right)
+  ("<left>" windmove-left :color blue)
+  ("<down>" windmove-down :color blue) 
+  ("<up>" windmove-up :color blue)
+  ("<right>" windmove-right :color blue)
+  ("h" windmove-left :color blue)
+  ("j" windmove-down :color blue) 
+  ("k" windmove-up :color blue)
+  ("l" windmove-right :color blue)
   ("S-<left>" buf-move-left)
   ("S-<down>" buf-move-down)
   ("S-<up>" buf-move-up)
   ("S-<right>" buf-move-right)
-  ("x" delete-window)
-  ("X" delete-other-windows)
+  ("x" delete-window :color blue)
+  ("X" delete-other-windows :color blue)
   ("z" (progn
         (winner-undo)
         (setq this-command 'winner-undo))
    )
   ("Z" winner-redo)
-  ("r" split-window-right)
-  ("b" split-window-below)
+  ("r" split-window-right :color blue)
+  ("b" split-window-below :color blue)
   )
 
 (el-get-bundle smart-mode-line)

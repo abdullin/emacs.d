@@ -1,12 +1,3 @@
-(setq org-disputed-keys '(([(shift up)] . [(meta p)])
-                          ([(shift down)] . [(meta n)])
-                          ([(shift left)] . [(meta -)])
-                          ([(shift right)] . [(meta +)])
-                          ([(meta return)] . [(control meta return)])
-                          ([(control shift right)] . [(meta shift +)])
-                          ([(control shift left)] . [(meta shift -)])))
-(setq org-replace-disputed-keys t)
-
 ;; latest version of org-mode
 (el-get-bundle org)
 (require 'org)
