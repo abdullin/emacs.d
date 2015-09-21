@@ -107,7 +107,15 @@ Clock   In/out^     ^Edit^   ^Summary     (_?_)
    (octave . t)
    (sqlite . t)
    (perl . t)
+   (gnuplot . t)
    ))
+
+(setq org-confirm-babel-evaluate nil)
+
+(defun ra/fix-inline-images ()
+  (when org-inline-image-overlays
+    (org-redisplay-inline-images)))
+(add-hook 'org-babel-after-execute-hook 'ra/fix-inline-images)
 
 (setq org-export-backends (quote (
        ascii

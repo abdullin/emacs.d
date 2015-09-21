@@ -947,6 +947,17 @@ here:
 (require 'init-org)
 #+END_SRC
 
+** Statistics
+
+
+Let's install R and gnuplot
+
+#+BEGIN_SRC elisp
+  (el-get-bundle ess)
+  (el-get-bundle gnuplot-mode)
+
+  (add-to-list 'auto-mode-alist '("\\.R$" . R-mode))
+#+END_SRC
 * Footnotes
 ** Loading the configuration
 

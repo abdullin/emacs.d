@@ -224,7 +224,24 @@ Some initial languages that we want babel to support:
      (octave . t)
      (sqlite . t)
      (perl . t)
+     (gnuplot . t)
      ))
+#+END_SRC
+
+Let's be risky and evaluate all blocks without asking:
+
+#+BEGIN_SRC elisp
+  (setq org-confirm-babel-evaluate nil)
+#+END_SRC
+** Refresh inline images
+
+I want inline images to be refreshed automatically (taken from [[http://emacs.stackexchange.com/a/9813][SS]]):
+
+#+BEGIN_SRC elisp
+  (defun ra/fix-inline-images ()
+    (when org-inline-image-overlays
+      (org-redisplay-inline-images)))
+  (add-hook 'org-babel-after-execute-hook 'ra/fix-inline-images)
 #+END_SRC
 
 ** Org publishing

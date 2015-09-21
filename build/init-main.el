@@ -292,4 +292,9 @@ of listed in `linum-mode-excludes'."
 
 (require 'init-org)
 
+(el-get-bundle ess)
+(el-get-bundle gnuplot-mode)
+
+(add-to-list 'auto-mode-alist '("\\.R$" . R-mode))
+
 (provide 'init-main)
