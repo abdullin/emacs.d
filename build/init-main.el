@@ -58,10 +58,17 @@
 ;; disable alarm bell beep
 (setq visible-bell t)
 
-;; move to a neighbor window using SHIFT-<arrow-key>
+;; move to a neighbor window using SUPER + VIM KEY
 (require 'windmove)
+(global-set-key (kbd "s-k") 'windmove-up)
+(global-set-key (kbd "s-j") 'windmove-down)
+(global-set-key (kbd "s-h") 'windmove-left)
+(global-set-key (kbd "s-l") 'windmove-right)
 
-;;(windmove-default-keybindings)
+(global-set-key (kbd "s-S-H") 'buf-move-left)
+(global-set-key (kbd "s-S-J") 'buf-move-down)
+(global-set-key (kbd "s-S-K") 'buf-move-up)
+(global-set-key (kbd "s-S-L") 'buf-move-right)
 
 (winner-mode 1)
 
@@ -100,18 +107,10 @@
 (defhydra ra/hydra-windows (global-map "<f2>")
   "winops"
   ("SPC" nil)
-  ("<left>" windmove-left :color blue)
-  ("<down>" windmove-down :color blue) 
-  ("<up>" windmove-up :color blue)
-  ("<right>" windmove-right :color blue)
-  ("h" windmove-left :color blue)
-  ("j" windmove-down :color blue) 
-  ("k" windmove-up :color blue)
-  ("l" windmove-right :color blue)
-  ("S-<left>" buf-move-left)
-  ("S-<down>" buf-move-down)
-  ("S-<up>" buf-move-up)
-  ("S-<right>" buf-move-right)
+  ("<left>"  hydra-move-splitter-left)
+  ("<down>" hydra-move-splitter-down) 
+  ("<up>" hydra-move-splitter-up)
+  ("<right>" hydra-move-splitter-right)
   ("x" delete-window :color blue)
   ("X" delete-other-windows :color blue)
   ("z" (progn
