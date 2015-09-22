@@ -4,7 +4,6 @@
 #+PROPERTY:    header-args:sh  :tangle no
 
 * Overview
-
 ** Init Emacs
 This is my emacs setup for the mighty org-mode!
 
@@ -15,7 +14,6 @@ This is my emacs setup for the mighty org-mode!
 #+END_SRC
 
 * Settings
-
 ** View preferences
 
 Make org-mode look pretty
