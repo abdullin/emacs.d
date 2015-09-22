@@ -7,6 +7,8 @@
 (setq org-odd-level-only t)
 (setq org-indent-mode t)
 
+(setq org-startup-with-inline-images t)
+
 (add-to-list 'auto-mode-alist '("\\.\\(org\\|org_archive\\|txt\\)$" . org-mode))
 
 (setq org-directory "~/org")

@@ -18,10 +18,16 @@ This is my emacs setup for the mighty org-mode!
 
 Make org-mode look pretty
 #+BEGIN_SRC elisp
-(setq org-startup-indented t)
-(setq org-hide-leading-stars t)
-(setq org-odd-level-only t)
-(setq org-indent-mode t)
+  (setq org-startup-indented t)
+  (setq org-hide-leading-stars t)
+  (setq org-odd-level-only t)
+  (setq org-indent-mode t)
+#+END_SRC
+
+I want to see inline images:
+
+#+BEGIN_SRC elisp
+  (setq org-startup-with-inline-images t)
 #+END_SRC
 
 ** File aliases
