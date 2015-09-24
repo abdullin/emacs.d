@@ -1,5 +1,5 @@
 ;; latest version of org-mode
-(el-get-bundle org)
+(el-get-bundle org-mode)
 (require 'org)
 
 (setq org-startup-indented t)

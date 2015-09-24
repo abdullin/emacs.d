@@ -9,7 +9,7 @@ This is my emacs setup for the mighty org-mode!
 
 #+BEGIN_SRC elisp
   ;; latest version of org-mode
-  (el-get-bundle org)
+  (el-get-bundle org-mode)
   (require 'org)
 #+END_SRC
 
