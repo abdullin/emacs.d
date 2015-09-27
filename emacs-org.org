@@ -45,13 +45,13 @@ My default org folder is:
   (setq org-directory "~/org")
 #+END_SRC
 
-But I want to compose agenda from projects as well:
+But I want to compose agenda from all org files in projects as well:
 
 #+BEGIN_SRC elisp
   (setq org-agenda-files (append
-                          '("~/org")
-                          (file-expand-wildcards "~/proj/*/org")
-                          (file-expand-wildcards "~/proj/*")
+                          (file-expand-wildcards "~/org/*.org")
+                          (file-expand-wildcards "~/proj/*/*.org")
+                          (file-expand-wildcards "~/proj/*/org/*.org")
                           )
         )
 #+END_SRC

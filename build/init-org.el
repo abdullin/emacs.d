@@ -14,9 +14,9 @@
 (setq org-directory "~/org")
 
 (setq org-agenda-files (append
-                        '("~/org")
-                        (file-expand-wildcards "~/proj/*/org")
-                        (file-expand-wildcards "~/proj/*")
+                        (file-expand-wildcards "~/org/*.org")
+                        (file-expand-wildcards "~/proj/*/*.org")
+                        (file-expand-wildcards "~/proj/*/org/*.org")
                         )
       )
 
