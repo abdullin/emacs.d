@@ -9,9 +9,16 @@
 
 (setq org-startup-with-inline-images t)
 
-(add-to-list 'auto-mode-alist '("\\.\\(org\\|org_archive\\|txt\\)$" . org-mode))
+(add-to-list 'auto-mode-alist '("\\.\\(org\\|org_archive\\)$" . org-mode))
 
 (setq org-directory "~/org")
+
+(setq org-agenda-files (append
+                        '("~/org")
+                        (file-expand-wildcards "~/proj/*/org")
+                        (file-expand-wildcards "~/proj/*")
+                        )
+      )
 
 (setq org-completion-use-ido t)
 
@@ -86,14 +93,6 @@ Clock   In/out^     ^Edit^   ^Summary     (_?_)
                "* PHONE %? :PHONE:\n%U" :clock-in t :clock-resume t)
               ("h" "Habit" entry (file "~/org/inbox.org")
                "* NEXT %?\n%U\n%a\nSCHEDULED: %(format-time-string \"<%Y-%m-%d %a .+1d/3d>\")\n:PROPERTIES:\n:STYLE: habit\n:REPEAT_TO_STATE: NEXT\n:END:\n"))))
-
-;; load agenda from
-(setq org-agenda-files (quote (
-                               "~/org"
-                               ;; "~/dev/go/src/github.com/happypancake/hpc"
-                               )
-                              ))
-
 
 (global-set-key (kbd "<f12>") 'org-agenda)
 

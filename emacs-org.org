@@ -34,14 +34,26 @@ I want to see inline images:
 
 Default for org, txt and archive files
 #+BEGIN_SRC elisp
-  (add-to-list 'auto-mode-alist '("\\.\\(org\\|org_archive\\|txt\\)$" . org-mode))
+  (add-to-list 'auto-mode-alist '("\\.\\(org\\|org_archive\\)$" . org-mode))
 #+END_SRC
 
 ** Locations
 
+My default org folder is:
+
 #+BEGIN_SRC elisp
   (setq org-directory "~/org")
+#+END_SRC
 
+But I want to compose agenda from projects as well:
+
+#+BEGIN_SRC elisp
+  (setq org-agenda-files (append
+                          '("~/org")
+                          (file-expand-wildcards "~/proj/*/org")
+                          (file-expand-wildcards "~/proj/*")
+                          )
+        )
 #+END_SRC
 
 ** Use IDO
@@ -169,12 +181,6 @@ And define some capture templates:
 
 #+BEGIN_SRC elisp
 
-  ;; load agenda from
-  (setq org-agenda-files (quote (
-                                 "~/org"
-                                 ;; "~/dev/go/src/github.com/happypancake/hpc"
-                                 )
-                                ))
 
 
   (global-set-key (kbd "<f12>") 'org-agenda)
