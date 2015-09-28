@@ -11,22 +11,33 @@ emacs init script out of it by running =org-babel-tangle=.
 The script assumes that this folder is either checked out to
 =~/.emacs.d= or linked to it.
 
-In order to load everything, copy =build/init.el= (shown below) to
-=~/.emacs.d/= folder and enable the roles that you are interested in.
 
-#+BEGIN_SRC elisp :tangle build/init.el
+#+BEGIN_SRC elisp :tangle init.el
+  (load-file "~/.emacs.d/build/init-main.el")
+  (server-start)
+#+END_SRC
+
+* General settings
+
+** Roles
+
+This config could be used from multiple servers. We will
+enable/disable roles as needed. Our default setup will use only the
+latest version of =org=:
+
+#+BEGIN_SRC elisp
   (setq ra/roles '(
+                   ;; org-mode is essential
                    "org"
                    ;; "ess"
                    ;; "erlang"
                    ;; "go"
                    ;; "web" - HTML,CSS,JS,JSX etc
                    ))
-  (load-file "~/.emacs.d/build/init-main.el")
-  (server-start)
 #+END_SRC
 
-* General settings
+Local configs could define overrides.
+
 ** Home directory
 
 Let's define our own constant for the emacs directory and a function
@@ -57,6 +68,27 @@ erlang), so let's look up that in machine-specific file:
   ;; (setq custom-file (expand-file-name "init-local.el" ra/emacs-directory))
   (when (file-exists-p ra/emacs-machine-init)
     (load ra/emacs-machine-init))
+#+END_SRC
+
+
+*** Rinat's rMBR
+
+#+BEGIN_SRC elisp :tangle Rinats-MacBook-Pro.local.el
+  ;; enable all modes
+  (setq ra/roles '(
+                   "org"
+                   "ess"
+                   "erlang"
+                   ;; "go"
+                   "web" ;;HTML,CSS,JS,JSX etc
+                   ))
+
+  ;; config for erlang on OSX 
+  (setq ra/erlang-root-path "/usr/local/Cellar/erlang/18.0.3/")
+  (setq ra/erlang-tools-path "/usr/local/Cellar/erlang/18.0.3/lib/erlang/lib/tools-2.8/emacs/")
+  ;;config for R on OSX
+  (setq inferior-R-program-name "/usr/local/Cellar/r/3.2.2_1/bin/R")
+
 #+END_SRC
 
 ** Setup load paths

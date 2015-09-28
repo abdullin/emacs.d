@@ -1,3 +1,12 @@
+(setq ra/roles '(
+                 ;; org-mode is essential
+                 "org"
+                 ;; "ess"
+                 ;; "erlang"
+                 ;; "go"
+                 ;; "web" - HTML,CSS,JS,JSX etc
+                 ))
+
 (defconst ra/emacs-directory (concat (getenv "HOME") "/.emacs.d/"))
 (defun ra/emacs-subdirectory (d) (expand-file-name d ra/emacs-directory))
 
