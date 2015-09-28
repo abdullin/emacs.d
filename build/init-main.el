@@ -34,6 +34,8 @@
 (setq modules-dir (expand-file-name "packages" emacs-root-dir))
 (mapc 'load (directory-files modules-dir 't "^[^#].*el$"))
 
+;; modern list library
+(el-get-bundle dash)
 (el-get-bundle dired-plus)
 (el-get-bundle flycheck)
 (el-get-bundle yasnippet)
@@ -270,9 +272,17 @@ of listed in `linum-mode-excludes'."
 
 (ra/load-unix-shell-env)
 
-(require 'init-erlang)
+(when (member "erlang" ra/roles)
+  (require 'init-erlang)
+  )
 
-(require 'init-js)
+(when (member "web" ra/roles)
+  (require 'init-js)
+  )
+
+(when (member "go" ra/roles)
+  (require 'init-go)
+  )
 
 (setq lisp-mode-hooks '(emacs-lisp-mode-hook
             lisp-mode-hook
@@ -289,11 +299,14 @@ of listed in `linum-mode-excludes'."
 
 (require 'init-web)
 
-(require 'init-org)
+(when (member "org" ra/roles)
+  (require 'init-org)
+  )
 
-(el-get-bundle ess)
-(el-get-bundle gnuplot-mode)
-
-(add-to-list 'auto-mode-alist '("\\.R$" . R-mode))
+(when (member "ess" ra/roles)
+  (el-get-bundle ess)
+  (el-get-bundle gnuplot-mode)
+  (add-to-list 'auto-mode-alist '("\\.R$" . R-mode))
+  )
 
 (provide 'init-main)

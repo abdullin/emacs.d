@@ -12,6 +12,7 @@ In order to load the file, put into your =~/.emacs= or
 =~/.emacs.d/init.el=:
 
 #+BEGIN_SRC elisp :tangle no
+(setq ra/roles '("org" "ess"))
 (load-file "~/.emacs.d/build/init-main.el")
 (server-start)
 #+END_SRC
@@ -101,6 +102,8 @@ and load them like this:
 We can describe our common dependencies like this:
 
 #+BEGIN_SRC elisp 
+  ;; modern list library
+  (el-get-bundle dash)
   (el-get-bundle dired-plus)
   (el-get-bundle flycheck)
   (el-get-bundle yasnippet)
@@ -714,7 +717,10 @@ Erlang-specific config is:
 We can load it from the main file:
 
 #+BEGIN_SRC elisp
-(require 'init-erlang)
+  (when (member "erlang" ra/roles)
+    (require 'init-erlang)
+    )
+
 #+END_SRC
 
 ** Pure Javascript
@@ -754,17 +760,19 @@ We can load it from the main file:
   (provide 'init-js)
 #+END_SRC
 
-And load this config via:
+Load this config, if we are in web role:
 
 #+BEGIN_SRC elisp
-(require 'init-js)
+  (when (member "web" ra/roles)
+    (require 'init-js)
+    )
 #+END_SRC
 
-** COMMENT Golang mode
+** Golang mode
 
 Grab golang packages:
 
-#+BEGIN_SRC elisp :tangle build/init-packages.el
+#+BEGIN_SRC elisp :tangle build/init-go.el
 (el-get-bundle go-mode)
 (el-get-bundle gocode)
 (el-get-bundle go-eldoc)
@@ -815,7 +823,10 @@ As it was imported from my previous config:
 And load from the main file:
 
 #+BEGIN_SRC elisp
-(require 'init-go)
+  (when (member "go" ra/roles)
+    (require 'init-go)
+    )
+
 #+END_SRC
 
 ** Lisp
@@ -951,7 +962,11 @@ Org-mode setup is located in a separate [[file:emacs-org.org][init file]], we ju
 here:
 
 #+BEGIN_SRC elisp
-(require 'init-org)
+  (when (member "org" ra/roles)
+    (require 'init-org)
+    )
+
+
 #+END_SRC
 
 ** Statistics
@@ -960,10 +975,11 @@ here:
 Let's install R and gnuplot
 
 #+BEGIN_SRC elisp
-  (el-get-bundle ess)
-  (el-get-bundle gnuplot-mode)
-
-  (add-to-list 'auto-mode-alist '("\\.R$" . R-mode))
+  (when (member "ess" ra/roles)
+    (el-get-bundle ess)
+    (el-get-bundle gnuplot-mode)
+    (add-to-list 'auto-mode-alist '("\\.R$" . R-mode))
+    )
 #+END_SRC
 * Footnotes
 ** Loading the configuration

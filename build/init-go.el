@@ -1,3 +1,6 @@
+(el-get-bundle go-mode)
+(el-get-bundle gocode)
+(el-get-bundle go-eldoc)
 
 (require 'go-mode)
 (require 'key-chord)
