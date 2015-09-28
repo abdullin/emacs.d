@@ -8,13 +8,22 @@
 This is a literate version of my base emacs config. You can generate
 emacs init script out of it by running =org-babel-tangle=.
 
-In order to load the file, put into your =~/.emacs= or
-=~/.emacs.d/init.el=:
+The script assumes that this folder is either checked out to
+=~/.emacs.d= or linked to it.
 
-#+BEGIN_SRC elisp :tangle no
-(setq ra/roles '("org" "ess"))
-(load-file "~/.emacs.d/build/init-main.el")
-(server-start)
+In order to load everything, copy =build/init.el= (shown below) to
+=~/.emacs.d/= folder and enable the roles that you are interested in.
+
+#+BEGIN_SRC elisp :tangle build/init.el
+  (setq ra/roles '(
+                   "org"
+                   ;; "ess"
+                   ;; "erlang"
+                   ;; "go"
+                   ;; "web" - HTML,CSS,JS,JSX etc
+                   ))
+  (load-file "~/.emacs.d/build/init-main.el")
+  (server-start)
 #+END_SRC
 
 * General settings
