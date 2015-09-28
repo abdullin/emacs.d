@@ -954,7 +954,9 @@ Web mode that is also used to edit mixed files like JSX
 and we can load it from the main file:
 
 #+BEGIN_SRC elisp
-(require 'init-web)
+  (when (member "web" ra/roles)
+    (require 'init-web)
+    )
 #+END_SRC
 
 ** Org-mode

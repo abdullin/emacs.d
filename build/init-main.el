@@ -297,7 +297,9 @@ of listed in `linum-mode-excludes'."
   (add-hook-list 'rainbow-delimiters-mode lisp-mode-hooks)
   )
 
-(require 'init-web)
+(when (member "web" ra/roles)
+  (require 'init-web)
+  )
 
 (when (member "org" ra/roles)
   (require 'init-org)
