@@ -113,6 +113,8 @@ Clock   In/out^     ^Edit^   ^Summary     (_?_)
 
 (setq org-confirm-babel-evaluate nil)
 
+(setq org-src-window-setup 'current-window)
+
 (defun ra/fix-inline-images ()
   (when org-inline-image-overlays
     (org-redisplay-inline-images)))

@@ -243,6 +243,16 @@ Let's be risky and evaluate all blocks without asking:
 #+BEGIN_SRC elisp
   (setq org-confirm-babel-evaluate nil)
 #+END_SRC
+** Editing source code
+
+I don't want org src to open code editing in another window. Current
+is just fine.
+
+#+BEGIN_SRC elisp
+  (setq org-src-window-setup 'current-window)
+#+END_SRC
+
+
 ** Refresh inline images
 
 I want inline images to be refreshed automatically (taken from [[http://emacs.stackexchange.com/a/9813][SS]]):
