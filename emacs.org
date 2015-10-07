@@ -22,13 +22,10 @@ The script assumes that this folder is either checked out to
 ** Roles
 
 This config could be used from multiple servers. We will
-enable/disable roles as needed. Our default setup will use only the
-latest version of =org=:
+enable/disable roles as needed. 
 
 #+BEGIN_SRC elisp
   (setq ra/roles '(
-                   ;; org-mode is essential
-                   "org"
                    ;; "ess"
                    ;; "erlang"
                    ;; "go"
@@ -607,7 +604,298 @@ We will call this helper via a key-chord:
   (key-chord-define-global ";'" 'hydra-jump/body)
 #+END_SRC
 ** Key chords
+* Org-mode
 
+This is my emacs setup for the mighty org-mode!
+
+#+BEGIN_SRC elisp
+  ;; latest version of org-mode
+  (el-get-bundle org-mode)
+  (require 'org)
+#+END_SRC
+
+** Settings
+*** View preferences
+
+Make org-mode look pretty
+#+BEGIN_SRC elisp
+  (setq org-startup-indented t)
+  (setq org-hide-leading-stars t)
+  (setq org-odd-level-only t)
+  (setq org-indent-mode t)
+#+END_SRC
+
+I want to see inline images:
+
+#+BEGIN_SRC elisp
+  (setq org-startup-with-inline-images t)
+#+END_SRC
+
+*** File aliases
+
+Default for org, txt and archive files
+#+BEGIN_SRC elisp
+  (add-to-list 'auto-mode-alist '("\\.\\(org\\|org_archive\\)$" . org-mode))
+#+END_SRC
+
+*** Locations
+
+My default org folder is:
+
+#+BEGIN_SRC elisp
+  (setq org-directory "~/org")
+#+END_SRC
+
+But I want to compose agenda from all org files in projects as well:
+
+#+BEGIN_SRC elisp
+  (setq org-agenda-files (append
+                          (file-expand-wildcards "~/org/*.org")
+                          (file-expand-wildcards "~/proj/*/*.org")
+                          (file-expand-wildcards "~/proj/*/org/*.org")
+                          )
+        )
+#+END_SRC
+
+*** Use IDO
+
+Use IDO for both buffer and file completion and ido-everywhere to t
+#+BEGIN_SRC elisp
+(setq org-completion-use-ido t)
+#+END_SRC
+
+*** Navigation
+
+Switch between org buffers:
+
+#+BEGIN_SRC elisp
+(global-set-key "\C-cb" 'org-iswitchb)
+#+END_SRC
+
+*** Clocking shortcuts
+
+
+#+BEGIN_SRC elisp
+  (defhydra hydra-org-clock (:color blue :hint nil)
+    "
+  Clock   In/out^     ^Edit^   ^Summary     (_?_)
+  -----------------------------------------
+          _i_n         _e_dit   _g_oto entry
+          _c_ontinue   _q_uit   _d_isplay
+          _o_ut        ^ ^      _r_eport
+        "
+    ("i" org-clock-in)
+    ("o" org-clock-out)
+    ("c" org-clock-in-last)
+    ("e" org-clock-modify-effort-estimate)
+    ("q" org-clock-cancel)
+    ("g" org-clock-goto)
+    ("d" org-clock-display)
+    ("r" org-clock-report)
+    ("?" (org-info "Clocking commands")))
+
+  (define-key org-mode-map  (kbd "C-c w") 'hydra-org-clock/body)
+#+END_SRC
+
+*** Links and IDs
+
+Use org ids to create perma-links (as taken from [[http://stackoverflow.com/questions/27132422/reference-unique-id-across-emacs-org-mode-files][SO]]):
+
+#+BEGIN_SRC elisp
+  ;; wire up
+  (require 'org-id)
+  ;; Create if storing link interactively and no CUSTOM_ID is present
+  (setq org-id-link-to-org-use-id 'create-if-interactive-and-no-custom-id)
+#+END_SRC
+
+Bind shortcut to store a link at the current location:
+
+
+#+BEGIN_SRC elisp
+  (define-key org-mode-map  (kbd "C-c l") 'org-store-link)
+#+END_SRC
+** GTD Workflow
+*** Keywords and states
+
+A list of keywords and their colors, initially taken from [[http://doc.norang.ca/org-mode.html][Bernt Hansen]]:
+
+#+BEGIN_SRC elisp
+  (setq org-todo-keywords
+        (quote ((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
+                (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)" "PHONE" "MEETING"))))
+
+  ;;; color keywords
+  (setq org-todo-keyword-faces
+        (quote (("TODO" :foreground "red" :weight bold)
+                ("NEXT" :foreground "blue" :weight bold)
+                ("DONE" :foreground "forest green" :weight bold)
+                ("WAITING" :foreground "orange" :weight bold)
+                ("HOLD" :foreground "magenta" :weight bold)
+                ("CANCELLED" :foreground "forest green" :weight bold)
+                ("MEETING" :foreground "forest green" :weight bold)
+                ("PHONE" :foreground "forest green" :weight bold))))
+
+#+END_SRC
+
+*** State Transitions
+
+
+There are two ways to change task state:
+#+BEGIN_SRC elisp
+  ;; Changing a task state is done with =C-C C-t KEY=:
+  (setq org-use-fast-todo-selection t)
+  ;; changing states with S + arrow does not trigger full change
+  (setq org-treat-S-cursor-todo-selection-as-state-change nil)
+#+END_SRC
+
+Triggered state changes
+
+
+#+BEGIN_SRC elisp
+  (setq org-todo-state-tags-triggers
+        (quote (("CANCELLED" ("CANCELLED" . t))
+                ("WAITING" ("WAITING" . t))
+                ("HOLD" ("WAITING") ("HOLD" . t))
+                (done ("WAITING") ("HOLD"))
+                ("TODO" ("WAITING") ("CANCELLED") ("HOLD"))
+                ("NEXT" ("WAITING") ("CANCELLED") ("HOLD"))
+                ("DONE" ("WAITING") ("CANCELLED") ("HOLD")))))
+
+#+END_SRC
+
+*** Capture mode
+
+Let's use C-c c to start capture mode:
+
+#+BEGIN_SRC elisp
+
+(setq org-default-notes-file "~/org/inbox.org")
+(global-set-key (kbd "C-c c") 'org-capture)
+
+#+END_SRC
+
+And define some capture templates:
+
+#+BEGIN_SRC elisp
+  (setq org-capture-templates
+        (quote (("t" "todo" entry (file "~/org/inbox.org")
+                 "* TODO %?\n%U\n%a\n" :clock-in t :clock-resume t)
+                ("r" "respond" entry (file "~/org/inbox.org")
+                 "* NEXT Respond to %:from on %:subject\nSCHEDULED: %t\n%U\n%a\n" :clock-in t :clock-resume t :immediate-finish t)
+                ("n" "note" entry (file "~/org/inbox.org")
+                 "* %? :NOTE:\n%U\n%a\n" :clock-in t :clock-resume t)
+                ("j" "Journal" entry (file+datetree "~/org/journal.org")
+                 "* %?\n%U\n" :clock-in t :clock-resume t)
+                ("w" "org-protocol" entry (file "~/org/inbox.org")
+                 "* TODO Review %c\n%U\n" :immediate-finish t)
+                ("m" "Meeting" entry (file "~/org/inbox.org")
+                 "* MEETING with %? :MEETING:\n%U" :clock-in t :clock-resume t)
+                ("p" "Phone call" entry (file "~/org/inbox.org")
+                 "* PHONE %? :PHONE:\n%U" :clock-in t :clock-resume t)
+                ("h" "Habit" entry (file "~/org/inbox.org")
+                 "* NEXT %?\n%U\n%a\nSCHEDULED: %(format-time-string \"<%Y-%m-%d %a .+1d/3d>\")\n:PROPERTIES:\n:STYLE: habit\n:REPEAT_TO_STATE: NEXT\n:END:\n"))))
+#+END_SRC
+
+*** Agenda
+
+#+BEGIN_SRC elisp
+
+
+
+  (global-set-key (kbd "<f12>") 'org-agenda)
+#+END_SRC
+
+*** Refile
+
+Refile allows us to move org entries between org files. Disabled for
+now.
+
+#+BEGIN_SRC elisp :tangle no
+
+; Targets include this file and any file contributing to the agenda - up to 9 levels deep
+(setq org-refile-targets (quote ((nil :maxlevel . 9)
+                                 (org-agenda-files :maxlevel . 9))))
+
+; Use full outline paths for refile targets - we file directly with IDO
+(setq org-refile-use-outline-path t)
+
+; Targets complete directly with IDO
+(setq org-outline-path-complete-in-steps nil)
+
+; Allow refile to create parent tasks with confirmation
+(setq org-refile-allow-creating-parent-nodes (quote confirm))
+; Use the current window for indirect buffer display
+(setq org-indirect-buffer-display 'current-window)
+
+;;;; Refile settings
+; Exclude DONE state tasks from refile targets
+(defun bh/verify-refile-target ()
+  "Exclude todo keywords with a done state from refile targets"
+  (not (member (nth 2 (org-heading-components)) org-done-keywords)))
+
+(setq org-refile-target-verify-function 'bh/verify-refile-target)
+#+END_SRC
+** Literate Programming
+*** Babel
+Some initial languages that we want babel to support:
+
+
+#+BEGIN_SRC elisp
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '(
+     (sh . t)
+     (python . t)
+     (R . t)
+     (ruby . t)
+     (ditaa . t)
+     (dot . t)
+     (octave . t)
+     (sqlite . t)
+     (perl . t)
+     (gnuplot . t)
+     ))
+#+END_SRC
+
+Let's be risky and evaluate all blocks without asking:
+
+#+BEGIN_SRC elisp
+  (setq org-confirm-babel-evaluate nil)
+#+END_SRC
+*** Editing source code
+
+I don't want org src to open code editing in another window. Current
+is just fine.
+
+#+BEGIN_SRC elisp
+  (setq org-src-window-setup 'current-window)
+#+END_SRC
+
+*** Refresh inline images
+
+I want inline images to be refreshed automatically (taken from [[http://emacs.stackexchange.com/a/9813][SS]]):
+
+#+BEGIN_SRC elisp
+  (defun ra/fix-inline-images ()
+    (when org-inline-image-overlays
+      (org-redisplay-inline-images)))
+  (add-hook 'org-babel-after-execute-hook 'ra/fix-inline-images)
+#+END_SRC
+
+*** Org publishing
+
+#+BEGIN_SRC elisp
+  (setq org-export-backends (quote (
+         ascii
+         ;;beamer
+         html
+         ;;latex
+         md
+         ;;odt
+         ;;s5
+         ;;taskjuggler
+  )))
+#+END_SRC
 * Miscellaneous
 ** Unknown origins
 
@@ -1023,18 +1311,6 @@ and we can load it from the main file:
   (when (member "web" ra/roles)
     (require 'init-web)
     )
-#+END_SRC
-
-** Org-mode
-Org-mode setup is located in a separate [[file:emacs-org.org][init file]], we just load it
-here:
-
-#+BEGIN_SRC elisp
-  (when (member "org" ra/roles)
-    (require 'init-org)
-    )
-
-
 #+END_SRC
 
 ** Statistics
