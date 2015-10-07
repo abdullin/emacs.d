@@ -44,6 +44,13 @@ Clock   In/out^     ^Edit^   ^Summary     (_?_)
 
 (define-key org-mode-map  (kbd "C-c w") 'hydra-org-clock/body)
 
+;; wire up
+(require 'org-id)
+;; Create if storing link interactively and no CUSTOM_ID is present
+(setq org-id-link-to-org-use-id 'create-if-interactive-and-no-custom-id)
+
+(define-key org-mode-map  (kbd "C-c l") 'org-store-link)
+
 (setq org-todo-keywords
       (quote ((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
               (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)" "PHONE" "MEETING"))))

@@ -95,6 +95,24 @@ Switch between org buffers:
 
   (define-key org-mode-map  (kbd "C-c w") 'hydra-org-clock/body)
 #+END_SRC
+
+** Links and IDs
+
+Use org ids to create perma-links (as taken from [[http://stackoverflow.com/questions/27132422/reference-unique-id-across-emacs-org-mode-files][SO]]):
+
+#+BEGIN_SRC elisp
+  ;; wire up
+  (require 'org-id)
+  ;; Create if storing link interactively and no CUSTOM_ID is present
+  (setq org-id-link-to-org-use-id 'create-if-interactive-and-no-custom-id)
+#+END_SRC
+
+Bind shortcut to store a link at the current location:
+
+
+#+BEGIN_SRC elisp
+  (define-key org-mode-map  (kbd "C-c l") 'org-store-link)
+#+END_SRC
 * GTD Workflow
 ** Keywords and states
 
