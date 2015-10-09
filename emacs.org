@@ -665,9 +665,7 @@ But I want to compose agenda from all org files in projects as well:
      )
     )
 
-
   (setq org-agenda-files (ra/list-possible-org-files))
-
 #+END_SRC
 
 *** Use IDO
