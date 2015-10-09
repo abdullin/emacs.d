@@ -261,12 +261,24 @@
 
 (setq org-directory "~/org")
 
-(setq org-agenda-files (append
-                        (file-expand-wildcards "~/org/*.org")
-                        (file-expand-wildcards "~/proj/*/*.org")
-                        (file-expand-wildcards "~/proj/*/org/*.org")
-                        )
-      )
+(defun ra/remove-lock-files (fs)
+  "Removes file names matching .# pattern (emacs lock files"
+  (-remove(lambda (x) (string-match "\.#" x)) fs)
+  )
+
+(defun ra/list-possible-org-files ()
+  "Provides a list of all matching org files"
+  (ra/remove-lock-files
+   (append
+    (file-expand-wildcards "~/org/*.org")
+    (file-expand-wildcards "~/proj/*/*.org")
+    (file-expand-wildcards "~/proj/*/org/*.org")
+    )
+   )
+  )
+
+
+(setq org-agenda-files (ra/list-possible-org-files))
 
 (setq org-completion-use-ido t)
 
