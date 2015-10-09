@@ -271,8 +271,8 @@
   (ra/remove-lock-files
    (append
     (file-expand-wildcards "~/org/*.org")
-    (file-expand-wildcards "~/proj/*/*.org")
-    (file-expand-wildcards "~/proj/*/org/*.org")
+    ;;(file-expand-wildcards "~/proj/*/*.org")
+    ;;(file-expand-wildcards "~/proj/*/org/*.org")
     )
    )
   )
