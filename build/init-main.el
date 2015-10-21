@@ -24,8 +24,8 @@
 (defun add-hook-list (callback hooks)
   "Adds callback to each one of the hooks."
   (mapc (lambda (hook)
-      (add-hook hook callback))
-    hooks))
+          (add-hook hook callback))
+        hooks))
 
 (add-to-list 'load-path (expand-file-name "el-get/el-get" emacs-root-dir))
 
@@ -53,6 +53,8 @@
 (el-get-bundle web-mode)
 ;; undo tree git-style
 (el-get-bundle undo-tree)
+
+(require 'dash)
 
 (el-get-bundle key-chord)
 (require 'key-chord)
@@ -277,7 +279,6 @@
    )
   )
 
-
 (setq org-agenda-files (ra/list-possible-org-files))
 
 (setq org-completion-use-ido t)
@@ -446,10 +447,10 @@ of listed in `linum-mode-excludes'."
   "Adds the shell environment variables to Emacs' process environment."
   (interactive)
   (let* ((env (shell-command-to-string "$SHELL -i -c 'printenv'"))
-     (entries (split-string env "\n" t)))
+         (entries (split-string env "\n" t)))
     (mapc (lambda (entry)
-        (add-to-list 'process-environment entry))
-      entries)))
+            (add-to-list 'process-environment entry))
+          entries)))
 
 (ra/load-unix-shell-env)
 

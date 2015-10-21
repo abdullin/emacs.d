@@ -18,7 +18,6 @@ The script assumes that this folder is either checked out to
 #+END_SRC
 
 * General settings
-
 ** Roles
 
 This config could be used from multiple servers. We will
@@ -152,6 +151,10 @@ We can describe our common dependencies like this:
   (el-get-bundle web-mode)
   ;; undo tree git-style
   (el-get-bundle undo-tree) 
+#+END_SRC
+** Common requires
+#+BEGIN_SRC elisp
+  (require 'dash)
 #+END_SRC
 
 ** Key-chords 
