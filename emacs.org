@@ -618,6 +618,32 @@ This is my emacs setup for the mighty org-mode!
   (el-get-bundle org-mode)
   (require 'org)
 #+END_SRC
+** Intro
+
+Nice orgmode summary - http://orgmode.org/orgcard.txt
+
+
+ Good high-level presentation with pictures: http://web.psung.name/emacs/2009/part1.html
+
+*** Formatting
+We support a wide variety of fonts styles: *bold*, /italic/,
+_underlined_, =verbatim= and ~code~.
+
+*** Outlines
+
+Org-mode is based on outline management. Some shortcuts:
+
+ | Shortcut  | Operation                           |                 |
+ |-----------+-------------------------------------+-----------------|
+ | M-<Arrow> | Move                                |                 |
+ | M-RET     | Insert a new heading                | Can break lines |
+ | C-RET     | Create a new item at the same level |                 |
+ | C-c C-q   | Set tags for the current headline   |                 |
+ | C-x n s/w | Focus on a subtree or Widen         |                 |
+
+*** Sexp
+
+That's how we can define complex dates. [[http://www.gnu.org/software/emacs/manual/html_node/emacs/Sexp-Diary-Entries.html#Sexp-Diary-Entries][Worg description]]
 
 ** Settings
 *** View preferences
@@ -815,10 +841,36 @@ And define some capture templates:
 
 *** Agenda
 
-Load agenda globally with F12
+Load agenda globally either with ~C-c a~ or with F12 (my shortcut)
 #+BEGIN_SRC elisp
   (global-set-key (kbd "<f12>") 'org-agenda)
 #+END_SRC
+
+
+Inside agenda window:
+
+ | Operation                      | Shortcut | When to use                          |
+ |--------------------------------+----------+--------------------------------------|
+ | Quit agenda                    | q        |                                      |
+ | List all TODO entries          | t        |                                      |
+ | Search for entry               | T        | e.g. for =TODO= OR =TODO \vert NEXT= |
+ | Match metadata                 | m        | e.g. for =+car&+call=  [1]           |
+ | Match metadata for active task | M        | same as above                        |
+ | Next/previous period           | f/b      |                                      |
+ | View log for the current file  | L        |                                      |
+ | show agenda                    | a        |                                      |
+ | view by days                   | v d      |                                      |
+ | view by weeks                  | v w      |                                      |
+ | go to today                    | .        |                                      |
+ | quit agenda                    | q        |                                      |
+ | close other windows            | o        |                                      |
+ | view by month                  | v m      |                                      |
+ | view by year                   | v y      |                                      |
+ | recreate the agenda buffer     | r        |                                      |
+ | jump to a date                 | j        |                                      |
+
+
+There is a great article in [[http://orgmode.org/worg/org-tutorials/advanced-searching.html][Advanced Searching]].
 
 
 Let's setup custom commands ([[http://orgmode.org/manual/Exporting-Agenda-Views.html][explained in manual]]):
@@ -864,7 +916,7 @@ These can be called with C-c a e     (org-store-agenda-views)
 *** Refile
 
 Refile allows us to move org entries between org files. Disabled for
-now.
+now. It can be triggered with =C-c C-w=.
 
 #+BEGIN_SRC elisp :tangle no
 
@@ -892,9 +944,18 @@ now.
 (setq org-refile-target-verify-function 'bh/verify-refile-target)
 #+END_SRC
 ** Literate Programming
+
+ This is an [[http://www.howardism.org/Technical/Emacs/literate-devops.html][article]] by an admin with very little head space :)
+
+*** Templates
+
+Templates are supported in org-mode
+out-of-the-box. Just type < followed
+by a char and ~TAB~. See [[http://orgmode.org/org.html#Easy-Templates][Easy
+Templates]] for more details.
+
 *** Babel
 Some initial languages that we want babel to support:
-
 
 #+BEGIN_SRC elisp
   (org-babel-do-load-languages
@@ -952,6 +1013,43 @@ I want inline images to be refreshed automatically (taken from [[http://emacs.st
          ;;taskjuggler
   )))
 #+END_SRC
+
+*** Publishing to HTML
+
+as per [[http://orgmode.org/worg/org-tutorials/org-publish-html-tutorial.html#fn.2][tutorial]].
+
+**** Requirements:
+
+  1. no absolute paths in HTML,
+  2. no base element
+  3. Emacs + org-mode
+
+**** File structure (inside ~/org/)
+
+ 1. index.org (will transform to index.html)
+ 2. remember.org (or whatever)
+ 3. /css/styles
+ 4. /img/images
+
+ To link from one file to another - use a standard link
+
+**** Components
+***** Publish notes
+
+  Renders notes to HTML
+
+***** Static component
+
+  Copies static content to the target folder
+
+***** Inherit component
+
+  Allows sharing styles and settings between multiple projects
+
+***** Sitemap
+  Subj, generates a simple sitemap
+
+
 * Miscellaneous
 ** Unknown origins
 
@@ -1386,8 +1484,73 @@ Let's install R and gnuplot
 
 To reload with a require:
 
-
 #+BEGIN_SRC elisp
 (provide 'init-main)
-
 #+END_SRC
+* Notes
+** Sexp
+1. [[http://www.gnu.org/software/emacs/manual/html_node/emacs/Sexp-Diary-Entries.html#Sexp-Diary-Entries][Worg description]]
+** Agenda 
+** The Cycle
+
+*** Working with agenda
+
+| Key     | Action              | When |
+|---------+---------------------+------|
+| C-x n s | Narrow to a subtree |      |
+| C-x n w | Widen a subtree     |      |
+
+*** Recording a Journal
+
+| Key   | Action                    | When |
+|-------+---------------------------+------|
+| C-c ! | Insert inactive timestamp |      |
+
+*** Agenda View
+
+Good commands for navigating agenda (once shown with =F12=)
+
+
+| Key | Action                     | When |
+|-----+----------------------------+------|
+| a   | show agenda                |      |
+| v d | view by days               |      |
+| v w | view by weeks              |      |
+| .   | go to today                |      |
+| q   | quit agenda                |      |
+| o   | close other windows        |      |
+| f   | move period forward        |      |
+| b   | move period back           |      |
+| v m | view by month              |      |
+| v y | view by year               |      |
+| r   | recreate the agenda buffer |      |
+| j   | jump to a date             |      |
+
+
+
+
+
+
+
+
+* Journal
+
+** [2015-08-08 Sat]
+I mapped:
+
+- RETURN (enter) key to behave like a Ctrl, if pressed with any other
+  key (thanks to [[https://pqrs.org/osx/karabiner/][Karabiner]]).
+- Right Cmd - switch to RU
+- Left Cmd - switch to EN
+- Caps Lock - behave like a Ctrl (OSX standard)
+- Ctrl - disabled
+
+** [2015-08-11 Tue]
+
+After some thinking, I disabled the Escape key
+alltogether. Using ~Ctrl-[~ to exit the vim insert mode and using
+emacs ~Ctrl-G~ for triple escape.
+
+I considered swapping tilde key (located to the right of L Shift) with
+paragraph (unused). However, it seems, pressing it with pinky and the
+next finger is rather simple. I just have to get used to it.
