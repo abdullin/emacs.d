@@ -68,6 +68,8 @@
 
 ;; disable alarm bell beep
 (setq visible-bell t)
+;; flash on OSX looks ugly
+(setq ring-bell-function 'ignore)
 
 ;; move to a neighbor window using SUPER + VIM KEY
 (require 'windmove)

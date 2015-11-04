@@ -175,14 +175,16 @@ Let's enable key-chord:
 * Display settings
 ** Hide some things
 #+BEGIN_SRC elisp
-;; I know what the scratch is for
-(setq initial-scratch-message "")
+  ;; I know what the scratch is for
+  (setq initial-scratch-message "")
 
-;; don't show the startup help screen
-(setq inhibit-startup-screen t)
+  ;; don't show the startup help screen
+  (setq inhibit-startup-screen t)
 
-;; disable alarm bell beep
-(setq visible-bell t)
+  ;; disable alarm bell beep
+  (setq visible-bell t)
+  ;; flash on OSX looks ugly
+  (setq ring-bell-function 'ignore)
 #+END_SRC
 
 ** Windows
