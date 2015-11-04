@@ -24,8 +24,8 @@
 (defun add-hook-list (callback hooks)
   "Adds callback to each one of the hooks."
   (mapc (lambda (hook)
-          (add-hook hook callback))
-        hooks))
+      (add-hook hook callback))
+    hooks))
 
 (add-to-list 'load-path (expand-file-name "el-get/el-get" emacs-root-dir))
 
@@ -272,7 +272,8 @@
   "Provides a list of all matching org files"
   (ra/remove-lock-files
    (append
-    (file-expand-wildcards "~/org/*.org")
+    (file-expand-wildcards "~/org/*.org")       ;; core org files
+    (file-expand-wildcards "~/org/links/*.org") ;; linked org files
     ;;(file-expand-wildcards "~/proj/*/*.org")
     ;;(file-expand-wildcards "~/proj/*/org/*.org")
     )
@@ -364,6 +365,39 @@ Clock   In/out^     ^Edit^   ^Summary     (_?_)
 
 (global-set-key (kbd "<f12>") 'org-agenda)
 
+(setq org-agenda-custom-commands
+      '(
+        ;; ("X" agenda "" nil ("agenda.html" "agenda.ps"))
+        ;; ("Y" alltodo "" nil ("todo.html" "todo.txt" "todo.ps"))
+        ;; ("h" "Agenda and Home-related tasks"
+        ;;  ((agenda "")
+        ;;   (tags-todo "home")
+        ;;   (tags "garden"))
+        ;;  nil
+        ;;  ("~/views/home.html"))
+
+  
+        ("F" "full agenda view"
+         ((agenda ""
+                  ;; array of constraints
+                  (
+                   ;; next 30 days
+                   (org-agenda-ndays 30)
+                   ;; drop empty blocks
+                   (org-agenda-show-all-dates nil)
+                   ))
+          ;; agenda command options
+          ;;(tags-todo "work")
+          ;;(tags "office")
+          )
+         nil
+         (
+          "~/org/views/agenda_full.ps"
+          "~/org/views/agenda_full.ics"
+          "~/org/views/agenda_full.html"
+          ))
+        ))
+
 (org-babel-do-load-languages
  'org-babel-load-languages
  '(
@@ -447,10 +481,10 @@ of listed in `linum-mode-excludes'."
   "Adds the shell environment variables to Emacs' process environment."
   (interactive)
   (let* ((env (shell-command-to-string "$SHELL -i -c 'printenv'"))
-         (entries (split-string env "\n" t)))
+     (entries (split-string env "\n" t)))
     (mapc (lambda (entry)
-            (add-to-list 'process-environment entry))
-          entries)))
+        (add-to-list 'process-environment entry))
+      entries)))
 
 (ra/load-unix-shell-env)
 

@@ -661,7 +661,8 @@ But I want to compose agenda from all org files in projects as well:
     "Provides a list of all matching org files"
     (ra/remove-lock-files
      (append
-      (file-expand-wildcards "~/org/*.org")
+      (file-expand-wildcards "~/org/*.org")       ;; core org files
+      (file-expand-wildcards "~/org/links/*.org") ;; linked org files
       ;;(file-expand-wildcards "~/proj/*/*.org")
       ;;(file-expand-wildcards "~/proj/*/org/*.org")
       )
@@ -812,12 +813,51 @@ And define some capture templates:
 
 *** Agenda
 
+Load agenda globally with F12
 #+BEGIN_SRC elisp
-
-
-
   (global-set-key (kbd "<f12>") 'org-agenda)
 #+END_SRC
+
+
+Let's setup custom commands ([[http://orgmode.org/manual/Exporting-Agenda-Views.html][explained in manual]]):
+
+#+BEGIN_SRC elisp
+  (setq org-agenda-custom-commands
+        '(
+          ;; ("X" agenda "" nil ("agenda.html" "agenda.ps"))
+          ;; ("Y" alltodo "" nil ("todo.html" "todo.txt" "todo.ps"))
+          ;; ("h" "Agenda and Home-related tasks"
+          ;;  ((agenda "")
+          ;;   (tags-todo "home")
+          ;;   (tags "garden"))
+          ;;  nil
+          ;;  ("~/views/home.html"))
+
+    
+          ("F" "full agenda view"
+           ((agenda ""
+                    ;; array of constraints
+                    (
+                     ;; next 30 days
+                     (org-agenda-ndays 30)
+                     ;; drop empty blocks
+                     (org-agenda-show-all-dates nil)
+                     ))
+            ;; agenda command options
+            ;;(tags-todo "work")
+            ;;(tags "office")
+            )
+           nil
+           (
+            "~/org/views/agenda_full.ps"
+            "~/org/views/agenda_full.ics"
+            "~/org/views/agenda_full.html"
+            ))
+          ))
+#+END_SRC
+
+
+These can be called with C-c a e     (org-store-agenda-views)
 
 *** Refile
 
@@ -896,7 +936,7 @@ I want inline images to be refreshed automatically (taken from [[http://emacs.st
   (add-hook 'org-babel-after-execute-hook 'ra/fix-inline-images)
 #+END_SRC
 
-*** Org publishing
+** Org publishing
 
 #+BEGIN_SRC elisp
   (setq org-export-backends (quote (
