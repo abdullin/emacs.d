@@ -436,6 +436,42 @@ windows are open:
 #+BEGIN_SRC elisp
 (setq dired-dwim-target t)
 #+END_SRC
+** iBuffer
+
+Let's group our buffers in the ibuffer window.
+
+#+BEGIN_SRC elisp
+  (setq ibuffer-saved-filter-groups
+           (quote (("default"
+                    ("dired" (mode . dired-mode))
+                    ;;("perl" (mode . cperl-mode))
+                    ;;("erc" (mode . erc-mode))
+                    ("org" (or
+                                (mode . org-mode)
+                                (name . "^\\*Calendar\\*$")
+                                (name . "^diary$")
+                                (name . "^\\.org$")
+                                (mode . muse-mode)))
+                    ("emacs" (or
+                              (name . "^\\*scratch\\*$")
+                              (name . "^\\*Messages\\*$")))
+                    ;; ("gnus" (or
+                    ;;          (mode . message-mode)
+                    ;;          (mode . bbdb-mode)
+                    ;;          (mode . mail-mode)
+                    ;;          (mode . gnus-group-mode)
+                    ;;          (mode . gnus-summary-mode)
+                    ;;          (mode . gnus-article-mode)
+                    ;;          (name . "^\\.bbdb$")
+                    ;;          (name . "^\\.newsrc-dribble")))
+                    ))))
+
+
+  (add-hook 'ibuffer-mode-hook
+            (lambda ()
+              (ibuffer-switch-to-saved-filter-groups "default")))
+#+END_SRC
+
 ** Markdown
 Load the package with el-get:
 
@@ -600,6 +636,7 @@ snippets.
     ("z" undo-tree-visualize "undo")
     (";" execute-extended-command "meta-x")
     ("w" ra/hydra-windows/body "win")
+    ("b" ibuffer "buf")
     )
 #+END_SRC
 

@@ -177,6 +177,36 @@
 
 (setq dired-dwim-target t)
 
+(setq ibuffer-saved-filter-groups
+         (quote (("default"
+                  ("dired" (mode . dired-mode))
+                  ;;("perl" (mode . cperl-mode))
+                  ;;("erc" (mode . erc-mode))
+                  ("org" (or
+                              (mode . org-mode)
+                              (name . "^\\*Calendar\\*$")
+                              (name . "^diary$")
+                              (name . "^\\.org$")
+                              (mode . muse-mode)))
+                  ("emacs" (or
+                            (name . "^\\*scratch\\*$")
+                            (name . "^\\*Messages\\*$")))
+                  ;; ("gnus" (or
+                  ;;          (mode . message-mode)
+                  ;;          (mode . bbdb-mode)
+                  ;;          (mode . mail-mode)
+                  ;;          (mode . gnus-group-mode)
+                  ;;          (mode . gnus-summary-mode)
+                  ;;          (mode . gnus-article-mode)
+                  ;;          (name . "^\\.bbdb$")
+                  ;;          (name . "^\\.newsrc-dribble")))
+                  ))))
+
+
+(add-hook 'ibuffer-mode-hook
+          (lambda ()
+            (ibuffer-switch-to-saved-filter-groups "default")))
+
 (el-get-bundle markdown-mode)
 
 (add-to-list 'auto-mode-alist
@@ -246,6 +276,7 @@
   ("z" undo-tree-visualize "undo")
   (";" execute-extended-command "meta-x")
   ("w" ra/hydra-windows/body "win")
+  ("b" ibuffer "buf")
   )
 
 (key-chord-define-global ";'" 'hydra-jump/body)
