@@ -608,7 +608,15 @@ We will call this helper via a key-chord:
 #+BEGIN_SRC elisp
   (key-chord-define-global ";'" 'hydra-jump/body)
 #+END_SRC
-** Key chords
+** Follow symlinks
+
+I get tired of /Symbolic link to Git-controlled source file; follow
+link? (y or n)/ error message. So just follow it without asking.
+
+#+BEGIN_SRC elisp
+  ;; just follow symlink and open the actual file
+  (setq vc-follow-symlinks t)
+#+END_SRC
 * Org-mode
 
 This is my emacs setup for the mighty org-mode!

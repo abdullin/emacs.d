@@ -250,6 +250,9 @@
 
 (key-chord-define-global ";'" 'hydra-jump/body)
 
+;; just follow symlink and open the actual file
+(setq vc-follow-symlinks t)
+
 ;; latest version of org-mode
 (el-get-bundle org-mode)
 (require 'org)
