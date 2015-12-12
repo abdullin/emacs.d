@@ -8,7 +8,7 @@
   (setq load-path (cons erlang-emacs-path load-path))
   (setq exec-path (cons erlang-bin-path exec-path))
   (require 'erlang-start)
- 
+
   )
 
 (provide 'init-erlang)

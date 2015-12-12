@@ -28,12 +28,12 @@
   (setq tab-width 4)
   (yas-minor-mode)
 
-  (set (make-local-variable 'company-backends) '(company-go))        
-  (company-mode) 
+  (set (make-local-variable 'company-backends) '(company-go))
+  (company-mode)
   (go-eldoc-setup)
 
   (local-set-key (kbd "M-.") 'godef-jump)
-  )                              
+  )
 
 (add-hook 'go-mode-hook 'my-go-mode-hook)
 

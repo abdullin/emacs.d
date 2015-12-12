@@ -48,7 +48,7 @@
 (el-get-bundle yasnippet)
 (el-get-bundle company)
 ;; Swap buffers without typing C-x b on each window
-(el-get-bundle buffer-move)  
+(el-get-bundle buffer-move)
 (el-get-bundle hydra)
 (el-get-bundle web-mode)
 ;; undo tree git-style
@@ -121,7 +121,7 @@
   "winops"
   ("SPC" nil)
   ("<left>"  hydra-move-splitter-left)
-  ("<down>" hydra-move-splitter-down) 
+  ("<down>" hydra-move-splitter-down)
   ("<up>" hydra-move-splitter-up)
   ("<right>" hydra-move-splitter-right)
   ("x" delete-window :color blue)
@@ -213,7 +213,7 @@
              '("\\.\\(md\\|mdown\\|markdown\\)\\'" . markdown-mode)
              )
 
-;;; Stefan Monnier <foo at acm.org>. It is the opposite of fill-paragraph    
+;;; Stefan Monnier <foo at acm.org>. It is the opposite of fill-paragraph
 (defun ra/unfill-paragraph (&optional region)
   "Takes a multi-line paragraph and makes it into a single line of text."
   (interactive (progn (barf-if-buffer-read-only) '(t)))
@@ -412,7 +412,7 @@ Clock   In/out^     ^Edit^   ^Summary     (_?_)
         ;;  nil
         ;;  ("~/views/home.html"))
 
-  
+
         ("F" "full agenda view"
          ((agenda ""
                   ;; array of constraints
