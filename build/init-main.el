@@ -2,7 +2,7 @@
                  ;; "ess"
                  ;; "erlang"
                  ;; "go"
-                 ;; "web" - HTML,CSS,JS,JSX etc
+                 ;; "web";; - HTML,CSS,JS,JSX etc
                  ))
 
 (defconst ra/emacs-directory (concat (getenv "HOME") "/.emacs.d/"))
@@ -178,19 +178,25 @@
 (setq dired-dwim-target t)
 
 (setq ibuffer-saved-filter-groups
-         (quote (("default"
-                  ("dired" (mode . dired-mode))
+      (quote (("default"
+               ("dired" (mode . dired-mode))
                   ;;("perl" (mode . cperl-mode))
                   ;;("erc" (mode . erc-mode))
-                  ("org" (or
-                              (mode . org-mode)
-                              (name . "^\\*Calendar\\*$")
-                              (name . "^diary$")
-                              (name . "^\\.org$")
-                              (mode . muse-mode)))
-                  ("emacs" (or
-                            (name . "^\\*scratch\\*$")
-                            (name . "^\\*Messages\\*$")))
+               ("org" (or
+                       (mode . org-mode)
+                       (name . "^\\*Calendar\\*$")
+                       (name . "^diary$")
+                       (name . "^\\.org$")
+                       (mode . muse-mode)))
+               ("emacs" (or
+                         (name . "^\\*scratch\\*$")
+                         (name . "^\\*Messages\\*$")
+                         ))
+
+               ("clojure" (or
+                           (mode . clojure-mode)
+                           (name . "^cider")
+                           ))
                   ;; ("gnus" (or
                   ;;          (mode . message-mode)
                   ;;          (mode . bbdb-mode)
@@ -558,5 +564,9 @@ of listed in `linum-mode-excludes'."
   (el-get-bundle gnuplot-mode)
   (add-to-list 'auto-mode-alist '("\\.R$" . R-mode))
   )
+
+(el-get-bundle spinner)
+(el-get-bundle clojure-mode)
+(el-get-bundle cider)
 
 (provide 'init-main)

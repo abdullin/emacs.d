@@ -17,6 +17,14 @@ The script assumes that this folder is either checked out to
   (server-start)
 #+END_SRC
 
+* Emacs essentials
+
+Help is behind =C-h= or =F1=. To be more precise, in help:
+
+1. =w= (or =where-is=) - to find shortcuts for the command
+2. =f= (of =describe-function=) - to learn all about function.
+
+
 * General settings
 ** Roles
 
@@ -28,7 +36,7 @@ enable/disable roles as needed.
                    ;; "ess"
                    ;; "erlang"
                    ;; "go"
-                   ;; "web" - HTML,CSS,JS,JSX etc
+                   ;; "web";; - HTML,CSS,JS,JSX etc
                    ))
 #+END_SRC
 
@@ -86,11 +94,11 @@ erlang), so let's look up that in machine-specific file:
   (setq inferior-R-program-name "/usr/local/Cellar/r/3.2.2_1/bin/R")
 
 
-  (autoload 'ledger-mode "ledger-mode" "A major mode for Ledger" t)
-  (add-to-list 'load-path
-               (expand-file-name "/usr/local/Cellar/ledger/3.1_1/share/emacs/site-lisp/ledger "))
+  ;; (autoload 'ledger-mode "ledger-mode" "A major mode for Ledger" t)
+  ;; (add-to-list 'load-path
+  ;;              (expand-file-name "/usr/local/Cellar/ledger/3.1_1/share/emacs/site-lisp/ledger "))
 
-  (add-to-list 'auto-mode-alist '("\\.ledger$" . ledger-mode))
+  ;; (add-to-list 'auto-mode-alist '("\\.ledger$" . ledger-mode))
 #+END_SRC
 
 ** Setup load paths
@@ -448,19 +456,25 @@ Let's group our buffers in the ibuffer window.
 
 #+BEGIN_SRC elisp
   (setq ibuffer-saved-filter-groups
-           (quote (("default"
-                    ("dired" (mode . dired-mode))
+        (quote (("default"
+                 ("dired" (mode . dired-mode))
                     ;;("perl" (mode . cperl-mode))
                     ;;("erc" (mode . erc-mode))
-                    ("org" (or
-                                (mode . org-mode)
-                                (name . "^\\*Calendar\\*$")
-                                (name . "^diary$")
-                                (name . "^\\.org$")
-                                (mode . muse-mode)))
-                    ("emacs" (or
-                              (name . "^\\*scratch\\*$")
-                              (name . "^\\*Messages\\*$")))
+                 ("org" (or
+                         (mode . org-mode)
+                         (name . "^\\*Calendar\\*$")
+                         (name . "^diary$")
+                         (name . "^\\.org$")
+                         (mode . muse-mode)))
+                 ("emacs" (or
+                           (name . "^\\*scratch\\*$")
+                           (name . "^\\*Messages\\*$")
+                           ))
+
+                 ("clojure" (or
+                             (mode . clojure-mode)
+                             (name . "^cider")
+                             ))
                     ;; ("gnus" (or
                     ;;          (mode . message-mode)
                     ;;          (mode . bbdb-mode)
@@ -1520,7 +1534,6 @@ and we can load it from the main file:
 
 ** Statistics
 
-
 Let's install R and gnuplot
 
 #+BEGIN_SRC elisp
@@ -1530,6 +1543,26 @@ Let's install R and gnuplot
     (add-to-list 'auto-mode-alist '("\\.R$" . R-mode))
     )
 #+END_SRC
+
+** Clojure
+
+#+BEGIN_SRC elisp
+  (el-get-bundle spinner)
+  (el-get-bundle clojure-mode)
+  (el-get-bundle cider)
+#+END_SRC
+
+
+In source code:
+
+
+| C-c C-k     |                            |                                          |
+| C-c C-d C-d |                            | Show documentation for the symbol        |
+| C-x C-e     | cider-eval-last-expression |                                          |
+| C-c C-k     |                            | compile file within current REPL session |
+| C-c-C-d C-a |                            | Search docs for text                     |
+
+
 * Footnotes
 ** Loading the configuration
 
