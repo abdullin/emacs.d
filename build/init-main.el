@@ -21,6 +21,8 @@
 (add-to-list 'load-path (ra/emacs-subdirectory "lisp"))
 (add-to-list 'load-path (ra/emacs-subdirectory "build"))
 
+(add-to-list 'exec-path "/usr/local/bin/")
+
 (defun add-hook-list (callback hooks)
   "Adds callback to each one of the hooks."
   (mapc (lambda (hook)
@@ -568,5 +570,11 @@ of listed in `linum-mode-excludes'."
 (el-get-bundle spinner)
 (el-get-bundle clojure-mode)
 (el-get-bundle cider)
+
+(add-hook 'cider-repl-mode-hook #'company-mode)
+(add-hook 'cider-mode-hook #'company-mode)
+
+(require 'ob-clojure)
+(setq org-babel-clojure-backend 'cider)
 
 (provide 'init-main)

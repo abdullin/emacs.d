@@ -111,6 +111,15 @@ literate version (or v2):
 (add-to-list 'load-path (ra/emacs-subdirectory "build"))
 #+END_SRC
 
+** Add usr/local/bin
+
+Emacs can be [[http://emacs.stackexchange.com/questions/550/exec-path-and-path][weird with PATH]], so we set local bin path explicitly:
+
+#+BEGIN_SRC elisp
+  (add-to-list 'exec-path "/usr/local/bin/")
+#+END_SRC
+
+
 * Helper functions
 Just a few helper functions to lighten up the day
 #+BEGIN_SRC elisp
@@ -1552,6 +1561,19 @@ Let's install R and gnuplot
   (el-get-bundle cider)
 #+END_SRC
 
+Enable company mode in cider mode and cider repl
+
+#+BEGIN_SRC elisp
+  (add-hook 'cider-repl-mode-hook #'company-mode)
+  (add-hook 'cider-mode-hook #'company-mode)
+#+END_SRC
+
+Tell org-babel to use cider backend for clojure:
+#+BEGIN_SRC elisp
+  (require 'ob-clojure)
+  (setq org-babel-clojure-backend 'cider)
+#+END_SRC
+
 
 In source code:
 
@@ -1561,6 +1583,89 @@ In source code:
 | C-x C-e     | cider-eval-last-expression |                                          |
 | C-c C-k     |                            | compile file within current REPL session |
 | C-c-C-d C-a |                            | Search docs for text                     |
+
+*** References
+
+- [[http://www.colinsteele.org/post/27929539434/60000-growth-in-7-months-using-clojure-and-aws][60,000% growth in 7 months using Clojure and AWS]]
+- [[http://mishadoff.com/blog/clojure-design-patterns/][Clojure design patterns]] (and [[https://news.ycombinator.com/item?id=10758888][comments]])
+- [[https://pragprog.com/book/shcloj2/programming-clojure][Programming Clojure]]
+- [[https://github.com/matthiasn/talk-transcripts/tree/master/Hickey_Rich][Talks by Rich Hickey]]
+@abdullin All talks by Hickey are worth seeing but besides these I'd
+say "Are we there yet", "Language of systems" & "hammock driven dev"
+View conversation 0 retweets 0 likes
+
+
+*** Read references
+
+**** Clojure vs Erlang (blogpost)
+
+
+[[http://www.tbray.org/ongoing/When/200x/2009/10/26/Messaging][Clojure vs Erlang]]
+
+There is a nice comment:
+#+BEGIN_QUOTE
+I have had the pleasure of working with both languages. They both have
+their place.
+
+Rich argues why he didn't use an actor-like setup in clojure here
+http://clojure.org/state in the middle under "Message Passing and
+Actors". He makes some good points. (IE, Unless you are doing
+distributed programming, you pay a price for message passing).
+
+We have developed some neat simple message passing on top clojure on
+our project using RabbitMQ and clojure sequences & actors. So :P :)
+
+Clojure wins for us by keeping it functional, being awesome on cores
+and giving access to a hundred thousand java libraries.
+#+END_QUOTE
+
+and a follow-up
+
+#+BEGIN_QUOTE
+I agree with Tim. I think Clojure's sweet spot is an app which needs
+some sanity around concurrency -- and what app these days doesn't? --
+and needs either the JVM or some set of Java libraries.
+
+Personally, I shudder a little bit at the prospect of doing
+distributed stuff with any JVM language since I've started using
+Erlang. The simplicity really is a game changer if you're doing any
+amount of distributed work.
+#+END_QUOTE
+
+
+
+**** Value of Values
+
+[[https://www.youtube.com/watch?v=-6BsiVyC1kM][The Value of Values]] (Video by RH). He goes into the semantics of what
+is a value, focusing on 2 characteristics: immutability and
+referential transparency.
+
+Because of that, values are:
+
+- language independent
+- Generic
+- easy to fabricate
+- values aggregate to values (list of strings is a value)
+- values make best interfaces (we already send them over the wire)
+- reduce coordination (no need to lock things)
+
+Basically, his thoughts are aligned with value proposition of event
+sourcing.
+
+Information systems are fundamentally about facts: maintaining and
+manipulating them. To give users a leverage in making decisions.
+
+Information is a fact, it isn't a machine. 
+
+I'm building systems for information management and decision support.
+
+What do we use for ourselves?
+
+1. Source control (and not a directory) - append + timestamps
+2. Logs - append + timestamps
+3. Releases
+
+New facts require new space.
 
 
 * Footnotes
