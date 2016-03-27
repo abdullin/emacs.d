@@ -24,23 +24,7 @@ Help is behind =C-h= or =F1=. To be more precise, in help:
 1. =w= (or =where-is=) - to find shortcuts for the command
 2. =f= (of =describe-function=) - to learn all about function.
 
-
 * General settings
-** Roles
-
-This config could be used from multiple servers. We will
-enable/disable roles as needed.
-
-#+BEGIN_SRC elisp
-  (setq ra/roles '(
-                   ;; "ess"
-                   ;; "erlang"
-                   ;; "go"
-                   ;; "web";; - HTML,CSS,JS,JSX etc
-                   ))
-#+END_SRC
-
-Local configs could define overrides.
 
 ** Home directory
 
@@ -78,27 +62,9 @@ erlang), so let's look up that in machine-specific file:
 *** Rinat's rMBR
 
 #+BEGIN_SRC elisp :tangle Rinats-MacBook-Pro.local.el
-  ;; enable all modes
-  (setq ra/roles '(
-                   "org"
-                   "ess"
-                   "erlang"
-                   ;; "go"
-                   "web" ;;HTML,CSS,JS,JSX etc
-                   ))
-
-  ;; config for erlang on OSX
-  (setq ra/erlang-root-path "/usr/local/Cellar/erlang/18.0.3/")
-  (setq ra/erlang-tools-path "/usr/local/Cellar/erlang/18.0.3/lib/erlang/lib/tools-2.8/emacs/")
   ;;config for R on OSX
   (setq inferior-R-program-name "/usr/local/Cellar/r/3.2.2_1/bin/R")
 
-
-  ;; (autoload 'ledger-mode "ledger-mode" "A major mode for Ledger" t)
-  ;; (add-to-list 'load-path
-  ;;              (expand-file-name "/usr/local/Cellar/ledger/3.1_1/share/emacs/site-lisp/ledger "))
-
-  ;; (add-to-list 'auto-mode-alist '("\\.ledger$" . ledger-mode))
 #+END_SRC
 
 ** Setup load paths
@@ -118,7 +84,6 @@ Emacs can be [[http://emacs.stackexchange.com/questions/550/exec-path-and-path][
 #+BEGIN_SRC elisp
   (add-to-list 'exec-path "/usr/local/bin/")
 #+END_SRC
-
 
 * Helper functions
 Just a few helper functions to lighten up the day
@@ -358,9 +323,7 @@ Oh, while we are at it, let's display battery percentage:
 #+END_SRC
 
 ** Cursor
-
 Make the cursor blink:
-
 #+BEGIN_SRC elisp
 ;; blinking cursor
 (blink-cursor-mode t)
@@ -387,7 +350,6 @@ I like Monaco on OSX:
 
 #+BEGIN_SRC elisp :tangle build/init-client.el
   (when (eq system-type 'darwin)
-
     ;; set default font for the frames as well (daemon + ec)
     (setq default-frame-alist '((font . "MonacoB-16")))
     (set-fontset-font t 'cyrillic "Droid Sans Mono")
@@ -395,7 +357,6 @@ I like Monaco on OSX:
 #+END_SRC
 
 ** Color theme
-
 I like to use solarized theme by default:
 
 #+BEGIN_SRC elisp :tangle build/init-client.el
@@ -425,9 +386,7 @@ hydra for that:
     )
 #+END_SRC
 
-
 ** Zooming with Hydra
-
 With this simple code, hit =F9= to enter zooming mode:
 
 #+BEGIN_SRC elisp :tangle build/init-client.el
@@ -839,7 +798,7 @@ A list of keywords and their colors, initially taken from [[http://doc.norang.ca
 #+BEGIN_SRC elisp
   (setq org-todo-keywords
         (quote ((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
-                (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)" "PHONE" "MEETING"))))
+                (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)"))))
 
   ;;; color keywords
   (setq org-todo-keyword-faces
@@ -849,13 +808,11 @@ A list of keywords and their colors, initially taken from [[http://doc.norang.ca
                 ("WAITING" :foreground "orange" :weight bold)
                 ("HOLD" :foreground "magenta" :weight bold)
                 ("CANCELLED" :foreground "forest green" :weight bold)
-                ("MEETING" :foreground "forest green" :weight bold)
-                ("PHONE" :foreground "forest green" :weight bold))))
+                )))
 
 #+END_SRC
 
 *** State Transitions
-
 
 There are two ways to change task state:
 #+BEGIN_SRC elisp
@@ -897,26 +854,8 @@ And define some capture templates (see [[http://orgmode.org/manual/Capture-templ
   (setq org-capture-templates
         (quote (
                 ("i" "index" entry (file+datetree "~/org/index.org")
-                 "* INDEX: %?")
-
-
-
-                ("t" "todo" entry (file "~/org/inbox.org")
-                 "* TODO %?\n%U\n%a\n" :clock-in t :clock-resume t)
-                ("r" "respond" entry (file "~/org/inbox.org")
-                 "* NEXT Respond to %:from on %:subject\nSCHEDULED: %t\n%U\n%a\n" :clock-in t :clock-resume t :immediate-finish t)
-                ("n" "note" entry (file "~/org/inbox.org")
-                 "* %? :NOTE:\n%U\n%a\n" :clock-in t :clock-resume t)
-                ("j" "Journal" entry (file+datetree "~/org/journal.org")
-                 "* %?\n%U\n" :clock-in t :clock-resume t)
-                ("w" "org-protocol" entry (file "~/org/inbox.org")
-                 "* TODO Review %c\n%U\n" :immediate-finish t)
-                ("m" "Meeting" entry (file "~/org/inbox.org")
-                 "* MEETING with %? :MEETING:\n%U" :clock-in t :clock-resume t)
-                ("p" "Phone call" entry (file "~/org/inbox.org")
-                 "* PHONE %? :PHONE:\n%U" :clock-in t :clock-resume t)
-                ("h" "Habit" entry (file "~/org/inbox.org")
-                 "* NEXT %?\n%U\n%a\nSCHEDULED: %(format-time-string \"<%Y-%m-%d %a .+1d/3d>\")\n:PROPERTIES:\n:STYLE: habit\n:REPEAT_TO_STATE: NEXT\n:END:\n"))))
+                 "* INDEX: %?") 
+                )))
 #+END_SRC
 
 *** Agenda
@@ -1130,7 +1069,6 @@ as per [[http://orgmode.org/worg/org-tutorials/org-publish-html-tutorial.html#fn
 ***** Sitemap
   Subj, generates a simple sitemap
 
-
 * Miscellaneous
 ** Unknown origins
 
@@ -1197,11 +1135,9 @@ Auto-save never really worked for me:
 #+BEGIN_SRC elisp
 (setq make-backup-files nil)
 (setq auto-save-default nil)
-
 #+END_SRC
 
 ** Disable escape
-
 Escape key hurts my pinky :)
 
 #+BEGIN_SRC elisp
@@ -1266,52 +1202,6 @@ environment variables (e.g. for running external tools):
 #+END_SRC
 
 * Languages
-** Erlang
-
-Default erlang distribution has great setup for emacs. We just need to
-wire it together, provided there was an erlang installation.
-
-On OSX you could install erlang via:
-
-#+BEGIN_SRC sh :tangle no
-brew install erlang
-#+END_SRC
-
-And then define in machine-local file something like:
-
-#+BEGIN_SRC elisp :tangle no
-(setq ra/erlang-path "/usr/local/Cellar/erlang/17.5/")
-#+END_SRC
-
-Erlang-specific config is:
-
-#+BEGIN_SRC elisp :tangle build/init-erlang.el
-  (when
-      (boundp 'ra/erlang-root-path)
-
-    (setq erlang-root-dir (concat ra/erlang-root-path "/lib/erlang/lib"))
-    (setq erlang-bin-path (concat ra/erlang-root-path "/lib/erlang/bin"))
-    (setq erlang-emacs-path ra/erlang-tools-path)
-
-    (setq load-path (cons erlang-emacs-path load-path))
-    (setq exec-path (cons erlang-bin-path exec-path))
-    (require 'erlang-start)
-
-    )
-
-  (provide 'init-erlang)
-
-#+END_SRC
-
-We can load it from the main file:
-
-#+BEGIN_SRC elisp
-  (when (member "erlang" ra/roles)
-    (require 'init-erlang)
-    )
-
-#+END_SRC
-
 ** Pure Javascript
 
 #+BEGIN_SRC elisp :tangle build/init-js.el
@@ -1352,70 +1242,7 @@ We can load it from the main file:
 Load this config, if we are in web role:
 
 #+BEGIN_SRC elisp
-  (when (member "web" ra/roles)
     (require 'init-js)
-    )
-#+END_SRC
-
-** Golang mode
-
-Grab golang packages:
-
-#+BEGIN_SRC elisp :tangle build/init-go.el
-(el-get-bundle go-mode)
-(el-get-bundle gocode)
-(el-get-bundle go-eldoc)
-#+END_SRC
-
-As it was imported from my previous config:
-
-#+BEGIN_SRC elisp :tangle build/init-go.el
-  (require 'go-mode)
-  (require 'key-chord)
-  (require 'company-go)
-  (require 'go-eldoc)
-  (require 'yasnippet)
-
-  (setq gofmt-command "goimports")
-  (add-hook 'before-save-hook 'gofmt-before-save)
-
-
-   ;; jump to file
-  (key-chord-define go-mode-map "5t" 'godef-jump)
-  (key-chord-define go-mode-map "4t" 'godef-jump-other-window)
-
-
-  (defun my-go-mode-hook ()
-    ;; customize compile command
-    ;; (if (not (string-match "go" compile-command))
-    ;;     (set (make-local-variable 'compile-command)
-    ;;          "go vet && go test"))
-
-    ;; go uses tabs
-    (setq indent-tabs-mode t)
-    (setq tab-width 4)
-    (yas-minor-mode)
-
-    (set (make-local-variable 'company-backends) '(company-go))
-    (company-mode)
-    (go-eldoc-setup)
-
-    (local-set-key (kbd "M-.") 'godef-jump)
-    )
-
-  (add-hook 'go-mode-hook 'my-go-mode-hook)
-
-  (provide 'init-go)
-
-#+END_SRC
-
-And load from the main file:
-
-#+BEGIN_SRC elisp
-  (when (member "go" ra/roles)
-    (require 'init-go)
-    )
-
 #+END_SRC
 
 ** Lisp
@@ -1543,9 +1370,7 @@ Web mode that is also used to edit mixed files like JSX
 and we can load it from the main file:
 
 #+BEGIN_SRC elisp
-  (when (member "web" ra/roles)
     (require 'init-web)
-    )
 #+END_SRC
 
 ** Statistics
@@ -1553,11 +1378,9 @@ and we can load it from the main file:
 Let's install R and gnuplot
 
 #+BEGIN_SRC elisp
-  (when (member "ess" ra/roles)
     (el-get-bundle ess)
     (el-get-bundle gnuplot-mode)
     (add-to-list 'auto-mode-alist '("\\.R$" . R-mode))
-    )
 #+END_SRC
 
 ** Clojure
@@ -1674,10 +1497,8 @@ What do we use for ourselves?
 
 New facts require new space.
 
-
 * Footnotes
 ** Loading the configuration
-
 To reload with a require:
 
 #+BEGIN_SRC elisp
@@ -1688,7 +1509,6 @@ To reload with a require:
 1. [[http://www.gnu.org/software/emacs/manual/html_node/emacs/Sexp-Diary-Entries.html#Sexp-Diary-Entries][Worg description]]
 ** Agenda
 ** The Cycle
-
 *** Working with agenda
 
 | Key     | Action              | When |
@@ -1727,26 +1547,3 @@ Good commands for navigating agenda (once shown with =F12=)
 
 
 
-
-
-* Journal
-
-** [2015-08-08 Sat]
-I mapped:
-
-- RETURN (enter) key to behave like a Ctrl, if pressed with any other
-  key (thanks to [[https://pqrs.org/osx/karabiner/][Karabiner]]).
-- Right Cmd - switch to RU
-- Left Cmd - switch to EN
-- Caps Lock - behave like a Ctrl (OSX standard)
-- Ctrl - disabled
-
-** [2015-08-11 Tue]
-
-After some thinking, I disabled the Escape key
-alltogether. Using ~Ctrl-[~ to exit the vim insert mode and using
-emacs ~Ctrl-G~ for triple escape.
-
-I considered swapping tilde key (located to the right of L Shift) with
-paragraph (unused). However, it seems, pressing it with pinky and the
-next finger is rather simple. I just have to get used to it.

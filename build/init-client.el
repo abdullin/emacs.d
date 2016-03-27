@@ -1,7 +1,6 @@
 (provide 'init-client)
 
 (when (eq system-type 'darwin)
-
   ;; set default font for the frames as well (daemon + ec)
   (setq default-frame-alist '((font . "MonacoB-16")))
   (set-fontset-font t 'cyrillic "Droid Sans Mono")

@@ -1,10 +1,3 @@
-(setq ra/roles '(
-                 ;; "ess"
-                 ;; "erlang"
-                 ;; "go"
-                 ;; "web";; - HTML,CSS,JS,JSX etc
-                 ))
-
 (defconst ra/emacs-directory (concat (getenv "HOME") "/.emacs.d/"))
 (defun ra/emacs-subdirectory (d) (expand-file-name d ra/emacs-directory))
 
@@ -359,7 +352,7 @@ Clock   In/out^     ^Edit^   ^Summary     (_?_)
 
 (setq org-todo-keywords
       (quote ((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
-              (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)" "PHONE" "MEETING"))))
+              (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)"))))
 
 ;;; color keywords
 (setq org-todo-keyword-faces
@@ -369,8 +362,7 @@ Clock   In/out^     ^Edit^   ^Summary     (_?_)
               ("WAITING" :foreground "orange" :weight bold)
               ("HOLD" :foreground "magenta" :weight bold)
               ("CANCELLED" :foreground "forest green" :weight bold)
-              ("MEETING" :foreground "forest green" :weight bold)
-              ("PHONE" :foreground "forest green" :weight bold))))
+              )))
 
 ;; Changing a task state is done with =C-C C-t KEY=:
 (setq org-use-fast-todo-selection t)
@@ -392,26 +384,8 @@ Clock   In/out^     ^Edit^   ^Summary     (_?_)
 (setq org-capture-templates
       (quote (
               ("i" "index" entry (file+datetree "~/org/index.org")
-               "* INDEX: %?")
-
-
-
-              ("t" "todo" entry (file "~/org/inbox.org")
-               "* TODO %?\n%U\n%a\n" :clock-in t :clock-resume t)
-              ("r" "respond" entry (file "~/org/inbox.org")
-               "* NEXT Respond to %:from on %:subject\nSCHEDULED: %t\n%U\n%a\n" :clock-in t :clock-resume t :immediate-finish t)
-              ("n" "note" entry (file "~/org/inbox.org")
-               "* %? :NOTE:\n%U\n%a\n" :clock-in t :clock-resume t)
-              ("j" "Journal" entry (file+datetree "~/org/journal.org")
-               "* %?\n%U\n" :clock-in t :clock-resume t)
-              ("w" "org-protocol" entry (file "~/org/inbox.org")
-               "* TODO Review %c\n%U\n" :immediate-finish t)
-              ("m" "Meeting" entry (file "~/org/inbox.org")
-               "* MEETING with %? :MEETING:\n%U" :clock-in t :clock-resume t)
-              ("p" "Phone call" entry (file "~/org/inbox.org")
-               "* PHONE %? :PHONE:\n%U" :clock-in t :clock-resume t)
-              ("h" "Habit" entry (file "~/org/inbox.org")
-               "* NEXT %?\n%U\n%a\nSCHEDULED: %(format-time-string \"<%Y-%m-%d %a .+1d/3d>\")\n:PROPERTIES:\n:STYLE: habit\n:REPEAT_TO_STATE: NEXT\n:END:\n"))))
+               "* INDEX: %?") 
+              )))
 
 (global-set-key (kbd "<f12>") 'org-agenda)
 
@@ -539,17 +513,7 @@ of listed in `linum-mode-excludes'."
 
 (ra/load-unix-shell-env)
 
-(when (member "erlang" ra/roles)
-  (require 'init-erlang)
-  )
-
-(when (member "web" ra/roles)
-  (require 'init-js)
-  )
-
-(when (member "go" ra/roles)
-  (require 'init-go)
-  )
+(require 'init-js)
 
 (setq lisp-mode-hooks '(emacs-lisp-mode-hook
             lisp-mode-hook
@@ -564,15 +528,11 @@ of listed in `linum-mode-excludes'."
   (add-hook-list 'rainbow-delimiters-mode lisp-mode-hooks)
   )
 
-(when (member "web" ra/roles)
-  (require 'init-web)
-  )
+(require 'init-web)
 
-(when (member "ess" ra/roles)
-  (el-get-bundle ess)
-  (el-get-bundle gnuplot-mode)
-  (add-to-list 'auto-mode-alist '("\\.R$" . R-mode))
-  )
+(el-get-bundle ess)
+(el-get-bundle gnuplot-mode)
+(add-to-list 'auto-mode-alist '("\\.R$" . R-mode))
 
 (el-get-bundle spinner)
 (el-get-bundle clojure-mode)
