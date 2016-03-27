@@ -390,7 +390,13 @@ Clock   In/out^     ^Edit^   ^Summary     (_?_)
 (global-set-key (kbd "C-c c") 'org-capture)
 
 (setq org-capture-templates
-      (quote (("t" "todo" entry (file "~/org/inbox.org")
+      (quote (
+              ("i" "index" entry (file+datetree "~/org/index.org")
+               "* INDEX: %?")
+
+
+
+              ("t" "todo" entry (file "~/org/inbox.org")
                "* TODO %?\n%U\n%a\n" :clock-in t :clock-resume t)
               ("r" "respond" entry (file "~/org/inbox.org")
                "* NEXT Respond to %:from on %:subject\nSCHEDULED: %t\n%U\n%a\n" :clock-in t :clock-resume t :immediate-finish t)
@@ -455,6 +461,7 @@ Clock   In/out^     ^Edit^   ^Summary     (_?_)
    (sqlite . t)
    (perl . t)
    (gnuplot . t)
+   (clojure . t)
    ))
 
 (setq org-confirm-babel-evaluate nil)

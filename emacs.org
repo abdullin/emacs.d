@@ -891,11 +891,17 @@ Let's use C-c c to start capture mode:
 
 #+END_SRC
 
-And define some capture templates:
+And define some capture templates (see [[http://orgmode.org/manual/Capture-templates.html][docs]]):
 
 #+BEGIN_SRC elisp
   (setq org-capture-templates
-        (quote (("t" "todo" entry (file "~/org/inbox.org")
+        (quote (
+                ("i" "index" entry (file+datetree "~/org/index.org")
+                 "* INDEX: %?")
+
+
+
+                ("t" "todo" entry (file "~/org/inbox.org")
                  "* TODO %?\n%U\n%a\n" :clock-in t :clock-resume t)
                 ("r" "respond" entry (file "~/org/inbox.org")
                  "* NEXT Respond to %:from on %:subject\nSCHEDULED: %t\n%U\n%a\n" :clock-in t :clock-resume t :immediate-finish t)
@@ -1045,6 +1051,7 @@ Some initial languages that we want babel to support:
      (sqlite . t)
      (perl . t)
      (gnuplot . t)
+     (clojure . t)
      ))
 #+END_SRC
 
