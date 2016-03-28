@@ -6,8 +6,8 @@
   (set-fontset-font t 'cyrillic "Droid Sans Mono")
   )
 
-(el-get-bundle solarized-theme)
-(load-theme 'solarized-light t)
+(el-get-bundle color-theme-solarized)
+(load-theme 'solarized t)
 
 (defhydra hydra-themes (global-map "<f9>")
   "themes"

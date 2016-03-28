@@ -360,8 +360,8 @@ I like Monaco on OSX:
 I like to use solarized theme by default:
 
 #+BEGIN_SRC elisp :tangle build/init-client.el
-  (el-get-bundle solarized-theme)
-  (load-theme 'solarized-light t)
+  (el-get-bundle color-theme-solarized)
+  (load-theme 'solarized t)
 #+END_SRC
 
 It would be nice to switch to solarized dark, if needed. Let's add
