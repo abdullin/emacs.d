@@ -492,6 +492,14 @@ And let's bind it to a keystroke:
 #+BEGIN_SRC elisp
   (define-key global-map "\M-Q" 'ra/unfill-paragraph)
 #+END_SRC
+** Auto-fill mode
+
+To turn auto-filling on (saves M-q presses):
+
+#+BEGIN_SRC elisp
+  (global-set-key (kbd "C-c q") 'auto-fill-mode)
+#+END_SRC
+
 
 ** Expand Region
 
@@ -790,6 +798,14 @@ Bind shortcut to store a link at the current location:
 #+BEGIN_SRC elisp
   (define-key org-mode-map  (kbd "C-c l") 'org-store-link)
 #+END_SRC
+
+*** Org as a text processor
+
+#+BEGIN_SRC elisp
+  ;; hide /italic/ marker
+  (setq org-hide-emphasis-markers t)
+#+END_SRC
+
 ** GTD Workflow
 *** Keywords and states
 
@@ -854,7 +870,7 @@ And define some capture templates (see [[http://orgmode.org/manual/Capture-templ
   (setq org-capture-templates
         (quote (
                 ("i" "index" entry (file+datetree "~/org/index.org")
-                 "* INDEX: %?") 
+                 "* INDEX: %?")
                 )))
 #+END_SRC
 
@@ -1068,6 +1084,17 @@ as per [[http://orgmode.org/worg/org-tutorials/org-publish-html-tutorial.html#fn
 
 ***** Sitemap
   Subj, generates a simple sitemap
+
+** References
+
+We use org-index
+
+#+BEGIN_SRC elisp
+  (require 'org-index)
+  (org-index-default-keybindings)
+  ;; my node
+  (setq org-index-id "EE6F1D64-8A8D-4057-ACDB-541458F9DC2B")
+#+END_SRC
 
 * Miscellaneous
 ** Unknown origins
@@ -1485,7 +1512,7 @@ sourcing.
 Information systems are fundamentally about facts: maintaining and
 manipulating them. To give users a leverage in making decisions.
 
-Information is a fact, it isn't a machine. 
+Information is a fact, it isn't a machine.
 
 I'm building systems for information management and decision support.
 
@@ -1541,9 +1568,3 @@ Good commands for navigating agenda (once shown with =F12=)
 | v y | view by year               |      |
 | r   | recreate the agenda buffer |      |
 | j   | jump to a date             |      |
-
-
-
-
-
-
