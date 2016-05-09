@@ -223,6 +223,8 @@
 
 (define-key global-map "\M-Q" 'ra/unfill-paragraph)
 
+(global-set-key (kbd "C-c q") 'auto-fill-mode)
+
 ;; smart region expansion
 (el-get-bundle expand-region)
 (global-set-key (kbd "C-=") 'er/expand-region)
@@ -350,6 +352,9 @@ Clock   In/out^     ^Edit^   ^Summary     (_?_)
 
 (define-key org-mode-map  (kbd "C-c l") 'org-store-link)
 
+;; hide /italic/ marker
+(setq org-hide-emphasis-markers t)
+
 (setq org-todo-keywords
       (quote ((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
               (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)"))))
@@ -384,7 +389,7 @@ Clock   In/out^     ^Edit^   ^Summary     (_?_)
 (setq org-capture-templates
       (quote (
               ("i" "index" entry (file+datetree "~/org/index.org")
-               "* INDEX: %?") 
+               "* INDEX: %?")
               )))
 
 (global-set-key (kbd "<f12>") 'org-agenda)
@@ -457,6 +462,11 @@ Clock   In/out^     ^Edit^   ^Summary     (_?_)
        ;;s5
        ;;taskjuggler
 )))
+
+(require 'org-index)
+(org-index-default-keybindings)
+;; my node
+(setq org-index-id "EE6F1D64-8A8D-4057-ACDB-541458F9DC2B")
 
 ;; mode line settings
 (column-number-mode t)
