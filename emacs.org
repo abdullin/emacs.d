@@ -13,6 +13,7 @@ The script assumes that this folder is either checked out to
 
 
 #+BEGIN_SRC elisp :tangle init.el
+  ;; (package-initialize)
   (load-file "~/.emacs.d/build/init-main.el")
   (server-start)
 #+END_SRC
@@ -129,16 +130,20 @@ We can describe our common dependencies like this:
 #+BEGIN_SRC elisp
   ;; modern list library
   (el-get-bundle dash)
+
+  (el-get-bundle queue)
   (el-get-bundle dired-plus)
   (el-get-bundle flycheck)
   (el-get-bundle yasnippet)
-  (el-get-bundle company)
+  (el-get-bundle company-mode)
   ;; Swap buffers without typing C-x b on each window
   (el-get-bundle buffer-move)
   (el-get-bundle hydra)
   (el-get-bundle web-mode)
   ;; undo tree git-style
   (el-get-bundle undo-tree)
+
+  (require 'company)
 #+END_SRC
 ** Common requires
 #+BEGIN_SRC elisp
@@ -656,7 +661,7 @@ This is my emacs setup for the mighty org-mode!
 
 #+BEGIN_SRC elisp
   ;; latest version of org-mode
-  ;; (el-get-bundle org-mode)
+  (el-get-bundle org-mode)
   (require 'org)
 #+END_SRC
 ** Intro
@@ -1052,8 +1057,8 @@ I want inline images to be refreshed automatically (taken from [[http://emacs.st
 
   ;; don't include default style
   (setq org-html-head-include-default-style nil)
-
-
+  ;; don't include scripts
+  (setq org-html-head-include-scripts nil)
 #+END_SRC
 
 *** Publishing to HTML

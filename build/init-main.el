@@ -38,16 +38,20 @@
 
 ;; modern list library
 (el-get-bundle dash)
+
+(el-get-bundle queue)
 (el-get-bundle dired-plus)
 (el-get-bundle flycheck)
 (el-get-bundle yasnippet)
-(el-get-bundle company)
+(el-get-bundle company-mode)
 ;; Swap buffers without typing C-x b on each window
 (el-get-bundle buffer-move)
 (el-get-bundle hydra)
 (el-get-bundle web-mode)
 ;; undo tree git-style
 (el-get-bundle undo-tree)
+
+(require 'company)
 
 (require 'dash)
 
@@ -288,7 +292,7 @@
 (setq vc-follow-symlinks t)
 
 ;; latest version of org-mode
-;; (el-get-bundle org-mode)
+(el-get-bundle org-mode)
 (require 'org)
 
 (setq org-startup-indented t)
@@ -466,6 +470,8 @@ Clock   In/out^     ^Edit^   ^Summary     (_?_)
 
 ;; don't include default style
 (setq org-html-head-include-default-style nil)
+;; don't include scripts
+(setq org-html-head-include-scripts nil)
 
 ;; mode line settings
 (column-number-mode t)
