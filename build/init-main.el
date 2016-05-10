@@ -288,7 +288,7 @@
 (setq vc-follow-symlinks t)
 
 ;; latest version of org-mode
-(el-get-bundle org-mode)
+;; (el-get-bundle org-mode)
 (require 'org)
 
 (setq org-startup-indented t)
@@ -461,12 +461,11 @@ Clock   In/out^     ^Edit^   ^Summary     (_?_)
        ;;odt
        ;;s5
        ;;taskjuggler
-)))
+       )))
 
-(require 'org-index)
-(org-index-default-keybindings)
-;; my node
-(setq org-index-id "EE6F1D64-8A8D-4057-ACDB-541458F9DC2B")
+
+;; don't include default style
+(setq org-html-head-include-default-style nil)
 
 ;; mode line settings
 (column-number-mode t)

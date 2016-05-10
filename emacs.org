@@ -656,7 +656,7 @@ This is my emacs setup for the mighty org-mode!
 
 #+BEGIN_SRC elisp
   ;; latest version of org-mode
-  (el-get-bundle org-mode)
+  ;; (el-get-bundle org-mode)
   (require 'org)
 #+END_SRC
 ** Intro
@@ -1047,7 +1047,13 @@ I want inline images to be refreshed automatically (taken from [[http://emacs.st
          ;;odt
          ;;s5
          ;;taskjuggler
-  )))
+         )))
+
+
+  ;; don't include default style
+  (setq org-html-head-include-default-style nil)
+
+
 #+END_SRC
 
 *** Publishing to HTML
@@ -1085,16 +1091,6 @@ as per [[http://orgmode.org/worg/org-tutorials/org-publish-html-tutorial.html#fn
 ***** Sitemap
   Subj, generates a simple sitemap
 
-** References
-
-We use org-index
-
-#+BEGIN_SRC elisp
-  (require 'org-index)
-  (org-index-default-keybindings)
-  ;; my node
-  (setq org-index-id "EE6F1D64-8A8D-4057-ACDB-541458F9DC2B")
-#+END_SRC
 
 * Miscellaneous
 ** Unknown origins
