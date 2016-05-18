@@ -804,12 +804,6 @@ Bind shortcut to store a link at the current location:
   (define-key org-mode-map  (kbd "C-c l") 'org-store-link)
 #+END_SRC
 
-*** Org as a text processor
-
-#+BEGIN_SRC elisp
-  ;; hide /italic/ marker
-  (setq org-hide-emphasis-markers t)
-#+END_SRC
 
 ** GTD Workflow
 *** Keywords and states
@@ -1082,6 +1076,48 @@ as per [[http://orgmode.org/worg/org-tutorials/org-publish-html-tutorial.html#fn
 
 **** Components
 ***** Publish notes
+
+#+BEGIN_SRC elisp
+  (setq org-publish-project-alist
+        '(
+
+
+          ("org-notes"
+           :base-directory "~/org/"
+           ;:base-extension "org"
+           :exclude ".*"
+           :include ("index.org")
+           :publishing-directory "~/org/_publish/"
+           :recursive nil
+           :publishing-function org-html-publish-to-html
+           :headline-levels 4             ; Just the default for this project.
+           :auto-preamble t
+           )
+
+
+          ("org-static"
+           :base-directory "~/org/_org/"
+           :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
+           :publishing-directory "~/org/_publish/_org/"
+           :recursive t
+           :publishing-function org-publish-attachment
+           )
+
+           ("org-deploy"
+            :base-directory "~/org/_publish/"
+            :base-extension ".*"
+            :publishing-directory "/ssh:vault:/var/www/org"
+            :publishing-function org-publish-attachment
+            :recursive t
+
+       )
+
+          ("org" :components ("org-notes" "org-static" "org-deploy"))
+
+         ;; ... add all the components here (see below)...
+
+        ))
+#+END_SRC
 
   Renders notes to HTML
 

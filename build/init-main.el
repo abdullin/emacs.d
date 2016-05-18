@@ -356,9 +356,6 @@ Clock   In/out^     ^Edit^   ^Summary     (_?_)
 
 (define-key org-mode-map  (kbd "C-c l") 'org-store-link)
 
-;; hide /italic/ marker
-(setq org-hide-emphasis-markers t)
-
 (setq org-todo-keywords
       (quote ((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
               (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)"))))
@@ -472,6 +469,46 @@ Clock   In/out^     ^Edit^   ^Summary     (_?_)
 (setq org-html-head-include-default-style nil)
 ;; don't include scripts
 (setq org-html-head-include-scripts nil)
+
+(setq org-publish-project-alist
+      '(
+
+
+        ("org-notes"
+         :base-directory "~/org/"
+         ;:base-extension "org"
+         :exclude ".*"
+         :include ("index.org")
+         :publishing-directory "~/org/_publish/"
+         :recursive nil
+         :publishing-function org-html-publish-to-html
+         :headline-levels 4             ; Just the default for this project.
+         :auto-preamble t
+         )
+
+
+        ("org-static"
+         :base-directory "~/org/_org/"
+         :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
+         :publishing-directory "~/org/_publish/_org/"
+         :recursive t
+         :publishing-function org-publish-attachment
+         )
+
+         ("org-deploy"
+          :base-directory "~/org/_publish/"
+          :base-extension ".*"
+          :publishing-directory "/ssh:vault:/var/www/org"
+          :publishing-function org-publish-attachment
+          :recursive t
+
+     )
+
+        ("org" :components ("org-notes" "org-static" "org-deploy"))
+
+       ;; ... add all the components here (see below)...
+
+      ))
 
 ;; mode line settings
 (column-number-mode t)
