@@ -16,6 +16,8 @@
 
 (add-to-list 'exec-path "/usr/local/bin/")
 
+(setq tramp-default-method "ssh")
+
 (defun add-hook-list (callback hooks)
   "Adds callback to each one of the hooks."
   (mapc (lambda (hook)
@@ -302,7 +304,7 @@
 
 (setq org-startup-with-inline-images t)
 
-(add-to-list 'auto-mode-alist '("\\.\\(org\\|org_archive\\)$" . org-mode))
+(add-to-list 'auto-mode-alist '("\\.\\(org\\)$" . org-mode))
 
 (setq org-directory "~/org")
 
@@ -432,6 +434,7 @@ Clock   In/out^     ^Edit^   ^Summary     (_?_)
  'org-babel-load-languages
  '(
    (sh . t)
+   (shell . t)
    (python . t)
    (R . t)
    (ruby . t)
@@ -476,9 +479,8 @@ Clock   In/out^     ^Edit^   ^Summary     (_?_)
 
         ("org-notes"
          :base-directory "~/org/"
-         ;:base-extension "org"
-         :exclude ".*"
-         :include ("index.org")
+         :base-extension "org"
+         :exclude "organizer.org\\|journal.org\\|people.org"
          :publishing-directory "~/org/_publish/"
          :recursive nil
          :publishing-function org-html-publish-to-html
@@ -542,6 +544,7 @@ Clock   In/out^     ^Edit^   ^Summary     (_?_)
                                 dired-mode
                                 ibuffer-mode
                                 eshell-mode
+                                cider-repl-mode
                                 )
   "List of major modes preventing linum to be enabled in the buffer.")
 
@@ -585,6 +588,34 @@ of listed in `linum-mode-excludes'."
 (el-get-bundle ess)
 (el-get-bundle gnuplot-mode)
 (add-to-list 'auto-mode-alist '("\\.R$" . R-mode))
+
+(el-get-bundle go-mode)
+(el-get-bundle company-go)
+(el-get-bundle multi-compile)
+(el-get-bundle go-eldoc)
+
+(require 'company)
+(require 'flycheck)
+(require 'yasnippet)
+(require 'multi-compile)
+(require 'go-eldoc)
+(require 'company-go)
+
+(add-hook 'before-save-hook 'gofmt-before-save)
+(setq-default gofmt-command "goimports")
+(add-hook 'go-mode-hook 'go-eldoc-setup)
+(add-hook 'go-mode-hook (lambda ()
+                            (set (make-local-variable 'company-backends) '(company-go))
+                            (company-mode)))
+(add-hook 'go-mode-hook 'yas-minor-mode)
+(add-hook 'go-mode-hook 'flycheck-mode)
+(setq multi-compile-alist '(
+    (go-mode . (
+("go-build" "go build -v"
+   (locate-dominating-file buffer-file-name ".git"))
+("go-build-and-run" "go build -v && echo 'build finish' && eval ./${PWD##*/}"
+   (multi-compile-locate-file-dir ".git"))))
+))
 
 (el-get-bundle spinner)
 (el-get-bundle clojure-mode)

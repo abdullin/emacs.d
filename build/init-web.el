@@ -86,9 +86,6 @@
               (flycheck-mode)
               ;;
               (add-hook 'web-mode-hook #'(lambda () (yas-activate-extra-mode 'jsx-mode)))
-
-
-
               )))
 
 

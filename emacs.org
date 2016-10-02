@@ -18,6 +18,13 @@ The script assumes that this folder is either checked out to
   (server-start)
 #+END_SRC
 
+* Common Problems
+
+** URL not null in el-get
+
+This is caused by missing "secure" url in some recipes. Just eval
+function from [[https://github.com/dimitri/el-get/pull/2468][PR]] (if you hit it).
+
 * Emacs essentials
 
 Help is behind =C-h= or =F1=. To be more precise, in help:
@@ -85,6 +92,13 @@ Emacs can be [[http://emacs.stackexchange.com/questions/550/exec-path-and-path][
 #+BEGIN_SRC elisp
   (add-to-list 'exec-path "/usr/local/bin/")
 #+END_SRC
+
+** Tramp
+
+#+BEGIN_SRC elisp
+  (setq tramp-default-method "ssh")
+#+END_SRC
+
 
 * Helper functions
 Just a few helper functions to lighten up the day
@@ -712,7 +726,7 @@ I want to see inline images:
 
 Default for org, txt and archive files
 #+BEGIN_SRC elisp
-  (add-to-list 'auto-mode-alist '("\\.\\(org\\|org_archive\\)$" . org-mode))
+  (add-to-list 'auto-mode-alist '("\\.\\(org\\)$" . org-mode))
 #+END_SRC
 
 *** Locations
@@ -996,6 +1010,7 @@ Some initial languages that we want babel to support:
    'org-babel-load-languages
    '(
      (sh . t)
+     (shell . t)
      (python . t)
      (R . t)
      (ruby . t)
@@ -1084,9 +1099,8 @@ as per [[http://orgmode.org/worg/org-tutorials/org-publish-html-tutorial.html#fn
 
           ("org-notes"
            :base-directory "~/org/"
-           ;:base-extension "org"
-           :exclude ".*"
-           :include ("index.org")
+           :base-extension "org"
+           :exclude "organizer.org\\|journal.org\\|people.org"
            :publishing-directory "~/org/_publish/"
            :recursive nil
            :publishing-function org-html-publish-to-html
@@ -1228,6 +1242,7 @@ This is a very nice way to highlight jumps for vim.
                                 dired-mode
                                 ibuffer-mode
                                 eshell-mode
+                                cider-repl-mode
                                 )
   "List of major modes preventing linum to be enabled in the buffer.")
 
@@ -1422,9 +1437,6 @@ Web mode that is also used to edit mixed files like JSX
                 (flycheck-mode)
                 ;;
                 (add-hook 'web-mode-hook #'(lambda () (yas-activate-extra-mode 'jsx-mode)))
-
-
-
                 )))
 
 
@@ -1447,6 +1459,41 @@ Let's install R and gnuplot
     (add-to-list 'auto-mode-alist '("\\.R$" . R-mode))
 #+END_SRC
 
+** Go-mode
+
+Taken from [[http://reangdblog.blogspot.com/2016/06/emacs-ide-go.html][this article.]]
+
+
+#+BEGIN_SRC elisp
+  (el-get-bundle go-mode)
+  (el-get-bundle company-go)
+  (el-get-bundle multi-compile)
+  (el-get-bundle go-eldoc)
+
+  (require 'company)
+  (require 'flycheck)
+  (require 'yasnippet)
+  (require 'multi-compile)
+  (require 'go-eldoc)
+  (require 'company-go)
+
+  (add-hook 'before-save-hook 'gofmt-before-save)
+  (setq-default gofmt-command "goimports")
+  (add-hook 'go-mode-hook 'go-eldoc-setup)
+  (add-hook 'go-mode-hook (lambda ()
+                              (set (make-local-variable 'company-backends) '(company-go))
+                              (company-mode)))
+  (add-hook 'go-mode-hook 'yas-minor-mode)
+  (add-hook 'go-mode-hook 'flycheck-mode)
+  (setq multi-compile-alist '(
+      (go-mode . (
+  ("go-build" "go build -v"
+     (locate-dominating-file buffer-file-name ".git"))
+  ("go-build-and-run" "go build -v && echo 'build finish' && eval ./${PWD##*/}"
+     (multi-compile-locate-file-dir ".git"))))
+  ))
+
+#+END_SRC
 ** Clojure
 
 #+BEGIN_SRC elisp
