@@ -25,6 +25,10 @@ The script assumes that this folder is either checked out to
 This is caused by missing "secure" url in some recipes. Just eval
 function from [[https://github.com/dimitri/el-get/pull/2468][PR]] (if you hit it).
 
+** Slime install
+
+Make sure you have this: brew link texinfo --force
+
 * Emacs essentials
 
 Help is behind =C-h= or =F1=. To be more precise, in help:
@@ -64,6 +68,11 @@ erlang), so let's look up that in machine-specific file:
   ;; (setq custom-file (expand-file-name "init-local.el" ra/emacs-directory))
   (when (file-exists-p ra/emacs-machine-init)
     (load ra/emacs-machine-init))
+
+  ;; This sets $MANPATH, $PATH and exec-path from your shell, but only on OS X and Linux.
+  (when (memq window-system '(mac ns x))
+    (exec-path-from-shell-initialize))
+
 #+END_SRC
 
 
@@ -370,7 +379,7 @@ I like Monaco on OSX:
 #+BEGIN_SRC elisp :tangle build/init-client.el
   (when (eq system-type 'darwin)
     ;; set default font for the frames as well (daemon + ec)
-    (setq default-frame-alist '((font . "MonacoB-16")))
+    (setq default-frame-alist '((font . "MonacoB-14")))
     (set-fontset-font t 'cyrillic "Droid Sans Mono")
     )
 #+END_SRC
@@ -409,7 +418,7 @@ hydra for that:
 With this simple code, hit =F9= to enter zooming mode:
 
 #+BEGIN_SRC elisp :tangle build/init-client.el
-  (defhydra hydra-zoom (global-map "<f9>")
+  (defhydra hydra-zoom (global-map "<f6>")
     "zoom"
     ("+" text-scale-increase "in")
     ("=" text-scale-increase "in")
@@ -446,7 +455,8 @@ Let's group our buffers in the ibuffer window.
         (quote (("default"
                  ("dired" (mode . dired-mode))
                     ;;("perl" (mode . cperl-mode))
-                    ;;("erc" (mode . erc-mode))
+                 ;;("erc" (mode . erc-mode))
+
                  ("org" (or
                          (mode . org-mode)
                          (name . "^\\*Calendar\\*$")
@@ -460,7 +470,8 @@ Let's group our buffers in the ibuffer window.
 
                  ("clojure" (or
                              (mode . clojure-mode)
-                             (name . "^cider")
+                             (name . "^\\*cider\\*$")
+                             (name . "^\\*nrepl\\*$")
                              ))
                     ;; ("gnus" (or
                     ;;          (mode . message-mode)
@@ -518,7 +529,6 @@ To turn auto-filling on (saves M-q presses):
 #+BEGIN_SRC elisp
   (global-set-key (kbd "C-c q") 'auto-fill-mode)
 #+END_SRC
-
 
 ** Expand Region
 
@@ -819,6 +829,139 @@ Bind shortcut to store a link at the current location:
 #+END_SRC
 
 
+
+*** Daypage
+
+#+BEGIN_SRC elisp
+
+  (eval-when-compile (require 'cl))
+
+  (setq daypage-path "~/org/days/")
+
+  (defvar daypage-mode-map
+    (let ((map (make-sparse-keymap)))
+      map)
+    "The key map for daypage buffers.")
+
+  (defun find-daypage (&optional date)
+    "Go to the day page for the specified date, or todays if none is specified."
+    (interactive (list 
+                  (org-read-date "" 'totime nil nil
+                                 (current-time) "")))
+    (setq date (or date (current-time)))
+    (find-file (expand-file-name (concat daypage-path (format-time-string "%Y-%m-%d" date) ".org"))))
+
+  (defun daypage-p ()
+    "Return true if the current buffer is visiting a daypage"
+    (if (daypage-date)
+        t
+      nil))
+
+  (defun daypage-date ()
+    "Return the date for the daypage visited by the current buffer
+  or nil if the current buffer isn't visiting a dayage" 
+    (let ((file (buffer-file-name))
+          (root-path (expand-file-name daypage-path)))
+      (if (and file
+                 (string= root-path (substring file 0 (length root-path)))
+                 (string-match "\\([0-9]\\{4\\}\\)-\\([0-9]\\{2\\}\\)-\\([0-9]\\{2\\}\\).org$" file))
+          (flet ((d (i) (string-to-number (match-string i file))))
+            (encode-time 0 0 0 (d 3) (d 2) (d 1)))
+        nil)))
+
+
+  (defun maybe-daypage ()
+    "Set up daypage stuff if the org file being visited is in the daypage folder"
+    (let ((date (daypage-date)))
+      (when date
+        ; set up the daypage key map
+        (use-local-map daypage-mode-map)
+        (set-keymap-parent daypage-mode-map
+                           org-mode-map)
+        (run-hooks 'daypage-hook))))
+
+  (add-hook 'org-mode-hook 'maybe-daypage)
+
+  (defun daypage-next ()
+    (interactive)
+    (find-daypage 
+     (seconds-to-time (+ (time-to-seconds (daypage-date))
+                         86400)))
+    (run-hooks 'daypage-movement-hook))
+
+  (defun daypage-prev ()
+    (interactive)
+    (find-daypage 
+     (seconds-to-time (- (time-to-seconds (daypage-date))
+                         86400)))
+    (run-hooks 'daypage-movement-hook))
+
+  (defun daypage-next-week ()
+    (interactive)
+    (find-daypage 
+     (seconds-to-time (+ (time-to-seconds (daypage-date))
+                         (* 86400 7))))
+    (run-hooks 'daypage-movement-hook))
+
+  (defun daypage-prev-week ()
+    (interactive)
+    (find-daypage 
+     (seconds-to-time (- (time-to-seconds (daypage-date))
+                         (* 86400 7))))
+    (run-hooks 'daypage-movement-hook))
+
+  (defun todays-daypage ()
+    "Go straight to todays day page without prompting for a date."
+    (interactive) 
+    (find-daypage)
+    (run-hooks 'daypage-movement-hook))
+
+  (defun yesterdays-daypage ()
+    "Go straight to todays day page without prompting for a date."
+    (interactive) 
+    (find-daypage 
+     (seconds-to-time (- (time-to-seconds (current-time))
+                        86400)))
+    (run-hooks 'daypage-movement-hook))
+
+  (defun daypage-time-stamp ()
+    "Works like (and is basically a thin wrapper round)
+  org-time-stamp except the default date will be the date of the daypage."
+    (interactive)
+    (unless (org-at-timestamp-p)
+      (insert "<" (format-time-string "%Y-%m-%d %a" (daypage-date)) ">")
+      (backward-char 1))
+    (org-time-stamp nil))
+
+  (defun daypage-new-item ()
+    "Switches to the current daypage and inserts a top level heading and a timestamp"
+    (interactive)
+    (todays-daypage)
+    (end-of-buffer)
+    (if (not (bolp))
+        (insert "\n"))
+    (insert "* <" (format-time-string "%Y-%m-%d %a" (daypage-date)) "> "))
+
+
+  (provide 'org-daypage)
+#+END_SRC
+
+and now configure keyboard
+
+#+BEGIN_SRC elisp
+  (define-key daypage-mode-map (kbd "<C-left>") 'daypage-prev)
+  (define-key daypage-mode-map (kbd "<C-right>") 'daypage-next)
+  (define-key daypage-mode-map (kbd "<C-up>") 'daypage-prev-week)
+  (define-key daypage-mode-map (kbd "<C-down>") 'daypage-next-week)
+  ;; (define-key daypage-mode-map "\C-c." 'daypage-time-stamp)
+  ;;
+  (global-set-key [f8] 'todays-daypage) 
+  (global-set-key [f7] 'yesterdays-daypage) 
+  ;; (global-set-key "\C-con" 'todays-daypage)
+  (global-set-key [f9] 'find-daypage)
+
+#+END_SRC
+
 ** GTD Workflow
 *** Keywords and states
 
@@ -1021,6 +1164,7 @@ Some initial languages that we want babel to support:
      (perl . t)
      (gnuplot . t)
      (clojure . t)
+     (scheme . t)
      ))
 #+END_SRC
 
@@ -1233,24 +1377,25 @@ This is a very nice way to highlight jumps for vim.
 
 #+BEGIN_SRC elisp
 
-(global-linum-mode 1)
+  (global-linum-mode 1)
 
-(defconst linum-mode-excludes '(
-                                doc-view-mode
-                                compilation-mode
-                                term-mode
-                                dired-mode
-                                ibuffer-mode
-                                eshell-mode
-                                cider-repl-mode
-                                )
-  "List of major modes preventing linum to be enabled in the buffer.")
+  (defconst linum-mode-excludes '(
+                                  doc-view-mode
+                                  compilation-mode
+                                  term-mode
+                                  dired-mode
+                                  ibuffer-mode
+                                  eshell-mode
+                                  cider-repl-mode
+                                  'repl-mode
+                                  )
+    "List of major modes preventing linum to be enabled in the buffer.")
 
-(defadvice linum-mode (around linum-mode-selective activate)
-  "Avoids enabling of linum-mode in the buffer having major mode set to one
-of listed in `linum-mode-excludes'."
-  (unless (member major-mode linum-mode-excludes)
-    ad-do-it))
+  (defadvice linum-mode (around linum-mode-selective activate)
+    "Avoids enabling of linum-mode in the buffer having major mode set to one
+  of listed in `linum-mode-excludes'."
+    (unless (member major-mode linum-mode-excludes)
+      ad-do-it))
 
 #+END_SRC
 
@@ -1281,50 +1426,15 @@ environment variables (e.g. for running external tools):
 #+END_SRC
 
 * Languages
-** Pure Javascript
-
-#+BEGIN_SRC elisp :tangle build/init-js.el
-  (require `company)
-  (require `flycheck)
-  (require `yasnippet)
-  (require `jsfmt)
-  ;;(add-hook `js-mode-hook `flycheck-mode)
-  ;;(add-hook `js-mode-hook `company-mode)
-
-  (add-hook 'before-save-hook 'jsfmt-before-save)
-  (add-hook 'js-mode-hook
-            (lambda ()
-              ;; activate on-the-fly-check (will use installed linter)
-  ;;            (flycheck-mode)
-              ;; auto-completion
-              (company-mode)
-              ;; Activate the folding mode
-  ;;            (hs-minor-mode t)
-              ;; snippets
-              (yas-minor-mode)
-
-
-              ;; perform flycheck on save
-              (setq flycheck-check-syntax-automatically '(save))
-              ;; run flycheck here
-              (flycheck-mode)
-
-              )
-            )
-
-
-  (setq js-indent-level 4)
-
-  (provide 'init-js)
-#+END_SRC
-
-Load this config, if we are in web role:
-
-#+BEGIN_SRC elisp
-    (require 'init-js)
-#+END_SRC
-
 ** Lisp
+
+Taken from here: https://astraybi.wordpress.com/2015/08/02/how-to-install-slimesbclquicklisp-into-emacs/
+#+BEGIN_SRC elisp
+  (el-get-bundle slime)
+  (require 'slime-autoloads)
+  (load (expand-file-name "~/quicklisp/slime-helper.el"))
+  (setq inferior-lisp-program "/usr/local/bin/sbcl")
+#+END_SRC
 
 Grab the packages and wire them into lisp mode:
 
@@ -1342,121 +1452,6 @@ Grab the packages and wire them into lisp mode:
   (el-get-bundle rainbow-delimiters
     (add-hook-list 'rainbow-delimiters-mode lisp-mode-hooks)
     )
-#+END_SRC
-
-** Web editing
-
-Web mode that is also used to edit mixed files like JSX
-
-#+BEGIN_SRC elisp :tangle build/init-web.el
-  (require 'web-mode)
-  (require 'yasnippet)
-  (require 'company)
-
-  (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.hbs\\'" . web-mode))
-
-  ;; activate JSX mode
-  (add-to-list 'auto-mode-alist '("\\.jsx$" . web-mode))
-
-  (defun my-web-mode-hook ()
-    "Hooks for Web mode."
-    (setq web-mode-markup-indent-offset 4)
-    (setq web-mode-code-indent-offset 4)
-    ; YAS has to be loaded before company
-    (yas-minor-mode 1)
-    (setq indent-tabs-mode t)
-    (company-mode)
-
-
-    (add-hook 'before-save-hook 'whitespace-cleanup)
-  )
-  (add-hook 'web-mode-hook  'my-web-mode-hook)
-
-
-  ;; auto-completion sources
-
-
-   (setq web-mode-ac-sources-alist
-         '(
-           ("html" . (ac-source-yasnippet))
-           ))
-
-  (add-hook 'web-mode-before-auto-complete-hooks
-            '(lambda ()
-               (let ((web-mode-cur-language
-                      (web-mode-language-at-pos)))
-                 (if (string= web-mode-cur-language "html")
-                     (yas-activate-extra-mode 'html-mode)
-                   (yas-deactivate-extra-mode 'html-mode))
-                 )))
-
-
-
-
-
-  (defadvice web-mode-highlight-part (around tweak-jsx activate)
-    (if (equal web-mode-content-type "jsx")
-        (let ((web-mode-enable-part-face nil))
-          ad-do-it)
-      ad-do-it))
-
-  ;; JSX syntax checking
-
-  (flycheck-define-checker jsxhint-checker
-    "A JSX syntax and style checker based on JSXHint."
-  ;; We need to use source-inplace because eslint looks for
-              ;; configuration files in the directory of the file being checked.
-              ;; See https://github.com/flycheck/flycheck/issues/447
-    :command ("eslint" "--format=checkstyle" source-inplace)
-     :error-parser flycheck-parse-checkstyle
-    :error-filter (lambda (errors)
-                    (mapc (lambda (err)
-                            ;; Parse error ID from the error message
-                            (setf (flycheck-error-message err)
-                                  (replace-regexp-in-string
-                                   (rx " ("
-                                       (group (one-or-more (not (any ")"))))
-                                       ")" string-end)
-                                   (lambda (s)
-                                     (setf (flycheck-error-id err)
-                                           (match-string 1 s))
-                                     "")
-                                   (flycheck-error-message err))))
-                          (flycheck-sanitize-errors errors))
-                    errors)
-    :modes (web-mode)
-    )
-
-
-  (add-hook 'web-mode-hook
-            (lambda ()
-              (when (equal web-mode-content-type "jsx")
-                ;; enable flycheck
-                (flycheck-select-checker 'jsxhint-checker)
-                (flycheck-mode)
-                ;;
-                (add-hook 'web-mode-hook #'(lambda () (yas-activate-extra-mode 'jsx-mode)))
-                )))
-
-
-  (provide 'init-web)
-#+END_SRC
-
-and we can load it from the main file:
-
-#+BEGIN_SRC elisp
-    (require 'init-web)
-#+END_SRC
-
-** Statistics
-
-Let's install R and gnuplot
-
-#+BEGIN_SRC elisp
-    (el-get-bundle ess)
-    (el-get-bundle gnuplot-mode)
-    (add-to-list 'auto-mode-alist '("\\.R$" . R-mode))
 #+END_SRC
 
 ** Go-mode
@@ -1494,6 +1489,38 @@ Taken from [[http://reangdblog.blogspot.com/2016/06/emacs-ide-go.html][this arti
   ))
 
 #+END_SRC
+
+** Scheme
+
+#+BEGIN_SRC elisp
+
+  (setq geiser-default-implementation 'racket)
+  (setq geiser-active-implementations '(racket))
+
+  (add-hook 'scheme-mode-hook 'geiser-mode)
+
+  (el-get-bundle geiser)
+
+  ;; make default scheme implementation - racket
+
+
+  ;; load our support for racket in org-babel
+  (load-file (concat emacs-root-dir "racket/ob-racket.el"))
+  ;;(require 'ob-racket)
+  ;; use geiser for racket mode
+  (add-to-list 'org-src-lang-modes (quote ("scheme" . scheme)))
+
+  (add-to-list 'org-src-lang-modes (quote ("racket" . scheme)))
+#+END_SRC
+
+Testing racket mode
+
+#+BEGIN_SRC racket :tangle no :result 
+  #lang racket
+  (first  (list 1 2))
+#+END_SRC
+
+
 ** Clojure
 
 #+BEGIN_SRC elisp

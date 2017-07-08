@@ -11,6 +11,10 @@
 (when (file-exists-p ra/emacs-machine-init)
   (load ra/emacs-machine-init))
 
+;; This sets $MANPATH, $PATH and exec-path from your shell, but only on OS X and Linux.
+(when (memq window-system '(mac ns x))
+  (exec-path-from-shell-initialize))
+
 (add-to-list 'load-path (ra/emacs-subdirectory "lisp"))
 (add-to-list 'load-path (ra/emacs-subdirectory "build"))
 
@@ -182,7 +186,8 @@
       (quote (("default"
                ("dired" (mode . dired-mode))
                   ;;("perl" (mode . cperl-mode))
-                  ;;("erc" (mode . erc-mode))
+               ;;("erc" (mode . erc-mode))
+
                ("org" (or
                        (mode . org-mode)
                        (name . "^\\*Calendar\\*$")
@@ -196,7 +201,8 @@
 
                ("clojure" (or
                            (mode . clojure-mode)
-                           (name . "^cider")
+                           (name . "^\\*cider\\*$")
+                           (name . "^\\*nrepl\\*$")
                            ))
                   ;; ("gnus" (or
                   ;;          (mode . message-mode)
@@ -358,6 +364,128 @@ Clock   In/out^     ^Edit^   ^Summary     (_?_)
 
 (define-key org-mode-map  (kbd "C-c l") 'org-store-link)
 
+(eval-when-compile (require 'cl))
+
+(setq daypage-path "~/org/days/")
+
+(defvar daypage-mode-map
+  (let ((map (make-sparse-keymap)))
+    map)
+  "The key map for daypage buffers.")
+
+(defun find-daypage (&optional date)
+  "Go to the day page for the specified date, or todays if none is specified."
+  (interactive (list 
+                (org-read-date "" 'totime nil nil
+                               (current-time) "")))
+  (setq date (or date (current-time)))
+  (find-file (expand-file-name (concat daypage-path (format-time-string "%Y-%m-%d" date) ".org"))))
+
+(defun daypage-p ()
+  "Return true if the current buffer is visiting a daypage"
+  (if (daypage-date)
+      t
+    nil))
+
+(defun daypage-date ()
+  "Return the date for the daypage visited by the current buffer
+or nil if the current buffer isn't visiting a dayage" 
+  (let ((file (buffer-file-name))
+        (root-path (expand-file-name daypage-path)))
+    (if (and file
+               (string= root-path (substring file 0 (length root-path)))
+               (string-match "\\([0-9]\\{4\\}\\)-\\([0-9]\\{2\\}\\)-\\([0-9]\\{2\\}\\).org$" file))
+        (flet ((d (i) (string-to-number (match-string i file))))
+          (encode-time 0 0 0 (d 3) (d 2) (d 1)))
+      nil)))
+
+
+(defun maybe-daypage ()
+  "Set up daypage stuff if the org file being visited is in the daypage folder"
+  (let ((date (daypage-date)))
+    (when date
+      ; set up the daypage key map
+      (use-local-map daypage-mode-map)
+      (set-keymap-parent daypage-mode-map
+                         org-mode-map)
+      (run-hooks 'daypage-hook))))
+
+(add-hook 'org-mode-hook 'maybe-daypage)
+
+(defun daypage-next ()
+  (interactive)
+  (find-daypage 
+   (seconds-to-time (+ (time-to-seconds (daypage-date))
+                       86400)))
+  (run-hooks 'daypage-movement-hook))
+
+(defun daypage-prev ()
+  (interactive)
+  (find-daypage 
+   (seconds-to-time (- (time-to-seconds (daypage-date))
+                       86400)))
+  (run-hooks 'daypage-movement-hook))
+
+(defun daypage-next-week ()
+  (interactive)
+  (find-daypage 
+   (seconds-to-time (+ (time-to-seconds (daypage-date))
+                       (* 86400 7))))
+  (run-hooks 'daypage-movement-hook))
+
+(defun daypage-prev-week ()
+  (interactive)
+  (find-daypage 
+   (seconds-to-time (- (time-to-seconds (daypage-date))
+                       (* 86400 7))))
+  (run-hooks 'daypage-movement-hook))
+
+(defun todays-daypage ()
+  "Go straight to todays day page without prompting for a date."
+  (interactive) 
+  (find-daypage)
+  (run-hooks 'daypage-movement-hook))
+
+(defun yesterdays-daypage ()
+  "Go straight to todays day page without prompting for a date."
+  (interactive) 
+  (find-daypage 
+   (seconds-to-time (- (time-to-seconds (current-time))
+                      86400)))
+  (run-hooks 'daypage-movement-hook))
+
+(defun daypage-time-stamp ()
+  "Works like (and is basically a thin wrapper round)
+org-time-stamp except the default date will be the date of the daypage."
+  (interactive)
+  (unless (org-at-timestamp-p)
+    (insert "<" (format-time-string "%Y-%m-%d %a" (daypage-date)) ">")
+    (backward-char 1))
+  (org-time-stamp nil))
+
+(defun daypage-new-item ()
+  "Switches to the current daypage and inserts a top level heading and a timestamp"
+  (interactive)
+  (todays-daypage)
+  (end-of-buffer)
+  (if (not (bolp))
+      (insert "\n"))
+  (insert "* <" (format-time-string "%Y-%m-%d %a" (daypage-date)) "> "))
+
+
+(provide 'org-daypage)
+
+(define-key daypage-mode-map (kbd "<C-left>") 'daypage-prev)
+(define-key daypage-mode-map (kbd "<C-right>") 'daypage-next)
+(define-key daypage-mode-map (kbd "<C-up>") 'daypage-prev-week)
+(define-key daypage-mode-map (kbd "<C-down>") 'daypage-next-week)
+;; (define-key daypage-mode-map "\C-c." 'daypage-time-stamp)
+;;
+(global-set-key [f8] 'todays-daypage) 
+(global-set-key [f7] 'yesterdays-daypage) 
+;; (global-set-key "\C-con" 'todays-daypage)
+(global-set-key [f9] 'find-daypage)
+
 (setq org-todo-keywords
       (quote ((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
               (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)"))))
@@ -445,6 +573,7 @@ Clock   In/out^     ^Edit^   ^Summary     (_?_)
    (perl . t)
    (gnuplot . t)
    (clojure . t)
+   (scheme . t)
    ))
 
 (setq org-confirm-babel-evaluate nil)
@@ -545,6 +674,7 @@ Clock   In/out^     ^Edit^   ^Summary     (_?_)
                                 ibuffer-mode
                                 eshell-mode
                                 cider-repl-mode
+                                'repl-mode
                                 )
   "List of major modes preventing linum to be enabled in the buffer.")
 
@@ -568,7 +698,10 @@ of listed in `linum-mode-excludes'."
 
 (ra/load-unix-shell-env)
 
-(require 'init-js)
+(el-get-bundle slime)
+(require 'slime-autoloads)
+(load (expand-file-name "~/quicklisp/slime-helper.el"))
+(setq inferior-lisp-program "/usr/local/bin/sbcl")
 
 (setq lisp-mode-hooks '(emacs-lisp-mode-hook
             lisp-mode-hook
@@ -582,12 +715,6 @@ of listed in `linum-mode-excludes'."
 (el-get-bundle rainbow-delimiters
   (add-hook-list 'rainbow-delimiters-mode lisp-mode-hooks)
   )
-
-(require 'init-web)
-
-(el-get-bundle ess)
-(el-get-bundle gnuplot-mode)
-(add-to-list 'auto-mode-alist '("\\.R$" . R-mode))
 
 (el-get-bundle go-mode)
 (el-get-bundle company-go)
@@ -616,6 +743,24 @@ of listed in `linum-mode-excludes'."
 ("go-build-and-run" "go build -v && echo 'build finish' && eval ./${PWD##*/}"
    (multi-compile-locate-file-dir ".git"))))
 ))
+
+(setq geiser-default-implementation 'racket)
+(setq geiser-active-implementations '(racket))
+
+(add-hook 'scheme-mode-hook 'geiser-mode)
+
+(el-get-bundle geiser)
+
+;; make default scheme implementation - racket
+
+
+;; load our support for racket in org-babel
+(load-file (concat emacs-root-dir "racket/ob-racket.el"))
+;;(require 'ob-racket)
+;; use geiser for racket mode
+(add-to-list 'org-src-lang-modes (quote ("scheme" . scheme)))
+
+(add-to-list 'org-src-lang-modes (quote ("racket" . scheme)))
 
 (el-get-bundle spinner)
 (el-get-bundle clojure-mode)

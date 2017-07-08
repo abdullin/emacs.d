@@ -2,7 +2,7 @@
 
 (when (eq system-type 'darwin)
   ;; set default font for the frames as well (daemon + ec)
-  (setq default-frame-alist '((font . "MonacoB-16")))
+  (setq default-frame-alist '((font . "MonacoB-14")))
   (set-fontset-font t 'cyrillic "Droid Sans Mono")
   )
 
@@ -26,7 +26,7 @@
    )
   )
 
-(defhydra hydra-zoom (global-map "<f9>")
+(defhydra hydra-zoom (global-map "<f6>")
   "zoom"
   ("+" text-scale-increase "in")
   ("=" text-scale-increase "in")

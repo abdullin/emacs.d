@@ -12,3 +12,5 @@ ido.last
 ido.last~
 init.el
 el-get.bak2
+tramp
+multi-compile.cache
