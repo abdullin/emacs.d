@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: json
+# key: json
+# --
+${1:Name} ${2:string} \`json:"${1:$(downcase-first-char yas-text)}"\`

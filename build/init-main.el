@@ -26,7 +26,15 @@
   "Adds callback to each one of the hooks."
   (mapc (lambda (hook)
       (add-hook hook callback))
-    hooks))
+        hooks))
+
+
+(defun downcase-first-char (&optional string)
+  "Capitalize only the first character of the input STRING."
+  (when (and string (> (length string) 0))
+    (let ((first-char (substring string nil 1))
+          (rest-str   (substring string 1)))
+      (concat (downcase first-char) rest-str))))
 
 (add-to-list 'load-path (expand-file-name "el-get/el-get" emacs-root-dir))
 
@@ -204,6 +212,12 @@
                            (name . "^\\*cider\\*$")
                            (name . "^\\*nrepl\\*$")
                            ))
+
+               ("go" (mode . go-mode))
+               ("js" (or
+                      (mode . rjsx-mode)
+                      (mode . js-mode)
+                      ))
                   ;; ("gnus" (or
                   ;;          (mode . message-mode)
                   ;;          (mode . bbdb-mode)
@@ -213,7 +227,7 @@
                   ;;          (mode . gnus-article-mode)
                   ;;          (name . "^\\.bbdb$")
                   ;;          (name . "^\\.newsrc-dribble")))
-                  ))))
+               ))))
 
 
 (add-hook 'ibuffer-mode-hook
@@ -274,7 +288,7 @@
 (require 'yasnippet)
 (yas-global-mode)
 
-(setq yas-snippet-dirs (ra/emacs-subdirectory "snippets"))
+(setq yas-snippet-dirs (list (ra/emacs-subdirectory "snippets")))
 
 (defun ra/kill-this-buffer-if-not-modified ()
   (interactive)
@@ -298,6 +312,11 @@
 
 ;; just follow symlink and open the actual file
 (setq vc-follow-symlinks t)
+
+(global-set-key [f5] 'recompile) 
+(setq compilation-ask-about-save nil)
+
+(global-set-key (kbd "M-*") 'pop-tag-mark)
 
 ;; latest version of org-mode
 (el-get-bundle org-mode)
@@ -698,10 +717,10 @@ of listed in `linum-mode-excludes'."
 
 (ra/load-unix-shell-env)
 
-(el-get-bundle slime)
-(require 'slime-autoloads)
-(load (expand-file-name "~/quicklisp/slime-helper.el"))
-(setq inferior-lisp-program "/usr/local/bin/sbcl")
+;;(el-get-bundle slime)
+;;  (require 'slime-autoloads)
+(load (expand-file-name "~/.roswell/helper.el"))
+(setq inferior-lisp-program "ros -Q run")
 
 (setq lisp-mode-hooks '(emacs-lisp-mode-hook
             lisp-mode-hook
@@ -744,24 +763,6 @@ of listed in `linum-mode-excludes'."
    (multi-compile-locate-file-dir ".git"))))
 ))
 
-(setq geiser-default-implementation 'racket)
-(setq geiser-active-implementations '(racket))
-
-(add-hook 'scheme-mode-hook 'geiser-mode)
-
-(el-get-bundle geiser)
-
-;; make default scheme implementation - racket
-
-
-;; load our support for racket in org-babel
-(load-file (concat emacs-root-dir "racket/ob-racket.el"))
-;;(require 'ob-racket)
-;; use geiser for racket mode
-(add-to-list 'org-src-lang-modes (quote ("scheme" . scheme)))
-
-(add-to-list 'org-src-lang-modes (quote ("racket" . scheme)))
-
 (el-get-bundle spinner)
 (el-get-bundle clojure-mode)
 (el-get-bundle cider)
@@ -771,5 +772,8 @@ of listed in `linum-mode-excludes'."
 
 (require 'ob-clojure)
 (setq org-babel-clojure-backend 'cider)
+
+(el-get-bundle rjsx-mode)
+ (evil-define-key 'insert rjsx-mode-map (kbd "C-d") 'rjsx-delete-creates-full-tag)
 
 (provide 'init-main)

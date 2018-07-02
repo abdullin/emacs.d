@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: d
+# key: d
+# --
+<div className="$1">$0</div>

@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: ife
+# key: ife
+# --
+if err = $1; err != nil {
+	return errors.Wrap(err, "$2")
+}
+$0

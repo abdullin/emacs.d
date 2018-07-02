@@ -1,0 +1,4 @@
+# -*- coding: utf-8; mode: snippet -*-
+# name: ew2
+# --
+return nil, errors.Wrap(err, "$1")$0

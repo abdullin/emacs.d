@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: rew
+# key: rew
+# --
+return errors.Wrap(err, "$1")$0

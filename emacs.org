@@ -113,11 +113,19 @@ Emacs can be [[http://emacs.stackexchange.com/questions/550/exec-path-and-path][
 Just a few helper functions to lighten up the day
 #+BEGIN_SRC elisp
 
-(defun add-hook-list (callback hooks)
-  "Adds callback to each one of the hooks."
-  (mapc (lambda (hook)
-      (add-hook hook callback))
-    hooks))
+  (defun add-hook-list (callback hooks)
+    "Adds callback to each one of the hooks."
+    (mapc (lambda (hook)
+        (add-hook hook callback))
+          hooks))
+
+
+  (defun downcase-first-char (&optional string)
+    "Capitalize only the first character of the input STRING."
+    (when (and string (> (length string) 0))
+      (let ((first-char (substring string nil 1))
+            (rest-str   (substring string 1)))
+        (concat (downcase first-char) rest-str))))
 #+END_SRC
 
 * Packages
@@ -473,6 +481,12 @@ Let's group our buffers in the ibuffer window.
                              (name . "^\\*cider\\*$")
                              (name . "^\\*nrepl\\*$")
                              ))
+               
+                 ("go" (mode . go-mode))
+                 ("js" (or
+                        (mode . rjsx-mode)
+                        (mode . js-mode)
+                        ))
                     ;; ("gnus" (or
                     ;;          (mode . message-mode)
                     ;;          (mode . bbdb-mode)
@@ -482,7 +496,7 @@ Let's group our buffers in the ibuffer window.
                     ;;          (mode . gnus-article-mode)
                     ;;          (name . "^\\.bbdb$")
                     ;;          (name . "^\\.newsrc-dribble")))
-                    ))))
+                 ))))
 
 
   (add-hook 'ibuffer-mode-hook
@@ -640,7 +654,7 @@ e.g. clojure-mode and org-mode. This connects the mode with the
 snippets.
 
 #+BEGIN_SRC elisp
-(setq yas-snippet-dirs (ra/emacs-subdirectory "snippets"))
+  (setq yas-snippet-dirs (list (ra/emacs-subdirectory "snippets")))
 #+END_SRC
 
 ** Jump Hydra
@@ -679,6 +693,23 @@ link? (y or n)/ error message. So just follow it without asking.
   ;; just follow symlink and open the actual file
   (setq vc-follow-symlinks t)
 #+END_SRC
+** Compile
+
+
+Emacs has a default compile command (which defaults to the make). Let's bind it:
+
+#+BEGIN_SRC elisp
+  (global-set-key [f5] 'recompile) 
+  (setq compilation-ask-about-save nil)
+
+#+END_SRC
+** Jumping around
+
+
+#+BEGIN_SRC elisp
+  (global-set-key (kbd "M-*") 'pop-tag-mark)
+#+END_SRC
+
 * Org-mode
 
 This is my emacs setup for the mighty org-mode!
@@ -1430,10 +1461,10 @@ environment variables (e.g. for running external tools):
 
 Taken from here: https://astraybi.wordpress.com/2015/08/02/how-to-install-slimesbclquicklisp-into-emacs/
 #+BEGIN_SRC elisp
-  (el-get-bundle slime)
-  (require 'slime-autoloads)
-  (load (expand-file-name "~/quicklisp/slime-helper.el"))
-  (setq inferior-lisp-program "/usr/local/bin/sbcl")
+  ;;(el-get-bundle slime)
+  ;;  (require 'slime-autoloads)
+  (load (expand-file-name "~/.roswell/helper.el"))
+  (setq inferior-lisp-program "ros -Q run")
 #+END_SRC
 
 Grab the packages and wire them into lisp mode:
@@ -1489,37 +1520,6 @@ Taken from [[http://reangdblog.blogspot.com/2016/06/emacs-ide-go.html][this arti
   ))
 
 #+END_SRC
-
-** Scheme
-
-#+BEGIN_SRC elisp
-
-  (setq geiser-default-implementation 'racket)
-  (setq geiser-active-implementations '(racket))
-
-  (add-hook 'scheme-mode-hook 'geiser-mode)
-
-  (el-get-bundle geiser)
-
-  ;; make default scheme implementation - racket
-
-
-  ;; load our support for racket in org-babel
-  (load-file (concat emacs-root-dir "racket/ob-racket.el"))
-  ;;(require 'ob-racket)
-  ;; use geiser for racket mode
-  (add-to-list 'org-src-lang-modes (quote ("scheme" . scheme)))
-
-  (add-to-list 'org-src-lang-modes (quote ("racket" . scheme)))
-#+END_SRC
-
-Testing racket mode
-
-#+BEGIN_SRC racket :tangle no :result 
-  #lang racket
-  (first  (list 1 2))
-#+END_SRC
-
 
 ** Clojure
 
@@ -1635,6 +1635,13 @@ What do we use for ourselves?
 
 New facts require new space.
 
+
+** Web
+
+#+BEGIN_SRC elisp
+  (el-get-bundle rjsx-mode)
+   (evil-define-key 'insert rjsx-mode-map (kbd "C-d") 'rjsx-delete-creates-full-tag)
+#+END_SRC
 * Footnotes
 ** Loading the configuration
 To reload with a require:
