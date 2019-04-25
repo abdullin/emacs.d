@@ -1183,7 +1183,6 @@ Some initial languages that we want babel to support:
   (org-babel-do-load-languages
    'org-babel-load-languages
    '(
-     (sh . t)
      (shell . t)
      (python . t)
      (R . t)

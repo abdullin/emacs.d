@@ -580,7 +580,6 @@ org-time-stamp except the default date will be the date of the daypage."
 (org-babel-do-load-languages
  'org-babel-load-languages
  '(
-   (sh . t)
    (shell . t)
    (python . t)
    (R . t)
