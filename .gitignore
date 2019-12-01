@@ -1,8 +1,8 @@
+*.elc
 auto-save-list
 el-get
 .*~
 tmp/*
-elpa/
 eshell/
 url/cookies
 bookmarks
@@ -10,7 +10,6 @@ ac-comphist.dat
 .*
 ido.last
 ido.last~
-init.el
 el-get.bak2
 tramp
 multi-compile.cache
