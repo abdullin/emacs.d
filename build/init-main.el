@@ -213,7 +213,6 @@
                            (name . "^\\*nrepl\\*$")
                            ))
 
-               ("go" (mode . go-mode))
                ("js" (or
                       (mode . rjsx-mode)
                       (mode . js-mode)
@@ -260,9 +259,6 @@
 (require 'evil)
 (evil-mode 1)
 
-(key-chord-define evil-insert-state-map "jj" 'evil-normal-state)
-(key-chord-define evil-visual-state-map "jj" 'evil-normal-state)
-(key-chord-define evil-normal-state-map "jj" 'evil-normal-state)
 
 (show-paren-mode t)
 
@@ -734,33 +730,13 @@ of listed in `linum-mode-excludes'."
   (add-hook-list 'rainbow-delimiters-mode lisp-mode-hooks)
   )
 
-(el-get-bundle go-mode)
-(el-get-bundle company-go)
 (el-get-bundle multi-compile)
-(el-get-bundle go-eldoc)
 
 (require 'company)
 (require 'flycheck)
 (require 'yasnippet)
 (require 'multi-compile)
-(require 'go-eldoc)
-(require 'company-go)
 
-(add-hook 'before-save-hook 'gofmt-before-save)
-(setq-default gofmt-command "goimports")
-(add-hook 'go-mode-hook 'go-eldoc-setup)
-(add-hook 'go-mode-hook (lambda ()
-                            (set (make-local-variable 'company-backends) '(company-go))
-                            (company-mode)))
-(add-hook 'go-mode-hook 'yas-minor-mode)
-(add-hook 'go-mode-hook 'flycheck-mode)
-(setq multi-compile-alist '(
-    (go-mode . (
-("go-build" "go build -v"
-   (locate-dominating-file buffer-file-name ".git"))
-("go-build-and-run" "go build -v && echo 'build finish' && eval ./${PWD##*/}"
-   (multi-compile-locate-file-dir ".git"))))
-))
 
 (el-get-bundle spinner)
 (el-get-bundle clojure-mode)
