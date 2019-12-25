@@ -61,28 +61,12 @@ We might have some local custom stuff around (e.g. brew location of
 erlang), so let's look up that in machine-specific file:
 
 #+BEGIN_SRC elisp
-  (setq ra/emacs-machine-init
-        (expand-file-name (concat system-name ".el") ra/emacs-directory)
-        )
-
-  ;; (setq custom-file (expand-file-name "init-local.el" ra/emacs-directory))
-  (when (file-exists-p ra/emacs-machine-init)
-    (load ra/emacs-machine-init))
-
   ;; This sets $MANPATH, $PATH and exec-path from your shell, but only on OS X and Linux.
   (when (memq window-system '(mac ns x))
     (exec-path-from-shell-initialize))
 
 #+END_SRC
 
-
-*** Rinat's rMBR
-
-#+BEGIN_SRC elisp :tangle Rinats-MacBook-Pro.local.el
-  ;;config for R on OSX
-  (setq inferior-R-program-name "/usr/local/Cellar/r/3.2.2_1/bin/R")
-
-#+END_SRC
 
 ** Setup load paths
 
@@ -690,7 +674,6 @@ link? (y or n)/ error message. So just follow it without asking.
   (setq vc-follow-symlinks t)
 #+END_SRC
 ** Compile
-
 
 Emacs has a default compile command (which defaults to the make). Let's bind it:
 
@@ -1332,30 +1315,6 @@ This was copied from somewhere, not sure if I still need these:
 (setq-default indicate-empty-lines t)
 #+END_SRC
 
-Another unknown bit:
-
-#+BEGIN_SRC elisp :tangle no
-
-;; S-up does not work properly in terminals
-;; http://lists.gnu.org/archive/html/help-gnu-emacs/2011-05/msg00211.html
- (if (equal "xterm" (tty-type))
-      (define-key input-decode-map "\e[1;2A" [S-up]))
-
-(defadvice terminal-init-xterm (after select-shift-up activate)
-  (define-key input-decode-map "\e[1;2A" [S-up]))
-
-#+END_SRC
-
-and one more:
-
-#+BEGIN_SRC elisp :tangle no
-
-  ;; This won't affect the size of the emacs window, but the term process will always think the window is 80 columns wide
-  (defun term-window-width () 80)
-  ;;  turn on line truncation
-  (add-hook 'term-mode-hook
-        (lambda () (setq truncate-lines t)))
-#+END_SRC
 
 ** Tabs vs Spaces
 
@@ -1385,12 +1344,6 @@ Auto-save never really worked for me:
 (setq auto-save-default nil)
 #+END_SRC
 
-** Disable escape
-Escape key hurts my pinky :)
-
-#+BEGIN_SRC elisp
-  (global-set-key (kbd "<escape>")      'nil)
-#+END_SRC
 ** Line numbers
 
 This is a very nice way to highlight jumps for vim.
@@ -1404,7 +1357,6 @@ This is a very nice way to highlight jumps for vim.
 #+BEGIN_SRC elisp
 
   (global-linum-mode 1)
-
   (defconst linum-mode-excludes '(
                                   doc-view-mode
                                   compilation-mode
@@ -1595,12 +1547,6 @@ What do we use for ourselves?
 New facts require new space.
 
 
-** Web
-
-#+BEGIN_SRC elisp
-  (el-get-bundle rjsx-mode)
-   (evil-define-key 'insert rjsx-mode-map (kbd "C-d") 'rjsx-delete-creates-full-tag)
-#+END_SRC
 * Footnotes
 ** Loading the configuration
 To reload with a require:

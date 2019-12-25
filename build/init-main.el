@@ -3,14 +3,6 @@
 
 (setq emacs-root-dir user-emacs-directory)
 
-(setq ra/emacs-machine-init
-      (expand-file-name (concat system-name ".el") ra/emacs-directory)
-      )
-
-;; (setq custom-file (expand-file-name "init-local.el" ra/emacs-directory))
-(when (file-exists-p ra/emacs-machine-init)
-  (load ra/emacs-machine-init))
-
 ;; This sets $MANPATH, $PATH and exec-path from your shell, but only on OS X and Linux.
 (when (memq window-system '(mac ns x))
   (exec-path-from-shell-initialize))
@@ -673,14 +665,11 @@ org-time-stamp except the default date will be the date of the daypage."
 (setq make-backup-files nil)
 (setq auto-save-default nil)
 
-(global-set-key (kbd "<escape>")      'nil)
-
 (el-get-bundle linum-relative
   (setq linum-relative-current-symbol "")
   )
 
 (global-linum-mode 1)
-
 (defconst linum-mode-excludes '(
                                 doc-view-mode
                                 compilation-mode
@@ -740,8 +729,5 @@ of listed in `linum-mode-excludes'."
 
 (require 'ob-clojure)
 (setq org-babel-clojure-backend 'cider)
-
-(el-get-bundle rjsx-mode)
- (evil-define-key 'insert rjsx-mode-map (kbd "C-d") 'rjsx-delete-creates-full-tag)
 
 (provide 'init-main)
