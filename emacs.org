@@ -1,4 +1,4 @@
-#+PROPERTY:    tangle build/init-main.el
+#+PROPERTY:    header-args :tangle build/init-main.el
 #+PROPERTY:    eval no-export
 #+PROPERTY:    results silent
 #+PROPERTY:    header-args:sh  :tangle no

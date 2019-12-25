@@ -260,6 +260,7 @@
 (evil-mode 1)
 
 
+
 (show-paren-mode t)
 
 (add-hook 'ido-setup-hook (lambda ()
@@ -729,14 +730,6 @@ of listed in `linum-mode-excludes'."
 (el-get-bundle rainbow-delimiters
   (add-hook-list 'rainbow-delimiters-mode lisp-mode-hooks)
   )
-
-(el-get-bundle multi-compile)
-
-(require 'company)
-(require 'flycheck)
-(require 'yasnippet)
-(require 'multi-compile)
-
 
 (el-get-bundle spinner)
 (el-get-bundle clojure-mode)
